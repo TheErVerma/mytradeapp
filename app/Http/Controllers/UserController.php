@@ -18,13 +18,13 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            "email" => ['required'],
+            "email_address" => ['required'],
             "password" => ['required'],
             // "g-recaptcha-response" => ['required'],
         ]);
 
         $credentials_arr = [
-            "email" => $request->input('email'),
+            "email" => $request->input('email_address'),
             "password" => $request->input('password')
         ];
 
@@ -68,13 +68,20 @@ class UserController extends Controller
         $credentials = $request->validate([
             "email" => ['required'],
             "password" => ['required'],
-            "g-recaptcha-response" => ['required'],
+            // "g-recaptcha-response" => ['required'],
         ]);
 
         $user = new User();
+        $fist_name = $request->input('first_name');
+        $last_name = $request->input('last_name');
+        $full_name = $fist_name;
+        if($last_name != ""){
+            $full_name .= ' '.$last_name;
+        }
+
         $user->password = Hash::make($request->input('password'));
         $user->email = $request->input('email');
-        $user->name = $request->input('fullname');
+        $user->name = $full_name;
 
         if ($user->save()) {
             $credentials = $request->validate([

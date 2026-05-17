@@ -1,11 +1,520 @@
-@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap');
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+@import "@fortawesome/fontawesome-free/css/all.css";
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Nunito", sans-serif;
+    line-height: 1.4;
 }
+
+
+:root {
+    /* --bg: #0d0f14;
+    --bg2: #13161d;
+    --bg3: #1a1e28;
+    --bg4: #222738;
+    --border: #2a2f42;
+    --border2: #353c55;
+    --text: #e8eaf2;
+    --text-white: #e8eaf2;
+    --muted: #56596b;
+    --muted2: #8b91b0;
+    --accent: #2b41e1;
+    --accent2: #1e4a8a;
+    --green: #22c55e;
+    --green-bg: #0d2b1a;
+    --green-border: #166534;
+    --red: #ef4444;
+    --red-bg: #2b0d0d;
+    --red-border: #7f1d1d;
+    --yellow: #f59e0b;
+    --yellow-bg: #2b1e0a; */
+
+    --bg: #151821;
+    --bg2: #1c2030;
+    --bg3: #252b3d;
+    --bg4: #2f3650;
+    --border: #3b4360;
+    --border2: #4a5477;
+    --text: #f5f7ff;
+    --muted: #8b92ab;
+    --muted2: #b3bad3;
+    --accent: #4f6bff;
+    --accent2: #3b82f6;
+    --green: #4ade80;
+    --green-bg: #133222;
+    --green-border: #22c55e;
+    --red: #ff6b6b;
+    --red-bg: #331616;
+    --red-border: #dc2626;
+    --yellow: #fbbf24;
+    --yellow-bg: #33260f;
+
+
+    /* --bg: #f4f6fb;
+    --bg2: #ffffff;
+    --bg3: #eef1f7;
+    --bg4: #e4e9f2;
+    --border: #d8deea;
+    --border2: #c5cede;
+    --text: #111827;
+    --muted: #6b7280;
+    --muted2: #4b5563;
+    --accent: #3559ff;
+    --accent2: #2563eb;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --green-border: #86efac;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --red-border: #fca5a5;
+    --yellow: #d97706;
+    --yellow-bg: #fef3c7;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.06); */
+
+
+
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font: 'Syne', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --text-sm: 12px;
+    --text-md: 14px;
+    --text-lg: 16px;
+    --text-xl: 22px;
+    --text-2xl: 26px;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+}
+
+
+/** Buttons Start **/
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    font-size: var(--text-md);
+    cursor: pointer;
+}
+
+.btn.btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.btn[disabled] {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/** Buttons End **/
+
+/** Global Sections Start **/
+.main_section {
+    height: 100dvh;
+}
+
+.main_section .container.center {
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dash_content {
+    margin-top: 74px;
+    margin-left: 220px;
+    padding: 10px;
+}
+
+/** Global Sections End **/
+
+
+/** Header Start **/
+header.main_header {
+    background: var(--bg2);
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+header.main_header .header_inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+header.main_header .header_inner h4 {
+    font-size: var(--text-xl);
+}
+
+header.main_header .header_inner .head_btn_wrap {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/** Header Start **/
+
+
+
+/** Sidebar Start **/
+aside.main_sidebar {
+    padding: 10px;
+    background: var(--bg2);
+    max-width: 220px;
+    border-right: 1px solid var(--border);
+    min-height: calc(100dvh - 74px);
+    position: fixed;
+    left: 0;
+    top: 74px;
+    width: 100%;
+}
+
+aside.main_sidebar .aside_inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+aside.main_sidebar .aside_inner .aside_menu_items {
+    border-bottom: 1px solid var(--border);
+}
+
+aside.main_sidebar .aside_inner .aside_menu_items ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+aside.main_sidebar .aside_inner .aside_menu_items ul li a.active {
+    background: var(--bg4);
+}
+
+aside.main_sidebar .aside_inner .aside_menu_items ul li a {
+    color: var(--muted2);
+    text-decoration: none;
+    padding: 10px 14px;
+    display: flex;
+    border-radius: 8px;
+    font-size: var(--text-md);
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+aside.main_sidebar .aside_inner h5 {
+    font-size: var(--text-md);
+    font-weight: 400;
+    margin-bottom: 10px;
+    padding: 0px 10px;
+    color: var(--muted);
+}
+
+aside.main_sidebar .aside_inner .summry_wrapper ul {
+    padding: 20px 14px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    font-size: var(--text-sm);
+    gap: 10px;
+    background: var(--bg3);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin: 10px;
+}
+
+aside.main_sidebar .aside_inner .summry_wrapper ul li {
+    color: var(--muted2);
+    display: flex;
+    justify-content: space-between;
+}
+
+aside.main_sidebar .aside_inner .summry_wrapper ul li .value {
+    color: var(--text);
+}
+
+aside.main_sidebar .aside_inner .summry_wrapper ul li .value.profit {
+    color: var(--green);
+}
+
+aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
+    color: var(--red);
+}
+
+/** Sidebar End **/
+
+
+/** Global Form Start **/
+.form_fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.form_fields .form_field_group {
+    display: grid;
+    grid-template-columns: 6fr 6fr;
+    gap: 14px;
+}
+
+.form_fields .form_field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form_fields .form_field label {
+    font-size: var(--text-md);
+    color: var(--muted2);
+}
+
+.form_fields .form_field input,
+.form_fields .form_field select,
+.form_fields .form_field textarea {
+    background: var(--bg4);
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: var(--text-md);
+    outline: none;
+}
+
+.form_fields .form_field input::placeholder,
+.form_fields .form_field select::placeholder,
+.form_fields .form_field textarea::placeholder {
+    color: var(--muted2);
+}
+
+
+.form_action_btn_outer {
+    border-top: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    margin-top: 28px;
+}
+
+.form_action_btns {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.form_action_btn_outer span.text {
+    color: var(--muted2);
+    font-size: var(--text-md);
+}
+
+.form_action_btn_outer span.text a {
+    color: var(--green);
+    text-decoration: none;
+}
+
+.form_notices {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.form_notices:empty {
+    display: none;
+}
+
+.form_notices .form_notice {
+    padding: 14px 16px;
+    background: var(--bg3);
+    color: var(--muted2);
+    font-size: var(--text-md);
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+}
+
+.form_notices .form_notice.success {
+    color: var(--green);
+    border-color: var(--green);
+}
+
+.form_notice.warning {
+    color: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.form_notice.error {
+    color: var(--red);
+    border-color: var(--red);
+}
+
+/** Global Form End **/
+
+
+/** Global Popup Start **/
+.main_popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #00000096;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
+    z-index: 2;
+    visibility: visible;
+    opacity: 1;
+    transition: all 0.2s;
+}
+
+.main_popup:not(.active) {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.main_popup .main_popup_inner {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    padding: 20px;
+    margin: 40px 20px 40px 20px;
+    position: relative;
+    border-radius: 10px;
+    max-width: 600px;
+}
+
+.main_popup .main_popup_inner span.close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
+    opacity: 0.4;
+}
+
+.main_popup .main_popup_inner form#add_trade_popup {
+    border-top: 1px solid var(--border2);
+    padding-top: 20px;
+}
+
+.main_popup .main_popup_inner h2 {
+    font-size: var(--text-xl);
+    color: var(--muted2);
+    margin-bottom: 10px;
+}
+
+.main_popup .main_popup_inner p {
+    font-size: var(--text-md);
+    color: var(--muted);
+    margin: 10px 0px 20px;
+}
+
+/** Global Popup End **/
+
+
+
+/** Login form Start **/
+.main_log_reg_form {
+    max-width: 600px;
+    background: var(--bg2);
+    padding: 20px;
+    border-radius: 10px;
+    margin: auto;
+    width: 100%;
+    border: 1px solid var(--border);
+}
+
+.main_log_reg_form h2 {
+    font-size: var(--text-xl);
+    color: var(--muted2);
+    margin-bottom: 10px;
+}
+
+.main_log_reg_form p {
+    color: var(--muted);
+    font-size: var(--text-lg);
+    margin: 10px 0px 20px;
+}
+
+/** Login form End **/
+
+
+
+/** Trade Table Start **/
+.trades_table_wrapper .trades_table_inner table {
+    width: 100%;
+}
+
+.trades_table_wrapper .trades_table_inner table thead th {
+    padding: 10px;
+    font-size: var(--text-md);
+    font-weight: 400;
+    color: var(--muted2);
+    text-align: left;
+    background:var(--bg4);
+    border-radius: 4px;
+}
+
+.trades_table_wrapper .trades_table_inner table thead th:last-child {
+    text-align: right;
+}
+
+.trades_table_wrapper .trades_table_inner table tbody td {
+    padding: 10px;
+    font-size: var(--text-md);
+    color: var(--muted);
+    background: var(--bg2);
+    border-radius: 4px;
+}
+
+.trade_action_wrap {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.trade_action_wrap button.icon_btn {
+    padding: 4px 6px;
+    border: 1px solid var(--muted);
+    background: var(--bg3);
+    color: var(--muted2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.trade_action_wrap button.icon_btn.trash {
+    color: var(--red);
+    border: 1px solid;
+}
+
+/** Trade Table End **/

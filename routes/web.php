@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TradeController;
 use Illuminate\Support\Facades\Route;
 use function Pest\Laravel\post;
 
@@ -15,35 +16,11 @@ Route::group(['middleware' => ['auth']], function () {
 
     // Home Page
     Route::get('/', function () {
+        // return Redirect::to('/trade-journal');
         $user = Auth::user();
         $apiObj = new ApiController();
-        $symbols = Controller::preDefinedSymbols();
-        return view('home', compact('user', 'symbols', 'apiObj'));
+        return view('home', compact('user', 'apiObj'));
     })->name('home');
-
-    // About Page
-    Route::get('/about', function () {
-        $user = Auth::user();
-        return view('about', compact('user'));
-    })->name('about');
-
-
-
-    // Single Symbol Info
-    Route::get('/symbols/{symbol}', function ($symbol) {
-        $user = Auth::user();
-        $allowed = array_keys(Controller::preDefinedSymbols());
-        if (!in_array(strtolower($symbol), $allowed)) {
-            return Redirect::to('/');
-        }
-        $stockdata = ApiController::fetchStockData($symbol);
-        return view('single/symbol', compact('user', 'symbol', 'stockdata'));
-    });
-
-    // Redirect Symbols To Home
-    Route::get('/symbols', function () {
-        return Redirect::to('/');
-    });
 
 
     // Edit Profile
@@ -53,6 +30,15 @@ Route::group(['middleware' => ['auth']], function () {
     })->name('Edit Profile');
 
     Route::post('/user/{id}/save_profile/', [UserController::class, 'saveProfile']);
+    
+    
+    Route::post('/trade', [TradeController::class, 'addTrade']);
+    Route::get('/trade-journal', function(){
+        $user = Auth::user();
+        $all_trades = TradeController::getAll();
+        return view('trade-journal', compact('user', 'all_trades'));
+    });
+
 });
 
 
