@@ -1,6 +1,7 @@
 <div class="main_popup" data_identity="confirm-pop">
     <div class="main_popup_inner">
         <div class="main_pop_content">
+            <h2>Confirmation</h2>
             <div class="confirmation_message"></div>
             <div class="confirm_actions">
                 <button type="button" class="btn btn-primary">Confirm</button>

@@ -16,7 +16,7 @@ export default class ConfirmPop {
         );
 
         if (!this.popup) {
-            console.error('Confirm popup not found');
+            // console.error('Confirm popup not found');
             return;
         }
 

@@ -1,4 +1,4 @@
-@extends('base')
+@extends('../layout/base')
 
 @section('content')
   <div class="main_log_reg_form">
@@ -23,9 +23,11 @@
         </div>
         <div class="form_field">
           <label for="password">Password</label>
-          <input type="text" name="password" id="password" required />
+          <input type="password" name="password" id="password" required />
         </div>
       </div>
+
+      <div class="g-recaptcha" id="rcaptcha" data-theme="light" data-sitekey="6LeWX-EsAAAAAHgm1XAGiabkyStycb4P6jD_sVI5"></div>
 
       <div class="form_notices"></div>
 

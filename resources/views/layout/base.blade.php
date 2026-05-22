@@ -2,7 +2,7 @@
     use Illuminate\Support\Facades\Route;
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" theme="light">
 
 <head>
     <meta charset="utf-8">
@@ -21,14 +21,20 @@
 </head>
 
 <body>
+    @php
+    $user = Auth::user();
+    @endphp
     @if(isset($user))
-        @include('header')
+        @include('../components/header')
         
         <div class="dash_content">
             @yield('content')
         </div>
         
-        @include('popups/add-trade')
+        
+        @include('../components/popups/add-trade')
+        @include('../components/popups/edit-trade')
+        @include('../components/popups/confirm')
     @else
         <div class="main_section">
             <div class="container center">

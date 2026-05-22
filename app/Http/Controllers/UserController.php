@@ -68,7 +68,7 @@ class UserController extends Controller
         $credentials = $request->validate([
             "email" => ['required'],
             "password" => ['required'],
-            // "g-recaptcha-response" => ['required'],
+            "g-recaptcha-response" => ['required'],
         ]);
 
         $user = new User();
@@ -77,6 +77,14 @@ class UserController extends Controller
         $full_name = $fist_name;
         if($last_name != ""){
             $full_name .= ' '.$last_name;
+        }
+
+        $has_user_email = User::where('email', $request->input('email'))->first();
+        if($has_user_email){
+            return array(
+                "status" => 500,
+                "message" => "Email Already Exists"
+            );
         }
 
         $user->password = Hash::make($request->input('password'));

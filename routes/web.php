@@ -11,32 +11,70 @@ use function Pest\Laravel\post;
 
 
 Route::group(['middleware' => ['auth']], function () {
-    // Logout Path
+    /**
+     * Logout Path
+     **/
     Route::get('/logout', [UserController::class, 'logout']);
 
-    // Home Page
+
+
+
+    /***********************
+     * Pages Start
+     **/
     Route::get('/', function () {
-        // return Redirect::to('/trade-journal');
-        $user = Auth::user();
         $apiObj = new ApiController();
-        return view('home', compact('user', 'apiObj'));
+        return view('pages/home', compact('apiObj'));
     })->name('home');
 
-
-    // Edit Profile
     Route::get('/profile', function () {
-        $user = Auth::user();
-        return view('settings/profile', compact('user'));
+        return view('pages/settings/profile');
     })->name('Edit Profile');
 
-    Route::post('/user/{id}/save_profile/', [UserController::class, 'saveProfile']);
-    
-    
-    Route::post('/trade', [TradeController::class, 'addTrade']);
-    Route::get('/trade-journal', function(){
-        $user = Auth::user();
+    Route::get('/journal', function () {
         $all_trades = TradeController::getAll();
-        return view('trade-journal', compact('user', 'all_trades'));
+        return view('pages/trade-journal', compact('all_trades'));
+    })->name('journal');
+
+    Route::get('/analytics', function () {
+        return view('pages/analytics');
+    })->name('journal');
+
+    Route::get('/settings', function () {
+        return view('pages/settings');
+    })->name('settings');
+
+    Route::get('/help', function () {
+        return view('pages/help');
+    })->name('help');
+    /**
+     * Pages End
+     ***********************/
+
+
+
+
+    /***********************
+     * APIs Start
+     */
+    Route::post('/trade', [TradeController::class, 'addTrade']);
+    Route::delete('/trade', [TradeController::class, 'deleteItem']);
+    /**
+     * APIs End
+     **********************/
+
+
+
+
+
+    /**
+     * Single Pages
+     **/
+    Route::get('/trade/{id}', [TradeController::class, 'getTrade']);
+    Route::get('/journal/{id}', function ($id) {
+        $TradeController = new TradeController();
+        $trade = $TradeController->getTrade($id);
+        return view('pages/single/trade', ['trade' => $trade]);
     });
 
 });
@@ -49,10 +87,10 @@ Route::post('/login', [UserController::class, 'login']);
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {
-        return view('login');
+        return view('pages/login');
     })->name('login');
     Route::get('/register', function () {
-        return view('register');
+        return view('pages/register');
     })->name('register');
 });
 

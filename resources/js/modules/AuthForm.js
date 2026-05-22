@@ -13,6 +13,7 @@ export default class AuthForm {
             'submit',
             this.handleSubmit.bind(this)
         );
+        this.logout();
     }
 
     addNotice(message, type = '') {
@@ -31,8 +32,8 @@ export default class AuthForm {
         }
     }
 
-    removeAllNotices(){
-        if(this.notices.length >= 1){
+    removeAllNotices() {
+        if (this.notices.length >= 1) {
             (this.notices).forEach((notice_item, indx) => {
                 console.log(notice_item);
                 notice_item.remove();
@@ -64,16 +65,32 @@ export default class AuthForm {
                 console.log(data);
                 if (data.status == 200) {
                     this.addNotice(data.message, 'success');
-                }else{
+                } else {
                     this.addNotice(data.message, 'warning');
                 }
 
-                if(data.redirect){
+                if (data.redirect) {
                     window.location.href = data.redirect;
                 }
 
             }).catch((err) => {
                 console.log(err);
             })
+    }
+
+    logout() {
+        const all_a = document.querySelectorAll('a');
+        if (all_a.length >= 1) {
+            all_a.forEach((itm, indx) => {
+                if (itm.href.includes('logout')) {
+                    itm.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        MainApp.ConfirmPop.confirm('Are you sure? do you want to logou it?', () => {
+                            window.location.href = itm.href;
+                        });
+                    })
+                }
+            })
+        }
     }
 }

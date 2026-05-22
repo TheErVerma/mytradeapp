@@ -1,4 +1,4 @@
-@extends('base')
+@extends('../layout/base')
 
 @section('content')
 
@@ -12,36 +12,39 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Market Name</th>
-                        <th>Symbol</th>
-                        <th>Action</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Shares</th>
-                        <th>Price</th>
-                        <th>Commissions</th>
-                        <th>Fees</th>
-                        <th>Actions</th>
+                        <th class="trade_h_id">ID</th>
+                        <!-- <th>Market Name</th> -->
+                        <th class="trade_h_symbol">Symbol</th>
+                        <th class="trade_h_action">Action</th>
+                        <th class="trade_h_date">Date</th>
+                        <th class="trade_h_time">Time</th>
+                        <th class="trade_h_shares">Shares</th>
+                        <th class="trade_h_price">Price</th>
+                        <!-- <th>Commissions</th>
+                            <th>Fees</th> -->
+                        <th class="trade_h_actions">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if(is_array($all_trades) && count($all_trades) >= 1)
                         @foreach ($all_trades as $trade_item)
-                            <tr>
-                                <td>{{ $trade_item['id'] }}</td>
-                                <td>{{ $trade_item['trd_market_name'] }}</td>
-                                <td>{{ $trade_item['trd_symbol'] }}</td>
-                                <td>{{ $trade_item['trd_action'] }}</td>
-                                <td>{{ $trade_item['trd_date'] }}</td>
-                                <td>{{ $trade_item['trd_time'] }}</td>
-                                <td>{{ $trade_item['trd_shares'] }}</td>
-                                <td>{{ $trade_item['trd_price'] }}</td>
-                                <td>{{ $trade_item['trd_commissions'] }}</td>
-                                <td>{{ $trade_item['trd_fees'] }}</td>
-                                <td>
+                            @php
+                                $tred_classes = [];
+                                if (isset($trade_item['trd_action'])) {
+                                    $tred_classes[] = strtolower($trade_item['trd_action']);
+                                }
+                            @endphp
+                            <tr class="@php echo implode(' ', $tred_classes); @endphp ">
+                                <td class="trade_b_id">{{ $trade_item['id'] }}</td>
+                                <td class="trade_b_symbol"><a href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</a></td>
+                                <td class="trade_b_action">{{ $trade_item['trd_action'] }}</td>
+                                <td class="trade_b_date">{{ $trade_item['trd_date'] }}</td>
+                                <td class="trade_b_time">{{ $trade_item['trd_time'] }}</td>
+                                <td class="trade_b_shares">{{ $trade_item['trd_shares'] }}</td>
+                                <td class="trade_b_price">{{ $trade_item['trd_price'] }}</td>
+                                <td class="trade_b_actions">
                                     <div class="trade_action_wrap">
-                                        <button type="button" class="icon_btn edit">
+                                        <button type="button" class="icon_btn edit" data_id="{{ $trade_item['id'] }}">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -49,7 +52,7 @@
                                                     fill="currentColor" />
                                             </svg>
                                         </button>
-                                        <button type="button" class="icon_btn trash">
+                                        <button type="button" class="icon_btn trash" data_id="{{ $trade_item['id'] }}">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path

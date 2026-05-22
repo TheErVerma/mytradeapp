@@ -1,4 +1,4 @@
-@extends('base')
+@extends('../layout/base')
 
 @section('content')
 
@@ -14,7 +14,7 @@
         </div>
         <div class="form_field">
           <label for="password">Password</label>
-          <input type="text" name="password" id="password" required />
+          <input type="password" name="password" id="password" required />
         </div>
       </div>
 

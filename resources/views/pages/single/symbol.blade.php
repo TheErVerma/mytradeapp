@@ -1,7 +1,7 @@
 @php
     use Illuminate\Support\Number;
 @endphp
-@extends('base')
+@extends('../../layout/base')
 
 
 @section('content')
