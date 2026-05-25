@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiController;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HelperController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TradeController;
 use Illuminate\Support\Facades\Route;
@@ -18,10 +19,10 @@ Route::group(['middleware' => ['auth']], function () {
 
 
 
-
+    
     /***********************
      * Pages Start
-     **/
+    **/
     Route::get('/', function () {
         $apiObj = new ApiController();
         return view('pages/home', compact('apiObj'));
@@ -57,6 +58,7 @@ Route::group(['middleware' => ['auth']], function () {
     /***********************
      * APIs Start
      */
+    Route::post('/user/{id}/saveprofile', [UserController::class, 'saveProfile']);
     Route::post('/trade', [TradeController::class, 'addTrade']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
     /**
