@@ -163,7 +163,10 @@ class UserController extends Controller
                 Storage::disk('public')->delete($prevPic);
             }
             $user->profile_pic = $profile_pic_url;
+            
         }
+
+        $response['message'] = 'Profile Updated';
 
         $user->save();
 

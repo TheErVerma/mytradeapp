@@ -20,7 +20,6 @@ export default class HelpManager {
         //     this.toggleTheme(newTheme);
         // });
         const theme = localStorage.getItem('theme');
-        console.log(theme);
         this.toggleTheme(theme);
     }
 

@@ -15,6 +15,7 @@ export default class ProfileSettingsForm {
             'submit',
             this.handleSubmit.bind(this)
         );
+        this.imagePicker();
     }
 
     addNotice(message, type = '') {
@@ -33,8 +34,8 @@ export default class ProfileSettingsForm {
         }
     }
 
-    removeAllNotices(){
-        if(this.notices.length >= 1){
+    removeAllNotices() {
+        if (this.notices.length >= 1) {
             (this.notices).forEach((notice_item, indx) => {
                 console.log(notice_item);
                 notice_item.remove();
@@ -43,6 +44,9 @@ export default class ProfileSettingsForm {
     }
 
     handleSubmit(event) {
+
+        const profileInstance = this;
+
         this.profileForm = event.target;
 
         if (!this.profileForm.matches('#profile_settings_form')) {
@@ -65,18 +69,42 @@ export default class ProfileSettingsForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.status == 200) {
+                if (data.success) {
                     this.addNotice(data.message, 'success');
-                }else{
+                    setTimeout(function () {
+                        profileInstance.removeAllNotices();
+                    }, 4000);
+                } else {
                     this.addNotice(data.message, 'warning');
                 }
 
-                if(data.redirect){
+                if (data.redirect) {
                     window.location.href = data.redirect;
                 }
 
             }).catch((err) => {
                 console.log(err);
             })
+    }
+
+    imagePicker() {
+
+        const imageSelector = document.getElementById('profile_pic');
+        const previewImage = document.querySelector('.profile_image > img');
+
+        if (imageSelector) {
+            imageSelector.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Create a temporary URL for the selected file
+                    const objectUrl = URL.createObjectURL(file);
+                    previewImage.src = objectUrl;
+
+                    // Optional: Clean up memory when image loads
+                    previewImage.onload = () => URL.revokeObjectURL(objectUrl);
+                }
+            });
+        }
+
     }
 }

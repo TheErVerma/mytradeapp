@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Options;
+use App\Models\Trade;
 
 abstract class Controller
 {

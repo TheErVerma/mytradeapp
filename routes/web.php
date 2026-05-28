@@ -25,7 +25,8 @@ Route::group(['middleware' => ['auth']], function () {
     **/
     Route::get('/', function () {
         $apiObj = new ApiController();
-        return view('pages/home', compact('apiObj'));
+        $net_amount = TradeController::getNetAmount();
+        return view('pages/home', compact('apiObj', 'net_amount'));
     })->name('home');
 
     Route::get('/profile', function () {

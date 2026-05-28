@@ -16,6 +16,10 @@ use Illuminate\Support\Str;
 
 class TradeController extends Controller
 {
+    static public function getNetAmount(){
+        return Trade::where('user_id', Auth::id())->where('trd_action', 'Buy')->sum('trd_price');
+    }
+
     static public function getAll()
     {
         // $trades = Trade::orderBy('id', 'ASC')->get()->toArray();;

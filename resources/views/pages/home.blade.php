@@ -11,8 +11,8 @@
 
             <div class="hightlight_dash_amount">
                 <p>Net Account Value</p>
-                <h2>$24,534.71</h2>
-                <h5>+$24,534.71</h5>
+                <h2>${{ $net_amount }}</h2>
+                <h5>+{{ $net_amount }}</h5>
             </div>
 
             <div class="other_dash_amounts">
