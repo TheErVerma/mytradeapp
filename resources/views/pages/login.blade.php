@@ -12,6 +12,7 @@
           <label for="email_address">Email</label>
           <input type="text" name="email_address" id="email_address" required />
         </div>
+        <span class="forget_pass_link"><a href="/forget-password">Forget Password?</a></span>
         <div class="form_field">
           <label for="password">Password</label>
           <input type="password" name="password" id="password" required />

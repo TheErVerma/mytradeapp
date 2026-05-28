@@ -16,7 +16,8 @@ use Illuminate\Support\Str;
 
 class TradeController extends Controller
 {
-    static public function getNetAmount(){
+    static public function getNetAmount()
+    {
         return Trade::where('user_id', Auth::id())->where('trd_action', 'Buy')->sum('trd_price');
     }
 
@@ -109,5 +110,190 @@ class TradeController extends Controller
         $trade_obj = Trade::where('id', $id)->first();
         $trade = $trade_obj ? $trade_obj->toArray() : [];
         return $trade;
+    }
+
+
+    public static function summary($startingBalance = 500000)
+    {
+        $userId = Auth::id();
+        $trades = Trade::where('user_id', $userId)
+            ->orderBy('trd_date', 'asc')
+            ->get();
+
+        $positions = [];
+
+        $realizedPnL = 0;
+        $deployedCapital = 0;
+        $unrealizedPnL = 0;
+
+        /**
+         * PROCESS TRADES
+         */
+        foreach ($trades as $trade) {
+
+            $symbol = strtoupper($trade->trd_symbol);
+
+            if (!isset($positions[$symbol])) {
+
+                $positions[$symbol] = [
+                    'qty' => 0,
+                    'avg_price' => 0,
+                ];
+            }
+
+            $qty = (float) $positions[$symbol]['qty'];
+            $avg = (float) $positions[$symbol]['avg_price'];
+
+            $shares = (float) $trade->trd_shares;
+            $price = (float) $trade->trd_price;
+
+            /**
+             * BUY
+             */
+            if ($trade->trd_action == 'Buy') {
+
+                $newQty = $qty + $shares;
+
+                $newAvg = $newQty > 0 ?
+                    (
+                        ($qty * $avg)
+                        +
+                        ($shares * $price)
+                    ) / $newQty : 0;
+
+                $positions[$symbol]['qty'] = $newQty;
+
+                $positions[$symbol]['avg_price'] = $newAvg;
+            }
+
+            /**
+             * SELL
+             */
+            if ($trade->trd_action == 'Sell') {
+
+                /**
+                 * REALIZED PNL
+                 */
+                $profit =
+                    ($price - $avg)
+                    * $shares;
+
+                $realizedPnL += $profit;
+
+                /**
+                 * REDUCE OPEN QTY
+                 */
+                $positions[$symbol]['qty']
+                    = $qty - $shares;
+            }
+        }
+
+        /**
+         * CALCULATE OPEN POSITIONS
+         */
+        foreach ($positions as $symbol => $position) {
+
+            $openQty = $position['qty'];
+
+            if ($openQty <= 0) {
+                continue;
+            }
+
+            $avgPrice = $position['avg_price'];
+
+            /**
+             * Replace with live market price API later
+             */
+            $currentPrice = self::marketPrice($symbol);
+
+            /**
+             * DEPLOYED CAPITAL
+             */
+            $deployedCapital +=
+                $openQty * $avgPrice;
+
+            /**
+             * UNREALIZED PNL
+             */
+            $unrealizedPnL +=
+                (
+                    $currentPrice - $avgPrice
+                ) * $openQty;
+        }
+
+        /**
+         * AVAILABLE CASH
+         */
+        $availableCash =
+            $startingBalance
+            + $realizedPnL
+            - $deployedCapital;
+
+        /**
+         * OPEN RISK %
+         */
+        $portfolioValue =
+            $availableCash + $deployedCapital;
+
+        $riskPercent = 0;
+
+        if ($portfolioValue > 0) {
+
+            $riskPercent =
+                (
+                    $deployedCapital
+                    / $portfolioValue
+                ) * 100;
+        }
+
+        return [
+
+            'net_realized_pnl'
+            => round($realizedPnL, 2),
+
+            'unrealized_pnl'
+            => round($unrealizedPnL, 2),
+
+            'available_cash'
+            => round($availableCash, 2),
+
+            'deployed_capital'
+            => round($deployedCapital, 2),
+
+            'total_open_risk_percent'
+            => round($riskPercent, 2),
+
+            'total_open_risk_amount'
+            => round($deployedCapital, 2),
+
+            'starting_account_balance'
+            => round($startingBalance, 2),
+
+            'portfolio_value'
+            => round(
+                    $portfolioValue + $unrealizedPnL,
+                    2
+                ),
+
+            'positions'
+            => $positions
+        ];
+    }
+
+    /**
+     * TEMP MARKET PRICES
+     */
+    private static function marketPrice($symbol)
+    {
+        $prices = [
+
+            'RELIANCE' => 2850,
+            'TATA' => 1400,
+            'AAPL' => 220,
+            'TSLA' => 310,
+
+        ];
+
+        return $prices[$symbol] ?? 100;
     }
 }

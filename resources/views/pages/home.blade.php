@@ -11,42 +11,42 @@
 
             <div class="hightlight_dash_amount">
                 <p>Net Account Value</p>
-                <h2>${{ $net_amount }}</h2>
-                <h5>+{{ $net_amount }}</h5>
+                <h2>{{ Number::currency($net_amount, in: 'USD') }}</h2>
+                <h5>+{{ Number::currency($net_amount, in: 'USD') }}</h5>
             </div>
 
             <div class="other_dash_amounts">
                 <div class="other_dash_amount_itm">
                     <p>Net Realized P&L</p>
-                    <h4>-$2,867.50</h4>
+                    <h4>{{Number::currency($portfolioSummry['net_realized_pnl'])}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Unrealized P&L</p>
-                    <h4>-$6,632.49</h4>
+                    <h4>{{Number::currency($portfolioSummry['unrealized_pnl'])}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Available Cash</p>
-                    <h4>$0.00</h4>
+                    <h4>{{Number::currency($portfolioSummry['available_cash'])}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Deployed Capital</p>
-                    <h4>$31,167.20</h4>
+                    <h4>{{Number::currency($portfolioSummry['deployed_capital'])}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Total Open Risk (127.0%)</p>
-                    <h4>$31,167.20</h4>
+                    <h4>{{Number::currency($portfolioSummry['total_open_risk_percent'])}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Total Deposits</p>
-                    <h4>$0.00</h4>
+                    <h4>--</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Total Withdrawn</p>
-                    <h4>$0.00</h4>
+                    <h4>--</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Starting Account Balance</p>
-                    <h4>$500,000.00</h4>
+                    <h4>{{Number::currency($portfolioSummry['starting_account_balance'])}}</h4>
                 </div>
             </div>
 
