@@ -1,3 +1,4 @@
+
 export default class TradeActions {
     constructor() {
         this.actionBtns = null;
@@ -71,8 +72,24 @@ export default class TradeActions {
                 if(typeof data == 'object' && Object.keys(data).length >= 1){
                     Object.keys(data).forEach((clm, ind) => {
                         const inp = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
-                        if(inp){
-                            inp.value = data[clm];
+                        const inp_arr = document.querySelectorAll('#edit_trade_popup [name="'+clm+'"]');
+                        if(inp_arr && inp_arr.length >= 1){
+                            inp_arr.forEach(inp_itm => {
+                                inp_itm.removeAttribute('checked');
+                            });
+                        }
+                        if(inp && inp.getAttribute('type') == 'radio'){
+                            const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"][value="'+data[clm]+'"]');
+                            console.log(radio_);
+                            if(radio_){
+                                radio_.setAttribute('checked', 'true');
+                            }else{
+                                console.log('#edit_trade_popup [name="'+clm+'"][value="'+data[clm]+'"]');
+                            }
+                        }else{
+                            if(inp){
+                                inp.value = data[clm];
+                            }
                         }
                     });
                 }

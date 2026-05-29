@@ -40,7 +40,7 @@ class TradeController extends Controller
             'trd_shares' => 'nullable|integer',
 
             'trd_price' => 'required|numeric',
-            // 'trd_type' => 'nullable|string',
+            'trd_type' => 'nullable|string',
             'trd_lot' => 'nullable|numeric',
         ]);
 
@@ -77,7 +77,7 @@ class TradeController extends Controller
 
             'trd_price' => $validated['trd_price'] ?? 0,
             'trd_lot' => $validated['trd_lot'] ?? 0,
-            'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : 'f&o',
+            'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : 'F&O',
             'user_id' => Auth::id(),
             'trd_screenshots' => serialize($screenshots)
         ]);
@@ -295,5 +295,112 @@ class TradeController extends Controller
         ];
 
         return $prices[$symbol] ?? 100;
+    }
+
+
+    public static function getTradingStats()
+    {
+        $userId = Auth::id();
+
+        $trades = Trade::where('user_id', $userId)
+            ->orderBy('trd_date')
+            ->orderBy('trd_time')
+            ->get();
+
+        $groupedTrades = $trades->groupBy(function ($trade) {
+            return $trade->trd_symbol . '_' . $trade->trd_lot;
+        });
+
+        $totalPnL = 0;
+
+        $winTrades = 0;
+        $lossTrades = 0;
+
+        $grossProfit = 0;
+        $grossLoss = 0;
+
+        foreach ($groupedTrades as $group) {
+
+            $buyTrades = $group->where('trd_action', 'Buy');
+
+            $sellTrades = $group->where('trd_action', 'Sell');
+
+            if ($buyTrades->isEmpty() || $sellTrades->isEmpty()) {
+                continue;
+            }
+
+            $buyValue = $buyTrades->sum(function ($trade) {
+                return $trade->trd_price * $trade->trd_shares;
+            });
+
+            $sellValue = $sellTrades->sum(function ($trade) {
+                return $trade->trd_price * $trade->trd_shares;
+            });
+
+            $pnl = $sellValue - $buyValue;
+
+            $totalPnL += $pnl;
+
+            if ($pnl > 0) {
+
+                $winTrades++;
+
+                $grossProfit += $pnl;
+
+            } elseif ($pnl < 0) {
+
+                $lossTrades++;
+
+                $grossLoss += abs($pnl);
+            }
+        }
+
+        $totalTrades = $winTrades + $lossTrades;
+
+        $winRate = $totalTrades > 0
+            ? ($winTrades / $totalTrades) * 100
+            : 0;
+
+        $profitFactor = $grossLoss > 0
+            ? $grossProfit / $grossLoss
+            : 0;
+
+        $expectancy = $totalTrades > 0
+            ? $totalPnL / $totalTrades
+            : 0;
+
+        $avgWin = $winTrades > 0
+            ? $grossProfit / $winTrades
+            : 0;
+
+        $avgLoss = $lossTrades > 0
+            ? $grossLoss / $lossTrades
+            : 0;
+
+        $avgWinLossRatio = $avgLoss > 0
+            ? $avgWin / $avgLoss
+            : 0;
+
+        return [
+            'net_realised_pnl' => round($totalPnL, 2),
+
+            'total_trades' => $totalTrades,
+
+            'win_rate' => round($winRate, 2),
+
+            'won_trades' => $winTrades,
+
+            'lost_trades' => $lossTrades,
+
+            'profit_factor' => round($profitFactor, 2),
+
+            'expectancy' => round($expectancy, 2),
+
+            'avg_win' => round($avgWin, 2),
+
+            'avg_loss' => round($avgLoss, 2),
+
+            'avg_win_loss_ratio' => round($avgWinLossRatio, 2),
+        ];
     }
 }

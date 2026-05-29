@@ -292,4 +292,14 @@ class UserController extends Controller
         return response()->json($response);
 
     }
+
+
+    public function resetAllData(Request $request){
+        $response = [
+            'success' => true,
+            'message' => 'All data cleared'
+        ];
+
+        return response()->json($response);
+    }
 }
