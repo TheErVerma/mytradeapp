@@ -17,16 +17,16 @@ Route::group(['middleware' => ['auth']], function () {
      **/
     Route::get('/logout', [UserController::class, 'logout']);
 
-
-
     
     /***********************
      * Pages Start
     **/
     Route::get('/', function () {
+        $user = Auth::user();
         $apiObj = new ApiController();
         $net_amount = TradeController::getNetAmount();
-        return view('pages/home', compact('apiObj', 'net_amount'));
+        $portfolioSummry = TradeController::summary($user->initial_balance);
+        return view('pages/home', compact('apiObj', 'net_amount', 'portfolioSummry'));
     })->name('home');
 
     Route::get('/profile', function () {
@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
     })->name('journal');
 
     Route::get('/settings', function () {
-        return view('pages/settings');
+        return view('pages/settings/settings');
     })->name('settings');
 
     Route::get('/help', function () {
@@ -54,20 +54,16 @@ Route::group(['middleware' => ['auth']], function () {
      ***********************/
 
 
-
-
     /***********************
      * APIs Start
      */
+    Route::post('/user/{id}/savesettings', [UserController::class, 'saveSettings']);
     Route::post('/user/{id}/saveprofile', [UserController::class, 'saveProfile']);
     Route::post('/trade', [TradeController::class, 'addTrade']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
     /**
      * APIs End
      **********************/
-
-
-
 
 
     /**
@@ -86,6 +82,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/forget-password', [UserController::class, 'forgetPassword']);
+Route::post('/verify-otp', [UserController::class, 'verifyOTP']);
+Route::post('/reset-password', [UserController::class, 'resetPassword']);
 
 
 Route::middleware('guest')->group(function () {
@@ -95,6 +94,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', function () {
         return view('pages/register');
     })->name('register');
+    Route::get('/forget-password', function () {
+        return view('pages/forget-password');
+    })->name('forget_password');
 });
 
 

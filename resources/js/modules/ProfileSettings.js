@@ -5,6 +5,7 @@ export default class ProfileSettingsForm {
 
     notices = [];
     profileForm = null;
+    mainSettingForm = null;
 
     constructor() {
         this.init();
@@ -14,6 +15,10 @@ export default class ProfileSettingsForm {
         document.addEventListener(
             'submit',
             this.handleSubmit.bind(this)
+        );
+        document.addEventListener(
+            'submit',
+            this.saveMainSettings.bind(this)
         );
         this.imagePicker();
     }
@@ -28,9 +33,18 @@ export default class ProfileSettingsForm {
             notice.classList.add(type);
         }
 
-        if (this.profileForm) {
-            this.notices.push(notice);
-            this.profileForm.querySelector('.form_notices').append(notice);
+        console.log(this.profileForm);
+        if (this.profileForm != null) {
+            if (this.profileForm.matches('#profile_settings_form')) {
+                this.notices.push(notice);
+                this.profileForm.querySelector('.form_notices').append(notice);
+            }
+        }
+        if (this.mainSettingForm != null) {
+            if (this.profileForm.matches('#main_set_preference_form')) {
+                this.notices.push(notice);
+                this.mainSettingForm.querySelector('.form_notices').append(notice);
+            }
         }
     }
 
@@ -66,25 +80,25 @@ export default class ProfileSettingsForm {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                if (data.success) {
-                    this.addNotice(data.message, 'success');
-                    setTimeout(function () {
-                        profileInstance.removeAllNotices();
-                    }, 4000);
-                } else {
-                    this.addNotice(data.message, 'warning');
-                }
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            if (data.success) {
+                this.addNotice(data.message, 'success');
+                setTimeout(function () {
+                    profileInstance.removeAllNotices();
+                }, 4000);
+            } else {
+                this.addNotice(data.message, 'warning');
+            }
 
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                }
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            }
 
-            }).catch((err) => {
-                console.log(err);
-            })
+        }).catch((err) => {
+            console.log(err);
+        })
     }
 
     imagePicker() {
@@ -106,5 +120,38 @@ export default class ProfileSettingsForm {
             });
         }
 
+    }
+
+
+    saveMainSettings(event){
+
+        const thisClass = this;
+        this.mainSettingForm = event.target;
+
+        if (!this.mainSettingForm.matches('#main_set_preference_form')) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const formData = new FormData(this.mainSettingForm);
+
+        const user_id = document.querySelector('input[name=user_id]').value;
+        
+        fetch(`/user/${user_id}/savesettings`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            thisClass.addNotice(data.message, 'success');
+        }).catch((err) => {
+            console.log(err);
+            thisClass.addNotice(err.message, 'error');
+        })
     }
 }
