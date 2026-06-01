@@ -7,13 +7,16 @@ $user = Auth::user();
 
 $countries = [
     'india' => 'India (₹)',
-    'usa' => 'United States ($)',
-    'uk' => 'United Kingdom ($)'
+    'usa'   => 'United States ($)',
+    'uk'    => 'United Kingdom ($)'
 ];
+
 @endphp
+
     <div class="main_settings_wrap">
         <div class="main_settings_inner">
 
+            {{-- ─── Preferences Card ──────────────────────────────────────── --}}
             <div class="main_set_card">
                 <h3>Preferences</h3>
                 <p>Customize your trading experience. All trades are automatically linked to your ledger for comprehensive
@@ -47,6 +50,7 @@ $countries = [
                 </form>
             </div>
 
+            {{-- ─── Danger Zone Card ──────────────────────────────────────── --}}
             <div class="main_set_card">
                 <h3>Danger Zone</h3>
                 <p>Security settings and irreversible account actions</p>
@@ -61,6 +65,8 @@ $countries = [
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
+
 @endsection

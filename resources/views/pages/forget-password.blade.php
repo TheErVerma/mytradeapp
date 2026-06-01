@@ -6,6 +6,7 @@
     <h2>Forget Password</h2>
     <p>Enter your registered email address below.</p>
     <form action="" id="forget_password_form">
+      @csrf
       <div class="form_fields">
 
         <div class="form_field">
@@ -29,6 +30,7 @@
     <h2>Verify Account</h2>
     <p>We sent you an OTP to your email address. Please write in the below field.</p>
     <form action="" id="verify_otp_form">
+      @csrf
       <input type="hidden" name="email_address" />
       <div class="form_fields">
 
@@ -52,6 +54,7 @@
     <h2>Reset Password</h2>
     <p>Create a new password and make sure it is strong and secure.</p>
     <form action="" id="reset_password_form">
+      @csrf
       <input type="hidden" name="email_address" />
       <div class="form_fields">
 
