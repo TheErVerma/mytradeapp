@@ -6,6 +6,7 @@
     <h2>Login</h2>
     <p>Lorem ipsum, dolor sit amet consetur adsicing elit. Minus, quibusdam amet consetur.</p>
     <form action="" id="login_form">
+      @csrf
       <div class="form_fields">
 
         <div class="form_field">
@@ -33,7 +34,40 @@
       </div>
 
     </form>
-
   </div>
+
+<script>
+document.getElementById('login_form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const notices = this.querySelector('.form_notices');
+    notices.innerHTML = '';
+
+    const payload = {
+        email_address: document.getElementById('email_address').value,
+        password:      document.getElementById('password').value,
+    };
+
+    const resp = await fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+                         ?? '{{ csrf_token() }}',
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const data = await resp.json();
+
+    // 200 — logged in normally
+    // 202 — 2FA required, redirect to challenge page
+    if (data.status === 200 || data.status === 202) {
+        window.location.href = data.redirect ?? '/';
+    } else {
+        notices.innerHTML = `<div class="form_notice error">${data.message}</div>`;
+    }
+});
+</script>
 
 @endsection

@@ -5,6 +5,9 @@
 
     @php
         $user = Auth::user();
+
+        $twoFactorEnabled   = ! is_null($user->two_factor_secret) && !is_null($user->two_factor_confirmed_at);
+        $twoFactorConfirmed = ! is_null($user->two_factor_confirmed_at);
     @endphp
 
     @if(isset($user))
@@ -95,21 +98,228 @@
                                     <button type="button" class="btn btn-secondary">Update</button>
                                 </div>
                             </div>
-                            <div class="prf_row_set">
-                                <div class="prf_rgt">
-                                    <span class="title">Two-Factor Authentication (2FA)</span>
-                                    <span class="description">Currently active for enhanced security</span>
+                            {{-- ─── Two-Factor Authentication Card ────────────────────────── --}}
+                    <div class="prf_row_set" id="tfa_card">
+                        <div class="prf_rgt">
+                            <span class="title">Two-Factor Authentication (2FA)</span>
+                            <span class="description">Currently active for enhanced security</span>
+                        </div>
+
+                        {{-- ── State: NOT enabled ──────────────────────────────────── --}}
+                        <div class="prf_lft">
+                            <div id="tfa_state_disabled" @if($twoFactorEnabled) style="display:none;" @endif>
+                                <div class="main_set_actions">
+                                    <button type="button" class="btn btn-primary" id="btn_enable_2fa">Enable 2FA</button>
                                 </div>
-                                <div class="prf_lft">
-                                    <button type="button" class="btn btn-primary">Enable</button>
-                                    <button type="button" class="btn btn-secondary">Disable</button>
+                            </div>
+                        </div>
+
+                        {{-- ── State: enabled but NOT yet confirmed (QR setup step) ── --}}
+                        <div id="tfa_state_setup" style="display:none;">
+                            <p>Scan the QR code below with your authenticator app (Google Authenticator, Authy, etc.), then
+                            enter the 6-digit code to confirm.</p>
+
+                            <div id="tfa_qr_wrap" style="margin: 16px 0;"></div>
+                            <p style="font-size:12px; word-break:break-all;">
+                                Can't scan? Enter this key manually: <strong id="tfa_secret_key"></strong>
+                            </p>
+
+                            <div class="main_set_fields" style="max-width:260px;">
+                                <div class="main_set_field">
+                                    <label for="tfa_confirm_code">Confirmation Code</label>
+                                    <input type="text" id="tfa_confirm_code" inputmode="numeric"
+                                        maxlength="6" placeholder="000000" autocomplete="off"/>
+                                </div>
+                                <div class="form_notices" id="tfa_setup_notices"></div>
+                                <div class="main_set_actions">
+                                    <button type="button" class="btn btn-primary" id="btn_confirm_2fa">Activate</button>
+                                    <button type="button" class="btn btn-secondary" id="btn_cancel_setup">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- ── State: fully enabled & confirmed ───────────────────── --}}
+                        <div id="tfa_state_enabled" @if(! $twoFactorConfirmed) style="display:none;" @endif>
+
+                            <div class="main_sub_sets">
+                                {{-- Recovery codes --}}
+                                {{-- <div class="main_sub_set">
+                                    <div class="main_sub_set_inner">
+                                        <h4>Recovery Codes</h4>
+                                        <p>Store these codes somewhere safe. Each code can be used once if you lose access to
+                                        your authenticator app.</p>
+                                        <div id="tfa_recovery_codes" style="display:none;"></div>
+                                        <button type="button" class="btn btn-secondary" id="btn_show_recovery">
+                                            Show / Regenerate Codes
+                                        </button>
+                                    </div>
+                                </div> --}}
+
+                                {{-- Disable 2FA --}}
+                                <div class="main_sub_set">
+                                    <div class="main_sub_set_inner">
+                                        <div id="tfa_disable_form" style="display:none; max-width:260px;">
+                                            <div class="main_set_field">
+                                                <label for="tfa_disable_password">Current Password</label>
+                                                <input type="password" id="tfa_disable_password" autocomplete="current-password"/>
+                                            </div>
+                                            <div class="form_notices" id="tfa_disable_notices"></div>
+                                            <div class="main_set_actions" style="margin-top:8px;">
+                                                <button type="button" class="btn btn-danger" id="btn_confirm_disable">Confirm Disable</button>
+                                                <button type="button" class="btn btn-secondary" id="btn_cancel_disable">Cancel</button>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-danger" id="btn_disable_2fa"
+                                                @if(! $twoFactorConfirmed) style="display:none;" @endif>
+                                            Disable 2FA
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {{-- ─── End Two-Factor Authentication Card ────────────────────── --}}
+                        </div>
+                    </div>
+
+                    
+
                 </div>
 
             </div>
         </div>
+    
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+                const disable2FAButton = document.getElementById('btn_disable_2fa');
+
+                // ── Helpers ────────────────────────────────────────────────────────────
+
+                function setState(name) {
+                    ['disabled', 'setup', 'enabled'].forEach(s => {
+                        document.getElementById('tfa_state_' + s).style.display = (s === name) ? '' : 'none';
+                    });
+                }
+
+                function notice(elId, msg, type = 'error') {
+                    const el = document.getElementById(elId);
+                    el.innerHTML = `<div class="form_notice ${type}">${msg}</div>`;
+                }
+
+                async function apiFetch(url, method = 'GET', body = null) {
+                    const opts = {
+                        method,
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    };
+                    if (body) opts.body = JSON.stringify(body);
+                    const resp = await fetch(url, opts);
+                    return resp.json();
+                }
+
+                // ── Enable 2FA (step 1 — show QR) ─────────────────────────────────────
+
+                document.getElementById('btn_enable_2fa').addEventListener('click', async function () {
+                    const data = await apiFetch('/user/two-factor/enable', 'POST');
+                    if (! data.success) { alert(data.message); return; }
+
+                    const setup = await apiFetch('/user/two-factor/setup');
+                    if (! setup.success) { alert(setup.message); return; }
+
+                    document.getElementById('tfa_qr_wrap').innerHTML = setup.qr_code;
+                    document.getElementById('tfa_secret_key').textContent = setup.secret_key;
+                    setState('setup');
+                });
+
+                // ── Cancel setup ───────────────────────────────────────────────────────
+
+                document.getElementById('btn_cancel_setup').addEventListener('click', function () {
+                    setState('disabled');
+                });
+
+                // ── Confirm 2FA (step 2 — verify TOTP code) ───────────────────────────
+
+                document.getElementById('btn_confirm_2fa').addEventListener('click', async function () {
+                    const code = document.getElementById('tfa_confirm_code').value.trim();
+                    if (code.length !== 6) {
+                        notice('tfa_setup_notices', 'Please enter the 6-digit code from your app.');
+                        return;
+                    }
+
+                    const data = await apiFetch('/user/two-factor/confirm', 'POST', { code });
+
+                    if (data.success) {
+                        // renderRecoveryCodes(data.recovery_codes);
+                        disable2FAButton.style.display = '';
+                        setState('enabled');
+                    } else {
+                        notice('tfa_setup_notices', data.message ?? 'Invalid code. Try again.');
+                    }
+                });
+
+                // ── Show / regenerate recovery codes ──────────────────────────────────
+
+                /* document.getElementById('btn_show_recovery').addEventListener('click', async function () {
+                    const wrap = document.getElementById('tfa_recovery_codes');
+                    if (wrap.style.display === '') {
+                        wrap.style.display = 'none';
+                        this.textContent = 'Show / Regenerate Codes';
+                        return;
+                    }
+
+                    const data = await apiFetch('/user/two-factor/recovery-codes', 'POST');
+                    if (data.success) {
+                        renderRecoveryCodes(data.recovery_codes);
+                        wrap.style.display = '';
+                        this.textContent = 'Hide Codes';
+                    } else {
+                        alert(data.message);
+                    }
+                });
+
+                function renderRecoveryCodes(codes) {
+                    const wrap = document.getElementById('tfa_recovery_codes');
+                    wrap.innerHTML = '<ul class="tfa_recovery_list">'
+                        + codes.map(c => `<li><code>${c}</code></li>`).join('')
+                        + '</ul>';
+                } */
+
+                // ── Disable 2FA ────────────────────────────────────────────────────────
+
+                disable2FAButton.addEventListener('click', function () {
+                    document.getElementById('tfa_disable_form').style.display = '';
+                    this.style.display = 'none';
+                });
+
+                document.getElementById('btn_cancel_disable').addEventListener('click', function () {
+                    document.getElementById('tfa_disable_form').style.display = 'none';
+                    disable2FAButton.style.display = '';
+                    document.getElementById('tfa_disable_password').value = '';
+                    document.getElementById('tfa_disable_notices').innerHTML = '';
+                });
+
+                document.getElementById('btn_confirm_disable').addEventListener('click', async function () {
+                    const password = document.getElementById('tfa_disable_password').value;
+                    if (! password) {
+                        notice('tfa_disable_notices', 'Please enter your password.');
+                        return;
+                    }
+
+                    const data = await apiFetch('/user/two-factor/disable', 'POST', { password });
+
+                    if (data.success) {
+                        document.getElementById('tfa_disable_form').style.display = 'none';
+                        document.getElementById('tfa_disable_password').value = '';
+                        setState('disabled');
+                    } else {
+                        notice('tfa_disable_notices', data.message ?? 'Incorrect password.');
+                    }
+                });
+
+            });
+        </script>
+
     @endif
 @endsection

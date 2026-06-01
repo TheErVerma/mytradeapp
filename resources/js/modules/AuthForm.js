@@ -85,7 +85,7 @@ export default class AuthForm {
                 }
 
                 if (data.redirect) {
-                    window.location.href = data.redirect;
+                    // window.location.href = data.redirect;
                 }
 
             }).catch((err) => {

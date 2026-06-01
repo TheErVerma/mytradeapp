@@ -5,6 +5,7 @@
     <h2>Register</h2>
     <p>Lorem ipsum, dolor sit amet consetur adsicing elit. Minus, quibusdam amet consetur.</p>
     <form action="" id="register_form">
+      @csrf
       <div class="form_fields">
 
         <div class="form_field_group">
@@ -27,7 +28,7 @@
         </div>
       </div>
 
-      <div class="g-recaptcha" id="rcaptcha" data-theme="light" data-sitekey="6LeWX-EsAAAAAHgm1XAGiabkyStycb4P6jD_sVI5"></div>
+      <div class="g-recaptcha" id="rcaptcha" data-theme="light" data-sitekey="6LfqhAItAAAAAN9WGjDB7vPoAwEUmqj7c2V6SmUc"></div>
 
       <div class="form_notices"></div>
 

@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\ApiController;
-
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelperController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TradeController;
+use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 use function Pest\Laravel\post;
 
@@ -78,6 +78,20 @@ Route::group(['middleware' => ['auth']], function () {
         return view('pages/single/trade', ['trade' => $trade]);
     });
 
+
+    /***********************
+     * Two-Factor Authentication (2FA) Management — requires authenticated session
+     * These endpoints are called from the Settings page.
+     **/
+    Route::post('/user/two-factor/enable',           [TwoFactorController::class, 'enable']);
+    Route::get('/user/two-factor/setup',             [TwoFactorController::class, 'setup']);
+    Route::post('/user/two-factor/confirm',          [TwoFactorController::class, 'confirm']);
+    Route::post('/user/two-factor/disable',          [TwoFactorController::class, 'disable']);
+    Route::post('/user/two-factor/recovery-codes',   [TwoFactorController::class, 'regenerateCodes']);
+    /**
+     * 2FA Management End
+     **********************/
+
 });
 
 
@@ -88,6 +102,16 @@ Route::post('/forget-password', [UserController::class, 'forgetPassword']);
 Route::post('/verify-otp', [UserController::class, 'verifyOTP']);
 Route::post('/reset-password', [UserController::class, 'resetPassword']);
 Route::post('/reset-all-data', [UserController::class, 'resetAllData']);
+
+
+/***********************
+ * Two-Factor Challenge — for users who are mid-login (not yet fully authenticated)
+ **/
+Route::get('/two-factor-authenticate',  [TwoFactorController::class, 'showChallenge'])->name('two-factor.challenge');
+Route::post('/two-factor-authenticate', [TwoFactorController::class, 'challenge']);
+/**
+ * 2FA Challenge End
+ **********************/
 
 
 Route::middleware('guest')->group(function () {
@@ -101,6 +125,3 @@ Route::middleware('guest')->group(function () {
         return view('pages/forget-password');
     })->name('forget_password');
 });
-
-
-
