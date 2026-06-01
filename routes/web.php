@@ -23,10 +23,12 @@ Route::group(['middleware' => ['auth']], function () {
     **/
     Route::get('/', function () {
         $user = Auth::user();
+        $currency = $user->default_country;
         $apiObj = new ApiController();
         $net_amount = TradeController::getNetAmount();
         $portfolioSummry = TradeController::summary($user->initial_balance);
-        return view('pages/home', compact('apiObj', 'net_amount', 'portfolioSummry'));
+        $tradingStats = TradeController::getTradingStats();
+        return view('pages/home', compact('apiObj', 'currency', 'net_amount', 'portfolioSummry', 'tradingStats'));
     })->name('home');
 
     Route::get('/profile', function () {
@@ -99,6 +101,7 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/forget-password', [UserController::class, 'forgetPassword']);
 Route::post('/verify-otp', [UserController::class, 'verifyOTP']);
 Route::post('/reset-password', [UserController::class, 'resetPassword']);
+Route::post('/reset-all-data', [UserController::class, 'resetAllData']);
 
 
 /***********************

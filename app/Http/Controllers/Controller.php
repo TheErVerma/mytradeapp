@@ -6,12 +6,12 @@ use App\Models\Trade;
 
 abstract class Controller
 {
-    public function updateOption($key, $value)
+    public static function updateOption($key, $value)
     {
 
         $value = is_array($value) ? serialize($value) : $value;
 
-        $opt_value = $this->getOption($key);
+        $opt_value = Controller::getOption($key);
 
         if ($opt_value) {
             $option = Options::where('option_name', $key)->update([
@@ -37,7 +37,7 @@ abstract class Controller
         ]);
     }
 
-    public function getOption($key)
+    public static function getOption($key)
     {
         $option_obj = Options::where('option_name', $key)->first();
         if (isset($option_obj['option_value'])) {

@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap');
 
 @import "@fortawesome/fontawesome-free/css/all.css";
@@ -379,6 +380,38 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     justify-content: space-between;
 }
 
+.form_field.toggle .form_field.toggle_inner {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+}
+
+.form_field.toggle .form_field.toggle_inner > label {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: var(--bg4);
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.form_field.toggle .form_field.toggle_inner > label input {
+    display: none;
+}
+
+.form_field.toggle .form_field.toggle_inner > label.positive:has(input:checked) {
+    background: var(--green);
+    color: var(--bg);
+}
+.form_field.toggle .form_field.toggle_inner > label.negative:has(input:checked) {
+    background: var(--red);
+    color: var(--text);
+}
+
+
 .form_field.toggle label:nth-child(2) span {
     display: block;
     width: 100%;
@@ -400,7 +433,7 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     color: var(--accent-text);
 }
 
-.form_fields .form_field label {
+.form_fields .form_field label, .form_field.toggle .form_field_label {
     font-size: var(--text-md);
     color: var(--muted2);
 }
@@ -753,7 +786,10 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-
+button.btn.btn-danger.remove_all_trade_data.processing {
+    opacity: 0.6;
+    pointer-events: none;
+}
 form#profile_settings_form,
 .main_settings_wrap .main_settings_inner {
     display: flex;

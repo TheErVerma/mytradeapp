@@ -1,3 +1,4 @@
+
 <div class="main_popup" data_identity="add-trade-pop">
     <div class="main_popup_inner">
         <span class="close">
@@ -33,14 +34,15 @@
                         </div>
 
                         <div class="form_field toggle">
-                            <label for="action">Action</label>
-                            <label for="action">
-                                <input type="checkbox" name="trd_action" id="action" value="Buy" not_checked="Sell">
-                                <div class="toggle_actions">
-                                    <span class="lft">LONG</span>
-                                    <span class="rgt">SHORT</span>
-                                </div>
-                            </label>
+                            <div class="form_field_label">Action</div>
+                            <div class="form_field toggle_inner">
+                                <label for="action_buy" class="positive">Long
+                                    <input type="radio" name="trd_action" id="action_buy" value="Buy" checked />
+                                </label>
+                                <label for="action_sell" class="negative">Short
+                                    <input type="radio" name="trd_action" id="action_sell" value="Sell" />
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="form_field_group">
@@ -55,20 +57,21 @@
                     </div>
                     <div class="form_field_group">
                         <div class="form_field toggle">
-                            <label for="type">Type</label>
-                            <label for="type">
-                                <input type="checkbox" name="trd_type" id="type" value="cash" not_checked="f&o" checked>
-                                <div class="toggle_actions">
-                                    <span class="lft">Cash</span>
-                                    <span class="rgt">F&O</span>
-                                </div>
-                            </label>
+                            <div class="form_field_label">Type</div>
+                            <div class="form_field toggle_inner">
+                                <label for="type_cash" class="positive">Cash
+                                    <input type="radio" name="trd_type" id="type_cash" value="Cash" checked />
+                                </label>
+                                <label for="type_fno" class="negative">F&O
+                                    <input type="radio" name="trd_type" id="type_fno" value="F&O" />
+                                </label>
+                            </div>
                         </div>
-                        <div class="form_field" data_conditional="trd_type|is|f&o">
+                        <div class="form_field" >
                             <label for="trd_lot">Lot</label>
                             <input type="text" name="trd_lot" id="trd_lot" placeholder="0" />
                         </div>
-                        <div class="form_field" data_conditional="trd_type|is|cash">
+                        <div class="form_field" style="display:none;">
                             <label for="shares_amount">Shares</label>
                             <input type="text" name="trd_shares" id="shares_amount" placeholder="0.00" />
                         </div>
@@ -87,7 +90,8 @@
                     <div class="form_field">
                         <label for="trade_screenshots">Chart Screenshots</label>
                         <label class="dropzone" for="trade_screenshots">
-                            <input type="file" name="trade_screenshots[]" id="trade_screenshots" accept="images/*" multiple/>
+                            <input type="file" name="trade_screenshots[]" id="trade_screenshots" accept="images/*"
+                                multiple />
                             <span class="icon">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
@@ -106,16 +110,6 @@
                         </label>
                     </div>
 
-                    <!-- <div class="form_field_group">
-                        <div class="form_field">
-                            <label for="commissions_amount">Commisions</label>
-                            <input type="text" name="trd_commissions" id="commissions_amount" placeholder="0.00" required />
-                        </div>
-                        <div class="form_field">
-                            <label for="fee_amount">Fees</label>
-                            <input type="text" name="trd_fees" id="fee_amount" placeholder="0.00" required />
-                        </div>
-                    </div> -->
                 </div>
                 <div class="form_action_btns">
                     <button type="button" class="btn btn-secondary" disabled>Add Execution</button>

@@ -6,9 +6,9 @@
 $user = Auth::user();
 
 $countries = [
-    'india' => 'India (₹)',
-    'usa'   => 'United States ($)',
-    'uk'    => 'United Kingdom ($)'
+    'INR' => 'India (₹)',
+    'USD' => 'United States ($)',
+    'GBP' => 'United Kingdom (£)'
 ];
 
 @endphp
@@ -60,7 +60,7 @@ $countries = [
                         <div class="main_sub_set_inner">
                             <h4>Clear All Trade Data</h4>
                             <p>This will permanently delete all your trade records. This action cannot be undone.</p>
-                            <button type="button" class="btn btn-danger">Clear Data</button>
+                            <button type="button" class="btn btn-danger remove_all_trade_data">Clear Data</button>
                         </div>
                     </div>
                 </div>
