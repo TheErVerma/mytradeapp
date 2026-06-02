@@ -172,7 +172,7 @@
             <ul>
                 <li>
                     <span class="label">Total Trades</span>
-                    <span class="value">3</span>
+                    <span class="value">{{ $total_trades }}</span>
                 </li>
                 <li>
                     <span class="label">Win Rate</span>

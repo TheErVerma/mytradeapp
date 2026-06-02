@@ -38,9 +38,15 @@ export default class TradeActions {
 
         });
 
+        document.addEventListener(
+            'submit',
+            this.handleEditSubmit.bind(this)
+        );
+
     }
 
     delete(trade_id) {
+        let token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         fetch('/trade', {
             method: 'delete',
             body: JSON.stringify({
@@ -49,14 +55,15 @@ export default class TradeActions {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token
             }
         }).then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                window.location.reload();
-            }).catch((err) => {
-                console.log(err);
-            });
+        .then((data) => {
+            console.log(data);
+            window.location.reload();
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
     async edit(trade_id) {
@@ -73,6 +80,10 @@ export default class TradeActions {
                     Object.keys(data).forEach((clm, ind) => {
                         const inp = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
                         const inp_arr = document.querySelectorAll('#edit_trade_popup [name="'+clm+'"]');
+                        const trd_notes = document.querySelector('#edit_trade_popup [name="trd_notes"]');
+                        if( clm == 'notes' ) {
+                            trd_notes.value = data[clm];
+                        }
                         if(inp_arr && inp_arr.length >= 1){
                             inp_arr.forEach(inp_itm => {
                                 inp_itm.removeAttribute('checked');
@@ -97,5 +108,36 @@ export default class TradeActions {
 
                 console.log(err);
             });
+    }
+
+    handleEditSubmit(event) {
+        const form = event.target;
+
+        if (!form.matches('#edit_trade_popup')) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        form.classList.add('processing');
+        console.log('formdata', formData.entries());
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+        fetch('/trade', {
+            method: "PUT",
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            // window.location.reload();
+        }).catch((err) => {
+            form.classList.remove('processing');
+        })
     }
 }

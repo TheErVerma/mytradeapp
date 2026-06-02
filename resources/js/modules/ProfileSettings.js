@@ -72,12 +72,14 @@ export default class ProfileSettingsForm {
         const formData = new FormData(this.profileForm);
 
         const user_id = document.querySelector('input[name=user_id]').value;
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         // AJAX request here
         fetch(`/user/${user_id}/saveprofile`, {
             method: 'POST',
             body: formData,
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': token
             }
         })
         .then((response) => response.json())

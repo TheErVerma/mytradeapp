@@ -25,7 +25,6 @@ class TradeController extends Controller
     {
         // $trades = Trade::orderBy('id', 'ASC')->get()->toArray();;
         $trades = Trade::where('user_id', Auth::id())->orderBy('id', 'ASC')->get()->toArray();
-        ;
         return $trades;
     }
 
@@ -42,6 +41,7 @@ class TradeController extends Controller
             'trd_price' => 'required|numeric',
             'trd_type' => 'nullable|string',
             'trd_lot' => 'nullable|numeric',
+            'trd_notes' => 'nullable|string',
         ]);
 
 
@@ -78,6 +78,7 @@ class TradeController extends Controller
             'trd_price' => $validated['trd_price'] ?? 0,
             'trd_lot' => $validated['trd_lot'] ?? 0,
             'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : 'F&O',
+            'notes' => !empty($validated['trd_notes']) ? $validated['trd_notes'] : '',
             'user_id' => Auth::id(),
             'trd_screenshots' => serialize($screenshots)
         ]);
@@ -110,6 +111,77 @@ class TradeController extends Controller
         $trade_obj = Trade::where('id', $id)->first();
         $trade = $trade_obj ? $trade_obj->toArray() : [];
         return $trade;
+    }
+
+    public function editTrade(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required',
+            'trd_symbol' => 'required|string|max:255',
+            'trd_date' => 'required|date',
+            'trd_time' => 'required',
+
+            'trd_shares' => 'nullable|integer',
+
+            'trd_price' => 'required|numeric',
+            'trd_type' => 'nullable|string',
+            'trd_lot' => 'nullable|numeric',
+            'trd_notes' => 'nullable|string',
+        ]);
+
+        $trade = Trade::where('id', $request->input('id'))->first();
+
+        if (!$trade) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Trade not found',
+                'data' => null
+            ]);
+        }
+
+        $screenshots = [];
+        $screenshots_log = [];
+        if ($request->hasFile('trade_screenshots')) {
+            $trade_screenshots = $request->file('trade_screenshots');
+            if (!empty($trade_screenshots)) {
+                foreach ($trade_screenshots as $file) {
+                    if (!$file->isValid()) {
+                        continue;
+                    }
+
+                    $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs('screenshots', $filename, 'public');
+                    $url = asset('storage/' . $path);
+
+                    $screenshots[] = $url;
+                    $screenshots_log[] = $url;
+                }
+            }
+        }
+
+        $trade->update([
+            'trd_symbol' => $validated['trd_symbol'] ?? 0,
+            'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : $trade->trd_action,
+
+            'trd_date' => $validated['trd_date'] ?? 0,
+            'trd_time' => $validated['trd_time'] ?? 0,
+
+            'trd_shares' => $validated['trd_shares'] ?? 0,
+
+            'trd_price' => $validated['trd_price'] ?? 0,
+            'trd_lot' => $validated['trd_lot'] ?? 0,
+            'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : $trade->trd_type,
+            'user_id' => Auth::id(),
+            'trd_screenshots' => serialize($screenshots),
+            'notes' => !empty($validated['trd_notes']) ? $validated['trd_notes'] : $trade->notes,//!empty($request->input('trd_notes')) ? $request->input('trd_notes') : $trade->notes,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Trade updated successfully',
+            'data' => $trade
+        ]);
+
     }
 
 
