@@ -159,7 +159,12 @@ a {
     margin-left: 240px;
     padding: 10px;
 }
-
+span.line_separator {
+    border-bottom: 1px solid var(--border);
+    width: 100%;
+    display: block;
+    margin: 10px 0;
+}
 /** Global Sections End **/
 
 
@@ -1084,6 +1089,8 @@ div#tfa_disable_form .main_set_field input {
     padding: 10px 14px;
     border: 1px solid var(--border2);
     border-radius: 8px;
+    background: var(--bg3);
+    color: var(--text)
 }
 
 div#tfa_disable_form .main_set_actions {
@@ -1141,6 +1148,73 @@ div#tfa_disable_form .main_set_field label {
     width: 100%;
     border-radius: 10px;
     border: 1px solid var(--border);
+}
+
+.dash_content:has(.single_trade_wrap) {
+    padding: 10px 0;
+}
+
+.single_trade_body .single_trade_tabs {
+    display: inline-flex;
+    justify-content: flex-start;
+    width: 100%;
+    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+    gap: 10px;
+    font-size: var(--text-md);
+    color: var(--muted2);
+    padding: 10px;
+}
+
+.single_trade_body .single_trade_tabs .single_trade_tab {
+    padding: 8px 12px;
+    font-size: var(--text-md);
+    width: auto;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.single_trade_body .single_trade_tabs .active.single_trade_tab {
+    background: var(--bg4);
+    color: var(--text);
+}
+
+.single_trtb_cnt_wrap .single_trtb_cnt {
+    margin: 20px;
+    background: var(--bg2);
+    border-radius: 10px;
+    padding: 20px;
+    display: none;
+}
+
+.single_trtb_cnt_wrap .active.single_trtb_cnt {
+    display: block;
+}
+.sngl_trd_snapshot {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+}
+.sngl_trd_snapshot_inner {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 20px;
+}
+.sngl_trd_snapshot_inner > div {
+    width: 100%;
+}
+.sngl_trd_snapshot_inner .sngltrd_tbl {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    font-size: var(--text-md);
+    color: var(--text);
+}
+.sngl_trd_snapshot_inner .sngltrd_tbl .sngltrd_tbl_title {
+    color: var(--muted);
 }
 
 /** Single Trade End **/

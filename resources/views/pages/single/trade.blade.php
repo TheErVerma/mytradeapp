@@ -1,3 +1,6 @@
+@php
+    use Illuminate\Support\Number;
+@endphp
 @extends('../layout/base')
 
 
@@ -23,13 +26,95 @@
         </div>
 
         @php
-            // echo "<pre>";
-            // print_r($trade);
-            // echo "</pre>";
+            // Array
+            // (
+            //     [id] => 1
+            //     [trd_symbol] => RELIANCE
+            //     [trd_action] => Buy
+            //     [trd_date] => 2026-04-22
+            //     [trd_time] => 19:52:00
+            //     [trd_shares] => 0
+            //     [trd_price] => 123.00
+            //     [created_at] => 2026-05-29T12:22:41.000000Z
+            //     [updated_at] => 2026-05-29T12:22:41.000000Z
+            //     [user_id] => 1
+            //     [trd_lot] => 123
+            //     [trd_type] => F&O
+            //     [trd_screenshots] => a:0:{}
+            // )
+
             $trade_ss = isset($trade['trd_screenshots']) ? unserialize($trade['trd_screenshots']) : [];
+
+            $trd_date = $trade['trd_date'];
+            $trd_time = $trade['trd_time'];
+
+            $tradeDateTime = new DateTime($trd_date . ' ' . $trd_time);
+            $now = new DateTime();
+
+            $interval = $tradeDateTime->diff($now);
         @endphp
 
         <div class="single_trade_body">
+
+
+            <div class="single_trade_tabs">
+                <div class="single_trade_tab active" tab_id="overview">Overview</div>
+                <div class="single_trade_tab" tab_id="chart">Chart</div>
+                <div class="single_trade_tab" tab_id="journal">Journal</div>
+                <div class="single_trade_tab" tab_id="analysis">Analysis</div>
+            </div>
+
+            <div class="single_trtb_cnt_wrap">
+
+                <div class="single_trtb_cnt active" cnt_id="overview">
+                    <div class="sngl_trd_snapshot">
+                        <h4>Trade Snapshot</h4>
+                        <div class="sngl_trd_snapshot_inner">
+
+                            <div class="sngltrd_snp_lft">
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Entry Date</div>
+                                    <div class="sngltrd_tbl_value">{{ $trade['trd_date'] }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Entry Time</div>
+                                    <div class="sngltrd_tbl_value">{{ $trade['trd_time'] }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Duration</div>
+                                    <div class="sngltrd_tbl_value">{{ $interval->format('%a d, %h h, %i m'); }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Quantity</div>
+                                    <div class="sngltrd_tbl_value">{{ $trade['trd_lot'] ?? $trade['trd_shares'] }}</div>
+                                </div>
+                            </div>
+
+                            <div class="sngltrd_snp_rgt">
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Entry</div>
+                                    <div class="sngltrd_tbl_value">{{ Number::currency($trade['trd_price']) }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Stop Loss</div>
+                                    <div class="sngltrd_tbl_value">{{ $trade['trd_time'] }}</div>
+                                </div>
+                                <span class="line_separator"></span>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Position Value</div>
+                                    <div class="sngltrd_tbl_title">Margin Blocked</div>
+                                    <div class="sngltrd_tbl_value">{{ $trade['trd_lot'] ?? $trade['trd_shares'] }}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="single_trtb_cnt" cnt_id="chart">Chart</div>
+                <div class="single_trtb_cnt" cnt_id="journal">Journal</div>
+                <div class="single_trtb_cnt" cnt_id="analysis">Analysis</div>
+            </div>
 
             @if(!empty($trade_ss))
                 <div class="image_gallery">
