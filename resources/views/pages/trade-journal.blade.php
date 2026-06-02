@@ -34,7 +34,7 @@
                                     $tred_classes[] = strtolower($trade_item['trd_action']);
                                 }
                             @endphp
-                            <tr class="@php echo implode(' ', $tred_classes); @endphp ">
+                            <tr class="@php echo implode(' ', $tred_classes); @endphp">
                                 <td class="trade_b_id">{{ $trade_item['id'] }}</td>
                                 <td class="trade_b_symbol"><a href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</a></td>
                                 <td class="trade_b_action">{{ $trade_item['trd_action'] }}</td>

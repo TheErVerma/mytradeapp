@@ -12,6 +12,7 @@
 
             <form action="" id="edit_trade_popup" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="id" id="edit_trd_id" value="" />
                 <div class="form_fields">
                     <div class="form_field_group">
                         <div class="form_field icon">

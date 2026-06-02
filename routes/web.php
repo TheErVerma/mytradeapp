@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use function Pest\Laravel\post;
 
 
@@ -24,6 +25,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/', function () {
         $user = Auth::user();
         $currency = $user->default_country;
+        $currency = $currency ? ($currency) : 'USD';
         $apiObj = new ApiController();
         $net_amount = TradeController::getNetAmount();
         $portfolioSummry = TradeController::summary($user->initial_balance);
@@ -63,6 +65,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/user/{id}/saveprofile', [UserController::class, 'saveProfile']);
     Route::post('/trade', [TradeController::class, 'addTrade']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
+    Route::put('/trade', [TradeController::class, 'editTrade']);
     /**
      * APIs End
      **********************/

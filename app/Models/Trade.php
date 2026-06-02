@@ -16,6 +16,7 @@ class Trade extends Model
         'user_id',
         'trd_lot',
         'trd_type',
-        'trd_screenshots'
+        'trd_screenshots',
+        'notes'
     ];
 }
