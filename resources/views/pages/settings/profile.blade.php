@@ -116,24 +116,24 @@
 
                         {{-- ── State: enabled but NOT yet confirmed (QR setup step) ── --}}
                         <div id="tfa_state_setup" style="display:none;">
-                            <p>Scan the QR code below with your authenticator app (Google Authenticator, Authy, etc.), then
-                            enter the 6-digit code to confirm.</p>
+                            
+                            <div id="tfa_qr_wrap"></div>
+                            <div class="tfa_state_side_content">
+                                <p>Scan the QR code below with your authenticator app (Google Authenticator, Authy, etc.), then
+                                enter the 6-digit code to confirm.</p>
+                                <p>Can't scan? Enter this key manually: <strong id="tfa_secret_key"></strong></p>
 
-                            <div id="tfa_qr_wrap" style="margin: 16px 0;"></div>
-                            <p style="font-size:12px; word-break:break-all;">
-                                Can't scan? Enter this key manually: <strong id="tfa_secret_key"></strong>
-                            </p>
-
-                            <div class="main_set_fields" style="max-width:260px;">
-                                <div class="main_set_field">
-                                    <label for="tfa_confirm_code">Confirmation Code</label>
-                                    <input type="text" id="tfa_confirm_code" inputmode="numeric"
-                                        maxlength="6" placeholder="000000" autocomplete="off"/>
-                                </div>
-                                <div class="form_notices" id="tfa_setup_notices"></div>
-                                <div class="main_set_actions">
-                                    <button type="button" class="btn btn-primary" id="btn_confirm_2fa">Activate</button>
-                                    <button type="button" class="btn btn-secondary" id="btn_cancel_setup">Cancel</button>
+                                <div class="main_set_fields">
+                                    <div class="main_set_field">
+                                        <?php /*<label for="tfa_confirm_code">Confirmation Code</label> */ ?>
+                                        <input type="text" id="tfa_confirm_code" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"
+                                            maxlength="6" placeholder="000000" autocomplete="off"/>
+                                    </div>
+                                    <div class="form_notices" id="tfa_setup_notices"></div>
+                                    <div class="main_set_actions">
+                                        <button type="button" class="btn btn-primary" id="btn_confirm_2fa">Activate</button>
+                                        <button type="button" class="btn btn-secondary" id="btn_cancel_setup">Cancel</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -161,7 +161,7 @@
                                         <div id="tfa_disable_form" style="display:none; max-width:260px;">
                                             <div class="main_set_field">
                                                 <label for="tfa_disable_password">Current Password</label>
-                                                <input type="password" id="tfa_disable_password" autocomplete="current-password"/>
+                                                <input type="password" id="tfa_disable_password" autocomplete="current-password" placeholder="xxxxxxx"/>
                                             </div>
                                             <div class="form_notices" id="tfa_disable_notices"></div>
                                             <div class="main_set_actions" style="margin-top:8px;">
@@ -199,6 +199,12 @@
                 // ── Helpers ────────────────────────────────────────────────────────────
 
                 function setState(name) {
+                    if(name == 'setup'){
+                        document.getElementById('tfa_card').classList.add('active_2fa');
+                    }else{
+                        document.getElementById('tfa_card').classList.remove('active_2fa');
+                        document.getElementById('tfa_setup_notices').innerHTML = '';
+                    }
                     ['disabled', 'setup', 'enabled'].forEach(s => {
                         document.getElementById('tfa_state_' + s).style.display = (s === name) ? '' : 'none';
                     });

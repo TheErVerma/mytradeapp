@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap');
 
 @import "@fortawesome/fontawesome-free/css/all.css";
@@ -387,7 +386,7 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     justify-content: center;
 }
 
-.form_field.toggle .form_field.toggle_inner > label {
+.form_field.toggle .form_field.toggle_inner>label {
     display: block;
     width: 100%;
     text-align: center;
@@ -398,15 +397,16 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     cursor: pointer;
 }
 
-.form_field.toggle .form_field.toggle_inner > label input {
+.form_field.toggle .form_field.toggle_inner>label input {
     display: none;
 }
 
-.form_field.toggle .form_field.toggle_inner > label.positive:has(input:checked) {
+.form_field.toggle .form_field.toggle_inner>label.positive:has(input:checked) {
     background: var(--green);
     color: var(--bg);
 }
-.form_field.toggle .form_field.toggle_inner > label.negative:has(input:checked) {
+
+.form_field.toggle .form_field.toggle_inner>label.negative:has(input:checked) {
     background: var(--red);
     color: var(--text);
 }
@@ -433,7 +433,8 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     color: var(--accent-text);
 }
 
-.form_fields .form_field label, .form_field.toggle .form_field_label {
+.form_fields .form_field label,
+.form_field.toggle .form_field_label {
     font-size: var(--text-md);
     color: var(--muted2);
 }
@@ -786,10 +787,12 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
 button.btn.btn-danger.remove_all_trade_data.processing {
     opacity: 0.6;
     pointer-events: none;
 }
+
 form#profile_settings_form,
 .main_settings_wrap .main_settings_inner {
     display: flex;
@@ -997,6 +1000,100 @@ form#profile_settings_form,
 .prf_set_card.profile_security .prf_row_settings .prf_row_set span.description {
     font-size: var(--text-md);
     color: var(--muted);
+}
+
+div#tfa_state_setup {
+    font-size: var(--text-md);
+    color: var(--muted2);
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+div#tfa_state_setup p:nth-child(3) {
+    margin-bottom: 10px;
+}
+
+div#tfa_state_setup .main_set_fields {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+div#tfa_state_setup .main_set_fields .main_set_field {
+    display: flex;
+    background: var(--bg);
+    padding: 20px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+div#tfa_state_setup .main_set_fields .main_set_field input {
+    padding: 10px 14px;
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    font-size: var(--text-2xl);
+    letter-spacing: 4px;
+    text-align: center;
+    max-width: 150px;
+    margin: auto;
+    background: var(--bg2);
+    color: var(--text);
+    outline: none;
+}
+
+div#tfa_state_setup .main_set_fields .main_set_actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.prf_set_card.profile_security .prf_row_settings .prf_row_set.active_2fa .prf_rgt,
+.prf_set_card.profile_security .prf_row_settings .prf_row_set.active_2fa .prf_lft {
+    display: none;
+}
+
+div#tfa_state_setup .tfa_state_side_content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+div#tfa_qr_wrap svg rect {
+    fill: var(--bg2);
+}
+
+div#tfa_qr_wrap svg path {
+    fill: var(--muted2);
+}
+
+div#tfa_disable_form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+div#tfa_disable_form .main_set_field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+div#tfa_disable_form .main_set_field input {
+    padding: 10px 14px;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+}
+
+div#tfa_disable_form .main_set_actions {
+    display: flex;
+    gap: 10px;
+}
+
+div#tfa_disable_form .main_set_field label {
+    font-size: var(--text-md) !important;
+    color: var(--muted2);
 }
 
 /** Edit Profile End **/

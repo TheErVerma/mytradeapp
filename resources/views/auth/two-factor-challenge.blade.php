@@ -7,10 +7,10 @@
     <p>Open your authenticator app and enter the 6-digit code, or use one of your recovery codes.</p>
 
     {{-- Tab toggle --}}
-    <div class="tfa_tabs">
-        <button type="button" class="tfa_tab active" id="tab_code">Authenticator Code</button>
+    <!-- <div class="tfa_tabs">
+        <button type="button" class="tfa_tab active" id="tab_code">Authenticator Code</button> -->
         {{-- <button type="button" class="tfa_tab" id="tab_recovery">Recovery Code</button> --}}
-    </div>
+    <!-- </div> -->
 
     <form action="" id="tfa_challenge_form">
         {{-- TOTP code panel --}}
