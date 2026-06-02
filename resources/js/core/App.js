@@ -7,6 +7,7 @@ import AuthForm from '../modules/AuthForm';
 import RegisterForm from '../modules/RegisterForm';
 import ConfirmPop from '../modules/ConfirmPop';
 import TradeActions from '../modules/TradeActions';
+import Tabs from '../modules/Tabs';
 
 export default class App {
     constructor() {
@@ -22,5 +23,6 @@ export default class App {
         this.popupManager = new PopupManager();
         this.tradeForm = new TradeForm();
         this.tradeActions = new TradeActions();
+        this.tabs = new Tabs();
     }
 }
