@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 
 class TradeController extends Controller
@@ -217,8 +218,10 @@ class TradeController extends Controller
             $avg = (float) $positions[$symbol]['avg_price'];
 
             $shares = (float) $trade->trd_shares;
+            $shares = $shares == 0 ? (float) $trade->trd_lot : $shares;
             $price = (float) $trade->trd_price;
 
+            Log::debug('Shares: ' . $shares);
             /**
              * BUY
              */
@@ -251,6 +254,8 @@ class TradeController extends Controller
                     * $shares;
 
                 $realizedPnL += $profit;
+
+
 
                 /**
                  * REDUCE OPEN QTY

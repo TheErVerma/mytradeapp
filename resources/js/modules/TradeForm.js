@@ -1,5 +1,6 @@
 
 export default class TradeForm {
+
     constructor() {
         this.init();
     }
@@ -9,6 +10,24 @@ export default class TradeForm {
             'submit',
             this.handleSubmit.bind(this)
         );
+        document.querySelector('#symbol').addEventListener(
+            'focus',
+            this.openSuggestions.bind(this)
+        );
+        document.querySelector('#symbol').addEventListener(
+            'input',
+            this.searchSuggestions.bind(this)
+        );
+        document.querySelector('#symbol').addEventListener(
+            'blur',
+            this.closeSuggestions.bind(this)
+        );
+        document.querySelectorAll('.form_fields .form_field ul.field_drop_down li').forEach((drop_itm) => {
+            drop_itm.addEventListener(
+                'click',
+                this.selectSuggestion.bind(this)
+            );
+        })
 
         this.conditionalLogic();
     }
@@ -55,4 +74,48 @@ export default class TradeForm {
                 form.classList.remove('processing');
             })
     }
+
+
+    openSuggestions(event) {
+        const inp = this;
+        document.querySelector('.form_fields .form_field ul.field_drop_down').classList.add('active');
+    }
+
+    closeSuggestions(event) {
+        const inp = this;
+        setTimeout(() => {
+            document.querySelector('.form_fields .form_field ul.field_drop_down').classList.remove('active');
+        }, 100);
+    }
+
+    searchSuggestions(event) {
+        const inp = event.target;
+
+        this.doSearch(inp.value);
+    }
+
+    doSearch(value) {
+        const all_suggessions = document.querySelectorAll('.form_fields .form_field ul.field_drop_down li');
+        if (all_suggessions && all_suggessions.length >= 1) {
+            all_suggessions.forEach(itm => {
+                const this_val = itm.getAttribute('data_value');
+                if (value != "") {
+                    if ((this_val.toLowerCase()).includes((value))) {
+                        itm.style.display = 'block';
+                    } else {
+                        itm.style.display = 'none';
+                    }
+                } else {
+                    itm.style.display = 'block';
+
+                }
+            })
+        }
+    }
+
+    selectSuggestion(event) {
+        const inp = event.target;
+        document.getElementById('symbol').value = inp.getAttribute('data_value');
+    }
+
 }

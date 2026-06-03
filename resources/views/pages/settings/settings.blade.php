@@ -23,6 +23,7 @@ $countries = [
                     financial tracking.</p>
 
                 <form action="" id="main_set_preference_form">
+                    @csrf
                     <input type="hidden" name="user_id" value="{{ $user->id }}"/>
                     <div class="main_set_fields">
                         <div class="main_set_field">

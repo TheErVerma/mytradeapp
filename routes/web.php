@@ -24,13 +24,11 @@ Route::group(['middleware' => ['auth']], function () {
     **/
     Route::get('/', function () {
         $user = Auth::user();
-        $currency = $user->default_country;
-        $currency = $currency ? ($currency) : 'USD';
         $apiObj = new ApiController();
         $net_amount = TradeController::getNetAmount();
-        $portfolioSummry = TradeController::summary($user->initial_balance);
+
         $tradingStats = TradeController::getTradingStats();
-        return view('pages/home', compact('apiObj', 'currency', 'net_amount', 'portfolioSummry', 'tradingStats'));
+        return view('pages/home', compact('apiObj', 'net_amount', 'tradingStats'));
     })->name('home');
 
     Route::get('/profile', function () {

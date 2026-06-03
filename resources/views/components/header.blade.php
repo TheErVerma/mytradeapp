@@ -1,4 +1,5 @@
 @php
+    use Illuminate\Support\Number;
     $user = Auth::user();
 @endphp
 
@@ -174,22 +175,22 @@
                     <span class="label">Total Trades</span>
                     <span class="value">{{ $total_trades }}</span>
                 </li>
-                <li>
+                <!-- <li>
                     <span class="label">Win Rate</span>
                     <span class="value">100.0%</span>
-                </li>
+                </li> -->
                 <li>
                     <span class="label">Net P&L</span>
-                    <span class="value profit">$505,000.00</span>
+                    <span class="value profit">{{ Number::currency($portfolioSummry['net_realized_pnl'], in:$currency) }}</span>
                 </li>
-                <li>
+                <!-- <li>
                     <span class="label">Avg WinL</span>
                     <span class="value profit">$168,333.33</span>
                 </li>
                 <li>
                     <span class="label">Avg Loss</span>
                     <span class="value loss">—</span>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>

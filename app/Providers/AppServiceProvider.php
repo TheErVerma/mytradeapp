@@ -26,7 +26,13 @@ class AppServiceProvider extends ServiceProvider
         View::composer('pages.*', function ($view) {
             $user = Auth::user();
             $total_trades = TradeController::getAll();
+            $portfolioSummry = TradeController::summary($user->initial_balance);
+            $currency = $user->default_country;
+            $currency = $currency ? ($currency) : 'USD';
+            $view->with('trades', $total_trades);
             $view->with('total_trades', count($total_trades));
+            $view->with('portfolioSummry', $portfolioSummry);
+            $view->with('currency', $currency);
         });
         // View::composer('pages.*', function ($view) {
         //     dd($view->getName());

@@ -19,6 +19,17 @@
             </div>
             <div class="head_content">
                 <h1>{{ $trade['trd_symbol'] }}</h1>
+                <ul class="single_trade_tags">
+                    @php
+                    if($trade['trd_action'] == 'Buy'){
+                        echo sprintf('<li>%s</li>', 'Long');
+                    }else if($trade['trd_action'] == 'Sell'){
+                        echo sprintf('<li>%s</li>', 'Short');
+                    }
+                    @endphp
+                    
+                    <li>Open</li>
+                </ul>
             </div>
             <div class="head_end">
                 <button type="button" class="btn btn-secondary">Edit</button>
@@ -74,15 +85,15 @@
                             <div class="sngltrd_snp_lft">
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Entry Date</div>
-                                    <div class="sngltrd_tbl_value">{{ $trade['trd_date'] }}</div>
+                                    <div class="sngltrd_tbl_value">{{ date('F d, Y', strtotime($trade['trd_date'])) }}</div>
                                 </div>
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Entry Time</div>
-                                    <div class="sngltrd_tbl_value">{{ $trade['trd_time'] }}</div>
+                                    <div class="sngltrd_tbl_value">{{ date('h:m A', strtotime($trade['trd_time'])) }}</div>
                                 </div>
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Duration</div>
-                                    <div class="sngltrd_tbl_value">{{ $interval->format('%a d, %h h, %i m') }}</div>
+                                    <div class="sngltrd_tbl_value">{{ $interval->format('%ad %hh %im') }}</div>
                                 </div>
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Quantity</div>
@@ -93,17 +104,22 @@
                             <div class="sngltrd_snp_rgt">
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Entry</div>
-                                    <div class="sngltrd_tbl_value">{{ Number::currency($trade['trd_price']) }}</div>
-                                </div>
-                                <div class="sngltrd_tbl">
-                                    <div class="sngltrd_tbl_title">Stop Loss</div>
-                                    <div class="sngltrd_tbl_value">{{ $trade['trd_time'] }}</div>
+                                    <div class="sngltrd_tbl_value">{{ Number::currency($trade['trd_price'], $currency) }}</div>
                                 </div>
                                 <span class="line_separator"></span>
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Position Value</div>
+                                    <div class="sngltrd_tbl_value">{{ Number::currency($trade['trd_price'], $currency) }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    @php
+                                    $sh_qty = $trade['trd_lot'] ?? $trade['trd_shares'];
+                                    $sh_prc = $trade['trd_price'];
+                                    $sh_per = 15;
+                                    $sh_mrgn_blk = ($sh_qty * $sh_prc) * 0.15;
+                                    @endphp
                                     <div class="sngltrd_tbl_title">Margin Blocked</div>
-                                    <div class="sngltrd_tbl_value">{{ $trade['trd_lot'] ?? $trade['trd_shares'] }}</div>
+                                    <div class="sngltrd_tbl_value">{{ Number::currency($sh_mrgn_blk, $currency) }}</div>
                                 </div>
                             </div>
 

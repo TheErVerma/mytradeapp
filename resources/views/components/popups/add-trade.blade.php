@@ -31,6 +31,17 @@
                                 <input type="text" name="trd_symbol" id="symbol" placeholder="e.g. RELIANCE, TATA, APPL"
                                     required />
                             </div>
+                            <ul class="field_drop_down">
+                                @php
+                                $trade_symbols = array_column($trades, 'trd_symbol');
+                                $trade_symbols = array_unique($trade_symbols);
+                                @endphp
+                                @if (!empty($trade_symbols))
+                                    @foreach ($trade_symbols as $trade_symbol)
+                                        <li data_value="{{ $trade_symbol }}">{{ $trade_symbol }}</li>
+                                    @endforeach
+                                @endif
+                            </ul>
                         </div>
 
                         <div class="form_field toggle">

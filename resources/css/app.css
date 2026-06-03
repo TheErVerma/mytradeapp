@@ -159,12 +159,14 @@ a {
     margin-left: 240px;
     padding: 10px;
 }
+
 span.line_separator {
     border-bottom: 1px solid var(--border);
     width: 100%;
     display: block;
     margin: 10px 0;
 }
+
 /** Global Sections End **/
 
 
@@ -339,6 +341,45 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    position: relative;
+}
+
+.form_fields .form_field ul.field_drop_down {
+    display: none;
+    position: absolute;
+    top: 65px;
+    background: var(--bg4);
+    z-index: 99;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0px 10px 16px #00000052;
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.form_fields .form_field ul.field_drop_down.active {
+    display: block;
+}
+
+.form_fields .form_field ul.field_drop_down li {
+    font-size: var(--text-md);
+    font-weight: 200;
+    padding: 14px;
+    color: var(--muted2);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.form_fields .form_field ul.field_drop_down li:nth-child(odd) {
+    background: var(--bg3);
+}
+
+.form_fields .form_field ul.field_drop_down li:hover {
+    padding-left: 30px;
+    transition: all 0.2s;
 }
 
 .form_fields .form_field.icon .icon_field_inner {
@@ -1118,6 +1159,30 @@ div#tfa_disable_form .main_set_field label {
     gap: 20px;
 }
 
+.single_trade_wrap .single_trade_head ul.single_trade_tags {
+    display: flex;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    font-size: var(--text-sm);
+    font-weight: 200;
+    margin: 8px 0px;
+}
+
+.single_trade_wrap .single_trade_head ul.single_trade_tags li {
+    padding: 2px 12px;
+    background: var(--bg3);
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    color: var(--muted2);
+    cursor: pointer;
+}
+
+.single_trade_wrap .single_trade_head ul.single_trade_tags li:nth-child(2) {
+    background: var(--bg);
+    color: var(--muted);
+}
+
 .single_trade_wrap .single_trade_head .head_prev .icon_btn {
     background: none;
     border: 0;
@@ -1191,20 +1256,24 @@ div#tfa_disable_form .main_set_field label {
 .single_trtb_cnt_wrap .active.single_trtb_cnt {
     display: block;
 }
+
 .sngl_trd_snapshot {
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 20px;
 }
+
 .sngl_trd_snapshot_inner {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
     gap: 20px;
 }
-.sngl_trd_snapshot_inner > div {
+
+.sngl_trd_snapshot_inner>div {
     width: 100%;
 }
+
 .sngl_trd_snapshot_inner .sngltrd_tbl {
     display: flex;
     justify-content: space-between;
@@ -1213,6 +1282,7 @@ div#tfa_disable_form .main_set_field label {
     font-size: var(--text-md);
     color: var(--text);
 }
+
 .sngl_trd_snapshot_inner .sngltrd_tbl .sngltrd_tbl_title {
     color: var(--muted);
 }
