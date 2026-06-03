@@ -135,7 +135,7 @@ export default class TradeActions {
         }).then((response) => response.json())
         .then((data) => {
             console.log(data);
-            // window.location.reload();
+            window.location.reload();
         }).catch((err) => {
             form.classList.remove('processing');
         })

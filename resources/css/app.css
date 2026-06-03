@@ -621,22 +621,22 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     opacity: 0.4;
 }
 
-.main_popup .main_popup_inner form#add_trade_popup {
+.main_popup .main_popup_inner form {
     border-top: 1px solid var(--border2);
     padding-top: 20px;
 }
 
-.main_popup .main_popup_inner form#add_trade_popup.processing {
+.main_popup .main_popup_inner form.processing {
     opacity: 0.6;
     pointer-events: none;
 }
 
-.main_popup .main_popup_inner form#add_trade_popup.processing [type=submit] .text,
-.main_popup .main_popup_inner form#add_trade_popup:not(.processing) [type=submit] .loader {
+.main_popup .main_popup_inner form.processing [type=submit] .text,
+.main_popup .main_popup_inner form:not(.processing) [type=submit] .loader {
     display: none;
 }
 
-.main_popup .main_popup_inner form#add_trade_popup.processing [type=submit] .loader {
+.main_popup .main_popup_inner form.processing [type=submit] .loader {
     display: block;
 }
 

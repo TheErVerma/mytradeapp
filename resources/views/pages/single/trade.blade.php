@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Duration</div>
-                                    <div class="sngltrd_tbl_value">{{ $interval->format('%a d, %h h, %i m'); }}</div>
+                                    <div class="sngltrd_tbl_value">{{ $interval->format('%a d, %h h, %i m') }}</div>
                                 </div>
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Quantity</div>
@@ -112,17 +112,19 @@
                 </div>
 
                 <div class="single_trtb_cnt" cnt_id="chart">Chart</div>
-                <div class="single_trtb_cnt" cnt_id="journal">Journal</div>
+                <div class="single_trtb_cnt" cnt_id="journal">
+                    @if(!empty($trade_ss))
+                        <div class="image_gallery">
+                            @foreach ($trade_ss as $trade_ss_itm)
+                                <img src="{{ $trade_ss_itm }}" />
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
                 <div class="single_trtb_cnt" cnt_id="analysis">Analysis</div>
             </div>
 
-            @if(!empty($trade_ss))
-                <div class="image_gallery">
-                    @foreach ($trade_ss as $trade_ss_itm)
-                        <img src="{{ $trade_ss_itm }}" />
-                    @endforeach
-                </div>
-            @endif
+
 
         </div>
     </div>
