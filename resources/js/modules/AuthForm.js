@@ -116,13 +116,13 @@ export default class AuthForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.status == 200) {
+                if (data.success) {
                     this.addNotice(data.message, 'success');
                     document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
                     document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
                     document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
                     document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'block';
-                    
+
                 } else {
                     this.addNotice(data.message, 'warning');
                 }
@@ -164,19 +164,18 @@ export default class AuthForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.status == 200) {
+                if (data.success) {
                     this.addNotice(data.message, 'success');
+                    document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                    document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                    document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
+                    document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'none';
+                    document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
                 } else {
                     this.addNotice(data.message, 'warning');
                 }
 
                 this.OtpForm.classList.remove('processing');
-
-                document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
-                document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'none';
-                document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
                 // if (data.redirect) {
                 //     window.location.href = data.redirect;
                 // }
@@ -211,17 +210,17 @@ export default class AuthForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.status == 200) {
+                if (data.success) {
                     this.addNotice(data.message, 'success');
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
                 } else {
                     this.addNotice(data.message, 'warning');
                 }
 
                 this.resetForm.classList.remove('processing');
 
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                }
 
             }).catch((err) => {
                 console.log(err);
