@@ -1,3 +1,6 @@
+@php
+    use Illuminate\Support\Number;
+@endphp
 @extends('../layout/base')
 
 
@@ -16,6 +19,17 @@
             </div>
             <div class="head_content">
                 <h1>{{ $trade['trd_symbol'] }}</h1>
+                <ul class="single_trade_tags">
+                    @php
+                    if($trade['trd_action'] == 'Buy'){
+                        echo sprintf('<li>%s</li>', 'Long');
+                    }else if($trade['trd_action'] == 'Sell'){
+                        echo sprintf('<li>%s</li>', 'Short');
+                    }
+                    @endphp
+                    
+                    <li>Open</li>
+                </ul>
             </div>
             <div class="head_end">
                 <button type="button" class="btn btn-secondary">Edit</button>
@@ -23,21 +37,110 @@
         </div>
 
         @php
-            // echo "<pre>";
-            // print_r($trade);
-            // echo "</pre>";
+            // Array
+            // (
+            //     [id] => 1
+            //     [trd_symbol] => RELIANCE
+            //     [trd_action] => Buy
+            //     [trd_date] => 2026-04-22
+            //     [trd_time] => 19:52:00
+            //     [trd_shares] => 0
+            //     [trd_price] => 123.00
+            //     [created_at] => 2026-05-29T12:22:41.000000Z
+            //     [updated_at] => 2026-05-29T12:22:41.000000Z
+            //     [user_id] => 1
+            //     [trd_lot] => 123
+            //     [trd_type] => F&O
+            //     [trd_screenshots] => a:0:{}
+            // )
+
             $trade_ss = isset($trade['trd_screenshots']) ? unserialize($trade['trd_screenshots']) : [];
+
+            $trd_date = $trade['trd_date'];
+            $trd_time = $trade['trd_time'];
+
+            $tradeDateTime = new DateTime($trd_date . ' ' . $trd_time);
+            $now = new DateTime();
+
+            $interval = $tradeDateTime->diff($now);
         @endphp
 
         <div class="single_trade_body">
 
-            @if(!empty($trade_ss))
-                <div class="image_gallery">
-                    @foreach ($trade_ss as $trade_ss_itm)
-                        <img src="{{ $trade_ss_itm }}" />
-                    @endforeach
+
+            <div class="single_trade_tabs">
+                <div class="single_trade_tab active" tab_id="overview">Overview</div>
+                <div class="single_trade_tab" tab_id="chart">Chart</div>
+                <div class="single_trade_tab" tab_id="journal">Journal</div>
+                <div class="single_trade_tab" tab_id="analysis">Analysis</div>
+            </div>
+
+            <div class="single_trtb_cnt_wrap">
+
+                <div class="single_trtb_cnt active" cnt_id="overview">
+                    <div class="sngl_trd_snapshot">
+                        <h4>Trade Snapshot</h4>
+                        <div class="sngl_trd_snapshot_inner">
+
+                            <div class="sngltrd_snp_lft">
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Entry Date</div>
+                                    <div class="sngltrd_tbl_value">{{ date('F d, Y', strtotime($trade['trd_date'])) }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Entry Time</div>
+                                    <div class="sngltrd_tbl_value">{{ date('h:m A', strtotime($trade['trd_time'])) }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Duration</div>
+                                    <div class="sngltrd_tbl_value">{{ $interval->format('%ad %hh %im') }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Quantity</div>
+                                    <div class="sngltrd_tbl_value">{{ $trade['trd_lot'] ?? $trade['trd_shares'] }}</div>
+                                </div>
+                            </div>
+
+                            <div class="sngltrd_snp_rgt">
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Entry</div>
+                                    <div class="sngltrd_tbl_value">{{ Number::currency($trade['trd_price'], $currency) }}</div>
+                                </div>
+                                <span class="line_separator"></span>
+                                <div class="sngltrd_tbl">
+                                    <div class="sngltrd_tbl_title">Position Value</div>
+                                    <div class="sngltrd_tbl_value">{{ Number::currency($trade['trd_price'], $currency) }}</div>
+                                </div>
+                                <div class="sngltrd_tbl">
+                                    @php
+                                    $sh_qty = $trade['trd_lot'] ?? $trade['trd_shares'];
+                                    $sh_prc = $trade['trd_price'];
+                                    $sh_per = 15;
+                                    $sh_mrgn_blk = ($sh_qty * $sh_prc) * 0.15;
+                                    @endphp
+                                    <div class="sngltrd_tbl_title">Margin Blocked</div>
+                                    <div class="sngltrd_tbl_value">{{ Number::currency($sh_mrgn_blk, $currency) }}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
-            @endif
+
+                <div class="single_trtb_cnt" cnt_id="chart">Chart</div>
+                <div class="single_trtb_cnt" cnt_id="journal">
+                    @if(!empty($trade_ss))
+                        <div class="image_gallery">
+                            @foreach ($trade_ss as $trade_ss_itm)
+                                <img src="{{ $trade_ss_itm }}" />
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+                <div class="single_trtb_cnt" cnt_id="analysis">Analysis</div>
+            </div>
+
+
 
         </div>
     </div>

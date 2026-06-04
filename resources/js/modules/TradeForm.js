@@ -1,4 +1,6 @@
+
 export default class TradeForm {
+
     constructor() {
         this.init();
     }
@@ -8,55 +10,42 @@ export default class TradeForm {
             'submit',
             this.handleSubmit.bind(this)
         );
+        document.querySelector('#symbol').addEventListener(
+            'focus',
+            this.openSuggestions.bind(this)
+        );
+        document.querySelector('#symbol').addEventListener(
+            'input',
+            this.searchSuggestions.bind(this)
+        );
+        document.querySelector('#symbol').addEventListener(
+            'blur',
+            this.closeSuggestions.bind(this)
+        );
+        document.querySelectorAll('.form_fields .form_field ul.field_drop_down li').forEach((drop_itm) => {
+            drop_itm.addEventListener(
+                'click',
+                this.selectSuggestion.bind(this)
+            );
+        })
 
-        this.conditionalFields();
+        this.conditionalLogic();
     }
 
-    conditionalFields(){
-        const all_cn_fields = document.querySelectorAll('[data_conditional]');
-
-        if(all_cn_fields && all_cn_fields.length >= 1){
-            all_cn_fields.forEach((field, indx) => {
-                
-                const this_condition = field.getAttribute('data_conditional');
-                const this_condition_parts = this_condition.split('|');
-                const target = this_condition_parts[0];
-                const opt = this_condition_parts[1];
-                const val = this_condition_parts[2];
-
-                
-                const target_obj = document.querySelectorAll('[name='+target+']');
-                if(target_obj && target_obj.length >= 1){
-                    const target_obj_1 = target_obj[0];
-                    const target_obj_type = target_obj_1.getAttribute('type');
-                    target_obj_1.addEventListener('change', this.conditionalFields);
-                    
-                    let target_obj_val = target_obj_1.value;
-                    
-                    if(target_obj_type == 'checkbox' || target_obj_type == 'radio'){
-                        target_obj_val = '';
-                        const chkd_targets = document.querySelectorAll('[name='+target+']:checked');
-                        const chkd_values = Array.from(chkd_targets).map(cb => cb.value);
-                        if(chkd_values && chkd_values.length >= 1){
-                            target_obj_val = chkd_values[0];
-                        }else{
-                            target_obj_val = target_obj_1.getAttribute('not_checked');
-                        }
-                    }
-                    
-                    if(target_obj_1){
-                        if(opt == 'is' && val == target_obj_val){
-                            field.closest('.form_field').style.display = 'flex';
-                        }else if(opt == 'not' && val != target_obj_val){
-                            field.closest('.form_field').style.display = 'flex';
-                        }else{
-                            field.closest('.form_field').style.display = 'none';
-                        }
-                    }
-                }
-            });
-        }
+    conditionalLogic() {
+        document.querySelector('[name="trd_type"]').addEventListener('change', function () {
+            const this_itm = this;
+            const this_checked = document.querySelector('[name="trd_type"]:checked').value;
+            const this_wrapper = this_itm.closest('.form_fields');
+            if (this_checked == 'Cash') {
+                this_wrapper.querySelector('[name="trd_shares"]').closest('.form_field').style.display = 'block';
+            } else if (this_checked == 'F&O') {
+                this_wrapper.querySelector('[name="trd_lot"]').closest('.form_field').style.display = 'block';
+            }
+        });
     }
+
+
 
     handleSubmit(event) {
         const form = event.target;
@@ -85,4 +74,48 @@ export default class TradeForm {
                 form.classList.remove('processing');
             })
     }
+
+
+    openSuggestions(event) {
+        const inp = this;
+        document.querySelector('.form_fields .form_field ul.field_drop_down').classList.add('active');
+    }
+
+    closeSuggestions(event) {
+        const inp = this;
+        setTimeout(() => {
+            document.querySelector('.form_fields .form_field ul.field_drop_down').classList.remove('active');
+        }, 100);
+    }
+
+    searchSuggestions(event) {
+        const inp = event.target;
+
+        this.doSearch(inp.value);
+    }
+
+    doSearch(value) {
+        const all_suggessions = document.querySelectorAll('.form_fields .form_field ul.field_drop_down li');
+        if (all_suggessions && all_suggessions.length >= 1) {
+            all_suggessions.forEach(itm => {
+                const this_val = itm.getAttribute('data_value');
+                if (value != "") {
+                    if ((this_val.toLowerCase()).includes((value))) {
+                        itm.style.display = 'block';
+                    } else {
+                        itm.style.display = 'none';
+                    }
+                } else {
+                    itm.style.display = 'block';
+
+                }
+            })
+        }
+    }
+
+    selectSuggestion(event) {
+        const inp = event.target;
+        document.getElementById('symbol').value = inp.getAttribute('data_value');
+    }
+
 }

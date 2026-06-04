@@ -7,18 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Trade extends Model
 {
     protected $fillable = [
-        // 'trd_market_name',
         'trd_symbol',
         'trd_action',
         'trd_date',
         'trd_time',
         'trd_shares',
         'trd_price',
-        // 'trd_commissions',
-        // 'trd_fees',
         'user_id',
         'trd_lot',
         'trd_type',
-        'trd_screenshots'
+        'trd_screenshots',
+        'notes'
     ];
 }

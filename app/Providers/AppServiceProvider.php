@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\View;
+use App\Http\Controllers\TradeController;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
+        View::composer('pages.*', function ($view) {
+            $user = Auth::user();
+            $total_trades = TradeController::getAll();
+            $portfolioSummry = TradeController::summary($user->initial_balance);
+            $currency = $user->default_country;
+            $currency = $currency ? ($currency) : 'USD';
+            $view->with('trades', $total_trades);
+            $view->with('total_trades', count($total_trades));
+            $view->with('portfolioSummry', $portfolioSummry);
+            $view->with('currency', $currency);
+        });
+        // View::composer('pages.*', function ($view) {
+        //     dd($view->getName());
+        // });
     }
 }
