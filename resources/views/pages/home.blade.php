@@ -24,23 +24,23 @@
             <div class="other_dash_amounts">
                 <div class="other_dash_amount_itm">
                     <p>Net Realized P&L</p>
-                    <h4>{{Number::currency($portfolioSummry['net_realized_pnl'], in:$currency)}}</h4>
+                    <h4>{{Number::currency((isset($portfolioSummry['net_realized_pnl']) ? $portfolioSummry['net_realized_pnl'] : 0), in:$currency)}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Unrealized P&L</p>
-                    <h4>{{Number::currency($portfolioSummry['unrealized_pnl'], in:$currency)}}</h4>
+                    <h4>{{Number::currency((isset($portfolioSummry['unrealized_pnl']) ? $portfolioSummry['unrealized_pnl'] : 0), in:$currency)}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Available Cash</p>
-                    <h4>{{Number::currency($portfolioSummry['available_cash'], in:$currency)}}</h4>
+                    <h4>{{Number::currency((isset($portfolioSummry['available_cash']) ? $portfolioSummry['available_cash'] : 0), in:$currency)}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Deployed Capital</p>
-                    <h4>{{Number::currency($portfolioSummry['deployed_capital'], in:$currency)}}</h4>
+                    <h4>{{Number::currency((isset($portfolioSummry['deployed_capital']) ? $portfolioSummry['deployed_capital'] : 0), in:$currency)}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Total Open Risk (127.0%)</p>
-                    <h4>{{Number::currency($portfolioSummry['total_open_risk_percent'], in:$currency)}}</h4>
+                    <h4>{{Number::currency((isset($portfolioSummry['total_open_risk_percent']) ? $portfolioSummry['total_open_risk_percent'] : 0), in:$currency)}}</h4>
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Total Deposits</p>
