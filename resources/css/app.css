@@ -344,6 +344,33 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     position: relative;
 }
 
+.form_fields .form_field span.show_hide_pass {
+    position: absolute;
+    top: 32px;
+    right: 6px;
+    width: 30px;
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: var(--muted2);
+}
+
+.form_fields .form_field span.show_hide_pass>span {
+    display: none;
+    pointer-events: none;
+}
+
+.form_fields .form_field span.show_hide_pass.active>span.open {
+    display: block;
+}
+
+.form_fields .form_field span.show_hide_pass:not(.active)>span.close {
+    display: block;
+}
+
 .form_fields .form_field ul.field_drop_down {
     display: none;
     position: absolute;
@@ -749,6 +776,31 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
 
 
 /** Trade Table Start **/
+.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul {
+    display: inline-flex;
+    justify-content: flex-start;
+    list-style: none;
+    font-size: var(--text-md);
+    margin: 4px 0px 14px 0px;
+    background: var(--bg2);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 6px;
+}
+
+.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li {
+    padding: 6px 10px;
+    background: var(--bg2);
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--border2);
+}
+
+.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li.active {
+    background: var(--bg3);
+    color: var(--muted2);
+}
+
 .trades_table_wrapper .trades_table_inner table {
     width: 100%;
 }
@@ -785,11 +837,23 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     text-transform: uppercase;
 }
 
-.trades_table_wrapper .trades_table_inner table tr:not(.buy) td.trade_b_action {
+.trades_table_wrapper .trades_table_inner table tr td.trade_b_action span {
+    padding: 6px 6px;
+    display: block;
+    background: var(--bg4);
+    border-radius: 100px;
+    font-size: var(--text-sm);
+    color: var(--muted2);
+    width: 100%;
+    max-width: 60px;
+    text-align: center;
+}
+
+.trades_table_wrapper .trades_table_inner table tr:not(.buy) td.trade_b_symbol a {
     color: var(--red);
 }
 
-.trades_table_wrapper .trades_table_inner table tr.buy td.trade_b_action {
+.trades_table_wrapper .trades_table_inner table tr.buy td.trade_b_symbol a {
     color: var(--green);
 }
 

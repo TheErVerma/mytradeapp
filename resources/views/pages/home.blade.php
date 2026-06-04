@@ -52,7 +52,7 @@
                 </div>
                 <div class="other_dash_amount_itm">
                     <p>Starting Account Balance</p>
-                    <h4>{{Number::currency($portfolioSummry['starting_account_balance'], in:$currency)}}</h4>
+                    <h4>{{Number::currency((isset($portfolioSummry['starting_account_balance']) ? $portfolioSummry['starting_account_balance'] : 0), in:$currency)}}</h4>
                 </div>
             </div>
 

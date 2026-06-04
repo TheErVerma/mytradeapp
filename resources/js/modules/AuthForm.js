@@ -28,7 +28,29 @@ export default class AuthForm {
             'submit',
             this.resetPassword.bind(this)
         );
+        document.addEventListener(
+            'click',
+            this.togglePassword.bind(this)
+        );
         this.logout();
+    }
+
+    togglePassword(event) {
+        this.toggleBtn = event.target;
+
+
+        if (!this.toggleBtn.matches('.show_hide_pass')) {
+            return;
+        }
+
+        if (this.toggleBtn.classList.contains('active')) {
+            this.toggleBtn.classList.remove('active');
+            document.getElementById('password').setAttribute('type', 'password');
+        } else {
+            document.getElementById('password').setAttribute('type', 'text');
+            this.toggleBtn.classList.add('active');
+        }
+
     }
 
     addNotice(message, type = '') {

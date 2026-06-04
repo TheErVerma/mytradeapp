@@ -2,6 +2,7 @@
 export default class TradeForm {
 
     constructor() {
+        this.trdTypeFilters = document.querySelectorAll('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li');
         this.init();
     }
 
@@ -28,6 +29,12 @@ export default class TradeForm {
                 this.selectSuggestion.bind(this)
             );
         })
+
+        this.trdTypeFilters.forEach((trdType) => {
+            trdType.addEventListener('click', () => {
+                this.FilterTradeTable(trdType.getAttribute('data_type'), trdType);
+            });
+        });
 
         this.conditionalLogic();
     }
@@ -116,6 +123,40 @@ export default class TradeForm {
     selectSuggestion(event) {
         const inp = event.target;
         document.getElementById('symbol').value = inp.getAttribute('data_value');
+    }
+
+
+    FilterTradeTable(filterType, target) {
+        this.trdTypeFilters.forEach((trdType) => {
+            trdType.classList.remove('active');
+        });
+
+        target.classList.add('active');
+        console.log(filterType);
+        switch (filterType) {
+            case 'long':
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.buy').forEach((itm) => {
+                    itm.style.display = '';
+                });
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.sell').forEach((itm) => {
+                    itm.style.display = 'none';
+                });
+                break;
+            case 'short':
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.sell').forEach((itm) => {
+                    itm.style.display = '';
+                });
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.buy').forEach((itm) => {
+                    itm.style.display = 'none';
+                });
+                break;
+
+            default:
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr').forEach((itm) => {
+                    itm.style.display = '';
+                });
+                break;
+        }
     }
 
 }

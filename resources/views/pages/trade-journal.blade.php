@@ -1,14 +1,29 @@
+@php
+    use Illuminate\Support\Number;
+@endphp
 @extends('../layout/base')
 
 @section('content')
 
     @php
         // $all_trades
+        $trad_actions = array_column($all_trades, 'trd_action');
+        $trdActnCnt = array_count_values($trad_actions);
+        $trdLong = isset($trdActnCnt['Buy']) ? $trdActnCnt['Buy'] : 0;
+        $trdShort = isset($trdActnCnt['Sell']) ? $trdActnCnt['Sell'] : 0;
+        $trdAllCnt = $trdLong + $trdShort;
+        $trdActionNm = ['Buy' => 'Long', 'Sell' => 'Short'];
     @endphp
 
     <div class="trades_table_wrapper">
         <div class="trades_table_inner">
-
+            <div class="trades_table_filter_btm">
+                <ul>
+                    <li data_type="all" class="active">All Trades ({{ $trdAllCnt }})</li>
+                    <li data_type="long">Long ({{ $trdLong }})</li>
+                    <li data_type="short">Short ({{ $trdShort }})</li>
+                </ul>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -33,15 +48,18 @@
                                 if (isset($trade_item['trd_action'])) {
                                     $tred_classes[] = strtolower($trade_item['trd_action']);
                                 }
+
+                                $shares = $trade_item['trd_shares'];
+                                $shares = $shares <= 0 ? $trade_item['trd_lot'] : $shares;
                             @endphp
-                            <tr class="@php echo implode(' ', $tred_classes); @endphp">
+                            <tr class="@php echo implode(' ', $tred_classes); @endphp ">
                                 <td class="trade_b_id">{{ $trade_item['id'] }}</td>
                                 <td class="trade_b_symbol"><a href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</a></td>
-                                <td class="trade_b_action">{{ $trade_item['trd_action'] }}</td>
+                                <td class="trade_b_action"><span>{{ $trdActionNm[$trade_item['trd_action']] }}</span></td>
                                 <td class="trade_b_date">{{ $trade_item['trd_date'] }}</td>
                                 <td class="trade_b_time">{{ $trade_item['trd_time'] }}</td>
-                                <td class="trade_b_shares">{{ $trade_item['trd_shares'] }}</td>
-                                <td class="trade_b_price">{{ $trade_item['trd_price'] }}</td>
+                                <td class="trade_b_shares">{{ $shares }}</td>
+                                <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in:$currency) }}</td>
                                 <td class="trade_b_actions">
                                     <div class="trade_action_wrap">
                                         <button type="button" class="icon_btn edit" data_id="{{ $trade_item['id'] }}">
