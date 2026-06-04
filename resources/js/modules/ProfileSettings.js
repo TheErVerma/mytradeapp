@@ -21,6 +21,7 @@ export default class ProfileSettingsForm {
             this.saveMainSettings.bind(this)
         );
         this.imagePicker();
+        this.profileMenu();
     }
 
     addNotice(message, type = '') {
@@ -124,6 +125,21 @@ export default class ProfileSettingsForm {
 
     }
 
+    profileMenu(event) {
+
+        const profileThumb = document.querySelector('.user-profile-thumb');
+        const profileMenuList = document.querySelector('.user-profile-menu > ul');
+        
+        document.addEventListener( 'click', function(e){
+            const listContainer = profileMenuList.contains(e.target);
+            if( e.target.parentElement === profileThumb ) {
+                profileThumb.parentElement.querySelector('ul').classList.toggle('active');
+            } else if( !listContainer ) {
+                profileThumb.parentElement.querySelector('ul').classList.remove('active');
+            }
+        });
+
+    }
 
     saveMainSettings(event){
 
