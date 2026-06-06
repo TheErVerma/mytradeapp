@@ -480,4 +480,36 @@ class TradeController extends Controller
             'avg_win_loss_ratio' => round($avgWinLossRatio, 2),
         ];
     }
+
+
+    public function exportCsv()
+    {
+        $data = self::getAll();
+        array_walk($data, function(&$row) {
+            unset($row['trd_screenshots']);
+        });
+
+        $fileName = 'Trades_'.date('Ymd_His').'.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename={$fileName}",
+        ];
+
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+
+            // CSV Header Row
+            fputcsv($file, array_keys($data[0]));
+
+            // CSV Data Rows
+            foreach ($data as $row) {
+                fputcsv($file, $row);
+            }
+
+            fclose($file);
+        };
+
+        return response()->streamDownload($callback, $fileName, $headers);
+    }
 }

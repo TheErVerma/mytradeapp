@@ -17,16 +17,55 @@
 
     <div class="trades_table_wrapper">
         <div class="trades_table_inner">
+            <div class="trades_table_filter_top">
+                <div class="trades_search_wrap">
+                    <div class="trades_date_filter">
+                        <div class="trades_search_inp">
+                            <span class="trades_search_inp_icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g id="Interface / Search_Magnifying_Glass">
+                                        <path id="Vector" d="M15 15L21 21M10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10C17 13.866 13.866 17 10 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                </svg>
+                            </span>
+                            <input type="search" name="trade_search" id="trade_search" placeholder="Search trades...">
+                        </div>
+                        <input type="date" name="trade_date_from" id="trade_date_from" />
+                        <input type="date" name="trade_date_to" id="trade_date_to" />
+                    </div>
+                    <div class="trades_additional_actions">
+                        <button type="button" class="export_all_trades" title="Export All Trades">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" >
+                            <path d="M12 5L11.2929 4.29289L12 3.58579L12.7071 4.29289L12 5ZM13 14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14L13 14ZM6.29289 9.29289L11.2929 4.29289L12.7071 5.70711L7.70711 10.7071L6.29289 9.29289ZM12.7071 4.29289L17.7071 9.29289L16.2929 10.7071L11.2929 5.70711L12.7071 4.29289ZM13 5L13 14L11 14L11 5L13 5Z" fill="currentColor"/>
+                            <path d="M5 16L5 17C5 18.1046 5.89543 19 7 19L17 19C18.1046 19 19 18.1046 19 17V16" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn btn-primary import_new_trades" title="Import All Trades">Import Trades</button>
+                    </div>
+                </div>
+            </div>
             <div class="trades_table_filter_btm">
                 <ul>
-                    <li data_type="all" class="active">All Trades ({{ $trdAllCnt }})</li>
-                    <li data_type="long">Long ({{ $trdLong }})</li>
-                    <li data_type="short">Short ({{ $trdShort }})</li>
+                    <li data_type="all" class="active">All Trades (<span class="count">{{ $trdAllCnt }}</span>)</li>
+                    <li data_type="long">Long (<span class="count">{{ $trdLong }}</span>)</li>
+                    <li data_type="short">Short (<span class="count">{{ $trdShort }}</span>)</li>
                 </ul>
             </div>
-            <table>
+
+             <div class="no_trades_wrapper" style="display:none;">
+                <div class="no_trades_wrapper_inner">
+                    <h4>No trades match your criteria</h4>
+                    <p>Try adjusting your search or filters to see more results</p>
+                    <button type="button" class="btn btn-primary">+ Add New Trade</button>
+                </div>
+            </div>
+
+            <table class="main_trades_table">
                 <thead>
                     <tr>
+                        <th class="trade_h_select">
+                            <input type="checkbox" name="select_all_trades" id="select_all_trades"/>
+                        </th>
                         <th class="trade_h_id">ID</th>
                         <!-- <th>Market Name</th> -->
                         <th class="trade_h_symbol">Symbol</th>
@@ -53,6 +92,9 @@
                                 $shares = $shares <= 0 ? $trade_item['trd_lot'] : $shares;
                             @endphp
                             <tr class="@php echo implode(' ', $tred_classes); @endphp ">
+                                <td class="trade_b_select">
+                                    <input type="checkbox" name="selected_trades" id="selected_trades"/>
+                                </td>
                                 <td class="trade_b_id">{{ $trade_item['id'] }}</td>
                                 <td class="trade_b_symbol"><a href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</a></td>
                                 <td class="trade_b_action"><span>{{ $trdActionNm[$trade_item['trd_action']] }}</span></td>

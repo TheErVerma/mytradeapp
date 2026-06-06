@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/trade', [TradeController::class, 'addTrade']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
     Route::put('/trade', [TradeController::class, 'editTrade']);
+    Route::get('/exporttrades', [TradeController::class, 'exportCsv']);
     /**
      * APIs End
      **********************/

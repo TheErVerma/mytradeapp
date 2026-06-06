@@ -12,26 +12,11 @@ export default class AuthForm {
     }
 
     init() {
-        document.addEventListener(
-            'submit',
-            this.handleSubmit.bind(this)
-        );
-        document.addEventListener(
-            'submit',
-            this.forgetPassword.bind(this)
-        );
-        document.addEventListener(
-            'submit',
-            this.verifyOTP.bind(this)
-        );
-        document.addEventListener(
-            'submit',
-            this.resetPassword.bind(this)
-        );
-        document.addEventListener(
-            'click',
-            this.togglePassword.bind(this)
-        );
+        document.addEventListener('submit',this.handleSubmit.bind(this));
+        document.addEventListener('submit',this.forgetPassword.bind(this));
+        document.addEventListener('submit',this.verifyOTP.bind(this));
+        document.addEventListener('submit',this.resetPassword.bind(this));
+        document.addEventListener('click',this.togglePassword.bind(this));
         this.logout();
     }
 
