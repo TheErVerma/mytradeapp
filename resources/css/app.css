@@ -406,6 +406,33 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     position: relative;
 }
 
+.form_fields .form_field span.show_hide_pass {
+    position: absolute;
+    top: 32px;
+    right: 6px;
+    width: 30px;
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: var(--muted2);
+}
+
+.form_fields .form_field span.show_hide_pass>span {
+    display: none;
+    pointer-events: none;
+}
+
+.form_fields .form_field span.show_hide_pass.active>span.open {
+    display: block;
+}
+
+.form_fields .form_field span.show_hide_pass:not(.active)>span.close {
+    display: block;
+}
+
 .form_fields .form_field ul.field_drop_down {
     display: none;
     position: absolute;
@@ -825,8 +852,121 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
 
 
 /** Trade Table Start **/
+.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul {
+    display: inline-flex;
+    justify-content: flex-start;
+    list-style: none;
+    font-size: var(--text-md);
+    margin: 4px 0px 14px 0px;
+    background: var(--bg4);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 6px;
+}
+
+.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li {
+    padding: 6px 10px;
+    background: var(--bg4);
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--muted);
+}
+
+.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li.active {
+    background: var(--bg);
+    color: var(--muted2);
+}
+
+.trades_table_wrapper .trades_table_inner .trades_table_filter_top {
+    margin: 8px 0px;
+}
+
+.trades_table_wrapper .trades_table_inner .trades_search_wrap {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.trades_table_wrapper .trades_table_inner .trades_search_wrap input {
+    padding: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    outline: navajowhite;
+}
+
+.trades_table_wrapper .trades_table_inner .trades_search_wrap .trades_date_filter {
+    display: grid;
+    grid-template-columns: 10fr 1fr 1fr;
+    width: 100%;
+    max-width: 80%;
+    gap: 10px;
+}
+
+.trades_table_wrapper .trades_table_inner .trades_search_wrap .trades_date_filter .trades_search_inp {
+    position: relative;
+    width: 100%;
+}
+
+.trades_table_wrapper .trades_table_inner .trades_search_wrap .trades_date_filter .trades_search_inp input {
+    width: 100%;
+    padding-left: 32px;
+}
+
+.trades_table_wrapper .trades_table_inner .trades_search_wrap .trades_date_filter .trades_search_inp span.trades_search_inp_icon {
+    position: absolute;
+    top: 11px;
+    left: 10px;
+    color: var(--muted);
+}
+.trades_table_wrapper .trades_table_inner .trades_search_wrap .trades_additional_actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.trades_table_wrapper .trades_table_inner .trades_search_wrap .trades_additional_actions button.export_all_trades {
+    border: 0px;
+    background: transparent;
+    color: var(--muted2);
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
 .trades_table_wrapper .trades_table_inner table {
     width: 100%;
+}
+
+.trades_table_wrapper .trades_table_inner table .trade_h_select {
+    width: 40px;
+}
+
+.trades_table_wrapper .trades_table_inner table input[type=checkbox] {
+    position: relative;
+}
+
+.trades_table_wrapper .trades_table_inner table input[type=checkbox]:after {
+    content: '';
+    width: 14px;
+    height: 14px;
+    background: var(--bg4);
+    position: absolute;
+    top: 0px;
+    left: 0;
+    border-radius: 2px;
+    border: 1px solid var(--border2);
+    cursor: pointer;
+}
+
+.trades_table_wrapper .trades_table_inner table input[type=checkbox]:checked:after {
+    content: '✔';
+    color: var(--muted2);
+    font-size: var(--text-sm);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .trades_table_wrapper .trades_table_inner table thead th {
@@ -861,12 +1001,51 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     text-transform: uppercase;
 }
 
-.trades_table_wrapper .trades_table_inner table tr:not(.buy) td.trade_b_action {
+.trades_table_wrapper .trades_table_inner table tr td.trade_b_action span {
+    padding: 6px 6px;
+    display: block;
+    background: var(--bg4);
+    border-radius: 100px;
+    font-size: var(--text-sm);
+    color: var(--muted2);
+    width: 100%;
+    max-width: 60px;
+    text-align: center;
+}
+
+.trades_table_wrapper .trades_table_inner table tr:not(.buy) td.trade_b_symbol a {
     color: var(--red);
 }
 
-.trades_table_wrapper .trades_table_inner table tr.buy td.trade_b_action {
+.trades_table_wrapper .trades_table_inner table tr.buy td.trade_b_symbol a {
     color: var(--green);
+}
+
+.no_trades_wrapper {
+    border: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 240px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.no_trades_wrapper .no_trades_wrapper_inner h4 {
+    font-size: var(--text-xl);
+    font-weight: 400;
+    color: var(--muted2);
+}
+
+.no_trades_wrapper .no_trades_wrapper_inner p {
+    font-size: var(--text-md);
+    color: var(--muted);
+    margin: 6px 0px;
+}
+
+.no_trades_wrapper .no_trades_wrapper_inner button {
+    margin-top: 20px;
 }
 
 .trade_action_wrap {
@@ -1519,6 +1698,10 @@ div#tfa_disable_form .main_set_field label {
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 20px;
+}
+
+.main_dash_wrap .main_dash_inner .other_dash_amounts .other_dash_amount_itm.negative h4 {
+    color: var(--red);
 }
 
 .main_dash_wrap .main_dash_inner .other_dash_amounts .other_dash_amount_itm p {

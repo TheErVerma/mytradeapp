@@ -10,7 +10,7 @@
             <h2>Add Trade</h2>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate similique ducimus impedit eligendi
                 aut nobis mollitia maiores, assumenda perspiciatis pariatur quisquam!</p>
-            <form action="" id="add_trade_popup" enctype="multipart/form-data">
+            <form action="" id="add_trade_popup" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="form_fields">
                     <div class="form_field_group">
@@ -78,13 +78,13 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="form_field" >
-                            <label for="trd_lot">Lot</label>
-                            <input type="text" name="trd_lot" id="trd_lot" placeholder="0" />
-                        </div>
-                        <div class="form_field" style="display:none;">
+                        <div class="form_field">
                             <label for="shares_amount">Shares</label>
                             <input type="text" name="trd_shares" id="shares_amount" placeholder="0.00" />
+                        </div>
+                        <div class="form_field" style="display:none;">
+                            <label for="trd_lot">Lot</label>
+                            <input type="text" name="trd_lot" id="trd_lot" placeholder="0" />
                         </div>
 
                     </div>
