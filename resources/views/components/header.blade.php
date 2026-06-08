@@ -245,7 +245,7 @@
                 </li> -->
                 <li>
                     <span class="label">Net P&L</span>
-                    <span class="value profit">{{ Number::currency($portfolioSummry['net_realized_pnl'], in:$currency) }}</span>
+                    <span class="value profit">{{ Number::currency((isset($portfolioSummry['net_realized_pnl']) ? $portfolioSummry['net_realized_pnl'] : 0), in:$currency) }}</span>
                 </li>
                 <!-- <li>
                     <span class="label">Avg WinL</span>

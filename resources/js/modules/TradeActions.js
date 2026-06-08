@@ -91,9 +91,10 @@ export default class TradeActions {
                         }
                         if(inp && inp.getAttribute('type') == 'radio'){
                             const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"][value="'+data[clm]+'"]');
-                            console.log(radio_);
                             if(radio_){
-                                radio_.setAttribute('checked', 'true');
+                                const changeEvent = new Event('change');
+                                radio_.setAttribute('checked', 'true');//.dispatchEvent(changeEvent);
+                                radio_.dispatchEvent(changeEvent);
                             }else{
                                 console.log('#edit_trade_popup [name="'+clm+'"][value="'+data[clm]+'"]');
                             }

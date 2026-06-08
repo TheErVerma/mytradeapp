@@ -12,23 +12,30 @@ export default class AuthForm {
     }
 
     init() {
-        document.addEventListener(
-            'submit',
-            this.handleSubmit.bind(this)
-        );
-        document.addEventListener(
-            'submit',
-            this.forgetPassword.bind(this)
-        );
-        document.addEventListener(
-            'submit',
-            this.verifyOTP.bind(this)
-        );
-        document.addEventListener(
-            'submit',
-            this.resetPassword.bind(this)
-        );
+        document.addEventListener('submit',this.handleSubmit.bind(this));
+        document.addEventListener('submit',this.forgetPassword.bind(this));
+        document.addEventListener('submit',this.verifyOTP.bind(this));
+        document.addEventListener('submit',this.resetPassword.bind(this));
+        document.addEventListener('click',this.togglePassword.bind(this));
         this.logout();
+    }
+
+    togglePassword(event) {
+        this.toggleBtn = event.target;
+
+
+        if (!this.toggleBtn.matches('.show_hide_pass')) {
+            return;
+        }
+
+        if (this.toggleBtn.classList.contains('active')) {
+            this.toggleBtn.classList.remove('active');
+            document.getElementById('password').setAttribute('type', 'password');
+        } else {
+            document.getElementById('password').setAttribute('type', 'text');
+            this.toggleBtn.classList.add('active');
+        }
+
     }
 
     addNotice(message, type = '') {
@@ -85,7 +92,7 @@ export default class AuthForm {
                 }
 
                 if (data.redirect) {
-                    // window.location.href = data.redirect;
+                    window.location.href = data.redirect;
                 }
 
             }).catch((err) => {
@@ -116,18 +123,19 @@ export default class AuthForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.status == 200) {
+                if (data.success) {
                     this.addNotice(data.message, 'success');
+                    document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                    document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                    document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
+                    document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'block';
+
                 } else {
                     this.addNotice(data.message, 'warning');
                 }
 
                 this.forgetForm.classList.remove('processing');
 
-                document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
-                document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'block';
                 // document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
                 // if (data.redirect) {
                 //     window.location.href = data.redirect;
@@ -163,19 +171,18 @@ export default class AuthForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.status == 200) {
+                if (data.success) {
                     this.addNotice(data.message, 'success');
+                    document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                    document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                    document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
+                    document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'none';
+                    document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
                 } else {
                     this.addNotice(data.message, 'warning');
                 }
 
                 this.OtpForm.classList.remove('processing');
-
-                document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
-                document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'none';
-                document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
                 // if (data.redirect) {
                 //     window.location.href = data.redirect;
                 // }
@@ -210,17 +217,17 @@ export default class AuthForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.status == 200) {
+                if (data.success) {
                     this.addNotice(data.message, 'success');
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    }
                 } else {
                     this.addNotice(data.message, 'warning');
                 }
 
                 this.resetForm.classList.remove('processing');
 
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                }
 
             }).catch((err) => {
                 console.log(err);
