@@ -64,6 +64,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/trade', [TradeController::class, 'addTrade']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
     Route::put('/trade', [TradeController::class, 'editTrade']);
+    Route::post('/upload-image', [TradeController::class, 'uploadScreenshots']);
+    Route::delete('/delete-image', [TradeController::class, 'deleteScreenshot']);
+    Route::delete('/save-notes', [TradeController::class, 'updateNotes']);
     /**
      * APIs End
      **********************/

@@ -122,10 +122,6 @@ export default class TradeActions {
         const formData = new FormData(form);
 
         form.classList.add('processing');
-        console.log('formdata', formData.entries());
-        for (var pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
         fetch('/trade', {
             method: "PUT",
             body: formData,

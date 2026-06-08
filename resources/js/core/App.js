@@ -8,6 +8,7 @@ import RegisterForm from '../modules/RegisterForm';
 import ConfirmPop from '../modules/ConfirmPop';
 import TradeActions from '../modules/TradeActions';
 import Tabs from '../modules/Tabs';
+import Gallery from '../modules/Gallery';
 
 export default class App {
     constructor() {
@@ -24,5 +25,6 @@ export default class App {
         this.tradeForm = new TradeForm();
         this.tradeActions = new TradeActions();
         this.tabs = new Tabs();
+        this.Gallery = new Gallery();
     }
 }
