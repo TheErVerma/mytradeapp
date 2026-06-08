@@ -6,15 +6,19 @@ export default class Gallery {
     journalNotesForm = null;
 
     constructor() {
-        this.init();
-        this.uploadScreenshots();
         this.deleteScreenshots();
-        this.updateNotes();
         this.gallerySelector = '.image_gallery';
         this.token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        this.init();
     }
 
     init() {
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('#uploadBtn, #trade_screenshots')) {
+                this.uploadScreenshots(e);
+            }
+        });
         Fancybox.bind("[data-fancybox]", {});
     }
 
@@ -55,22 +59,28 @@ export default class Gallery {
         }
     }
 
-    uploadScreenshots() {
-        let uploadInput = document.getElementById('imageInput');
-        let uploadBtn = document.getElementById('uploadBtn');
+    uploadScreenshots(e) {
+        let uploadInput = e.target;
         let form = document.getElementById('uploadForm');
         
-        if( uploadBtn === null ) {
+        if( uploadInput === null ) {
             return;
         }
-
-        uploadBtn.addEventListener('click', () => {
-            if (!form.matches('#uploadForm')) {
-                return;
-            }
+        // uploadInput.addEventListener('click', () => {
+            console.log(uploadInput);
+        // });
+        if( e.target.matches('#uploadBtn') ) {
+            const parent = e.target.parentElement;
+            uploadInput = parent.querySelector('#imageInput');
             uploadInput.click();
-        });
-
+            console.log(uploadInput);
+        }
+        // uploadBtn.addEventListener('click', () => {
+        //     if (!form.matches('#uploadForm')) {
+        //         return;
+        //     }
+        //     uploadInput.click();
+        // }); 
 
         uploadInput.addEventListener('change', (e) => {
 
@@ -150,6 +160,10 @@ export default class Gallery {
         const notesTextarea = document.querySelector('#journal_notes');
         const saveButton = document.querySelector('#save-notes');
 
+        if (notesForm === null) {
+            return;
+        }
+        
         notesTextarea.addEventListener('input', function (event) {
             const typedText = event.target.value;
             if (typedText.length > 0) {
@@ -163,14 +177,10 @@ export default class Gallery {
             
             this.journalNotesForm = e.target;
 
-            if (!this.journalNotesForm.matches('#notesForm')) {
-                return;
-            }
-
             e.preventDefault();
 
             const formData = new FormData(this.journalNotesForm);
-            console.log(formData);
+
             fetch('/save-notes', {
                 method: 'DELETE',
                 headers: {
@@ -181,8 +191,8 @@ export default class Gallery {
             })
             .then(res => res.json())
             .then(data => {
-                    console.log(data);
                 if(data.success == true) {
+                    saveButton.classList.remove('show');
                 }
             });
         
