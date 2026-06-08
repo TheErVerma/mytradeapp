@@ -130,7 +130,7 @@ class TradeController extends Controller
             'trd_notes' => 'nullable|string',
         ]);
 
-        $trade = Trade::where('id', $request->input('id'))->first();
+        $trade = Trade::where('id', '=', $validated['id'], false)->first();
 
         if (!$trade) {
             return response()->json([
@@ -159,23 +159,22 @@ class TradeController extends Controller
                 }
             }
         }
+        $update = [
+            'trd_symbol' => $validated['trd_symbol'] ?? $trade->trd_symbol,
+            'trd_action' => $validated['trd_action'] ?? $trade->trd_action,
 
-        $trade->update([
-            'trd_symbol' => $validated['trd_symbol'] ?? 0,
-            'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : $trade->trd_action,
+            'trd_date' => $validated['trd_date'] ?? $trade->trd_date,
+            'trd_time' => $validated['trd_time'] ?? $trade->trd_time,
 
-            'trd_date' => $validated['trd_date'] ?? 0,
-            'trd_time' => $validated['trd_time'] ?? 0,
+            'trd_shares' => $validated['trd_shares'] ?? $trade->trd_shares,
 
-            'trd_shares' => $validated['trd_shares'] ?? 0,
-
-            'trd_price' => $validated['trd_price'] ?? 0,
-            'trd_lot' => $validated['trd_lot'] ?? 0,
-            'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : $trade->trd_type,
-            'user_id' => Auth::id(),
-            'trd_screenshots' => serialize($screenshots),
-            'notes' => !empty($validated['trd_notes']) ? $validated['trd_notes'] : $trade->notes,//!empty($request->input('trd_notes')) ? $request->input('trd_notes') : $trade->notes,
-        ]);
+            'trd_price' => $validated['trd_price'] ?? $trade->trd_price,
+            'trd_lot' => $validated['trd_lot'] ?? $trade->trd_lot,
+            'trd_type' => $validated['trd_type'] ?? $trade->trd_type,
+            'trd_screenshots' => !empty($screenshots) ? serialize($screenshots) : $trade->trd_screenshots,
+            'notes' => $validated['trd_notes'] ?? $trade->notes,
+        ];
+        $trade->update( $update );
 
         return response()->json([
             'status' => 200,
@@ -481,6 +480,119 @@ class TradeController extends Controller
         ];
     }
 
+    public function uploadScreenshots(Request $request)
+    {
+
+        $validated = $request->validate([
+            'trade_id' => 'required|integer|exists:trades,id',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'existing_images' => 'nullable|array',
+            'existing_images.*' => 'string',
+        ]);
+
+        $trade = Trade::where('id', $validated['trade_id'])
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $existingImages = $validated['existing_images'] ?? [];
+
+        $dbImages = [];
+
+        if (!empty($trade->trd_screenshots)) {
+            $dbImages = @unserialize($trade->trd_screenshots);
+            if (!is_array($dbImages)) {
+                $dbImages = [];
+            }
+        }
+
+        $existingImages = array_merge($dbImages, $existingImages);
+
+        $newPaths = [];
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+
+                if (!$image->isValid()) continue;
+
+                $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
+                $path = $image->storeAs('screenshots', $imageName, 'public');
+
+                $newPaths[] = asset('storage/' . $path);
+            }
+        }
+
+        $finalImages = array_values(array_unique(array_merge($existingImages, $newPaths)));
+
+        $update = [
+            'trd_screenshots' => serialize($finalImages),
+        ];
+
+        $trade->update($update);
+
+        return response()->json([
+            'success' => true,
+            'trade_id' => $trade->id,
+            'images' => $finalImages,
+        ]);
+    }
+
+    public function deleteScreenshot(Request $request)
+    {
+
+        $validated = $request->validate([
+            'trade_id' => 'required|integer',
+            'screenshotURL' => 'required|string',
+        ]);
+
+        $trade = Trade::where('id', $validated['trade_id'])
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $screenshots = unserialize($trade->trd_screenshots);
+        $updatedScreenshots = [];
+        foreach($screenshots as $screenshot) {
+            if( $screenshot == $validated['screenshotURL'] ) {
+                $screenshot = parse_url( $screenshot, PHP_URL_PATH );
+                $screenshot = ltrim(str_replace('/storage', '', $screenshot));
+                if( Storage::disk('public')->exists($screenshot) ) {
+                    Storage::disk('public')->delete($screenshot);
+                }
+            } else {
+                $updatedScreenshots[] = $screenshot;
+            }
+        }
+
+        $update = [
+            'trd_screenshots' => serialize($updatedScreenshots),
+        ];
+        $trade->update($update);
+
+        return response()->json([
+            'success' => true,
+            $updatedScreenshots
+        ]);
+    }
+
+    public function updateNotes() {
+        $validated = request()->validate([
+            'trade_id' => 'required|integer',
+            'journal_notes' => 'required|string',
+        ]);
+
+        $trade = Trade::where('id', $validated['trade_id'])
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $update = [
+            'notes' => $validated['journal_notes'],
+        ];
+        $trade->update($update);
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
 
     public function exportCsv()
     {

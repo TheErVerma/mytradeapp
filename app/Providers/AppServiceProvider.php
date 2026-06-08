@@ -24,6 +24,16 @@ class AppServiceProvider extends ServiceProvider
     {
 
         View::composer('pages.*', function ($view) {
+            if (!Auth::check()) {
+                // Default values for guests
+                $view->with([
+                    'trades' => [],
+                    'total_trades' => 0,
+                    'portfolioSummry' => [],
+                    'currency' => 'USD',
+                ]);
+                return;
+            }
             $user = Auth::user();
             if ($user) {
                 $total_trades = TradeController::getAll();

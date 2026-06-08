@@ -228,7 +228,68 @@ html[theme="light"] button.icon_btn.theme_toggler .dark_icon {
     display: none;
 }
 
-/** Header Start **/
+header.main_header .right_head {
+    position: relative;
+}
+
+header.main_header .user-profile-thumb {
+    width: 40px;
+    height: 40px;
+}
+
+.user-profile-thumb img,
+.user-profile-thumb button {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 40px;
+    display: block;
+    border: 1px solid var(--border);
+    cursor: pointer;
+}
+header.main_header .user-profile-menu ul {
+    display: none;
+    position: absolute;
+    width: 180px;
+    height: auto;
+    list-style-type: none;
+    right: 0;
+    top: 65px;
+    background-color: var(--bg2);
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: var(--text-md);
+}
+header.main_header .user-profile-menu ul.active {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+header.main_header .user-profile-menu ul > li {
+    padding: 3px 0;
+}
+header.main_header .user-profile-menu ul > li:first-child {
+    padding: 0 0 3px;
+}
+header.main_header .user-profile-menu ul > li:last-child {
+    border-top: 1px solid color-mix(in srgb, var(--border2) 30%, transparent);
+    padding: 3px 0 0;
+}
+header.main_header .user-profile-menu ul > li a {
+    color: var(--text);
+    display: block;
+    padding: 5px;
+    border-radius: 5px;
+}
+header.main_header .user-profile-menu ul > li:hover a {
+    background-color: var(--bg3);
+}
+
+/** Header end **/
+
+
 
 
 
@@ -319,6 +380,7 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.profit {
 aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     color: var(--red);
 }
+
 
 /** Sidebar End **/
 
@@ -1382,16 +1444,115 @@ div#tfa_disable_form .main_set_field label {
     text-transform: uppercase;
 }
 
+.single_trade_wrap .single_trtb_cnt[cnt_id="journal"] {
+    background-color: transparent;
+    border: none;
+    padding: 0px;
+}
+
+.single_trade_wrap .journal-content {
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+}
+.single_trade_wrap .journal-content > * {
+    max-width: 50%;
+    width: 100%;
+    background-color: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 10px;
+}
+.single_trade_wrap #notesForm {
+    display: flex;
+    flex-direction: column;
+    margin-top: -30px;
+    gap: 0px;
+}
+.single_trade_wrap #notesForm #save-notes {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+.single_trade_wrap #notesForm #save-notes.show {
+    opacity: 1;
+    visibility: visible;
+}
+.single_trade_wrap textarea#journal_notes {
+    max-width: 100%;
+    min-width: 100%;
+    width: 100%;
+    height: 300px;
+    border: 1px solid var(--border);
+    padding: 15px 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    color: var(--muted);
+}
+.single_trade_wrap textarea#journal_notes:focus {
+    border-color: var(--border2);
+    color: var(--text)
+}
+.single_trade_wrap #notesForm button {
+    align-self: self-end;
+}
+
+.single_trade_wrap #uploadForm {
+    margin-bottom: 10px;
+    
+}
+
 .single_trade_wrap .image_gallery {
     display: grid;
-    grid-template-columns: repeat(4, 3fr);
+    grid-template-columns: repeat(2, 3fr);
     gap: 10px;
 }
 
 .single_trade_wrap .image_gallery img {
     width: 100%;
+    height: 150px;
     border-radius: 10px;
     border: 1px solid var(--border);
+    object-fit: cover;
+}
+
+.screenshot-thumb {
+    position: relative;
+}
+.screenshot-thumb:hover .screenshot-actions {
+    display: flex;
+}
+.screenshot-actions {
+    display: none;
+    flex-direction: row;
+    gap: 5px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.screenshot-actions > * {
+    width: 30px;
+    height: 30px;
+    padding: 7px;
+    display: block;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+}
+.screenshot-actions svg {
+    width: 100%;
+    height: 100%;
+    fill: var(--text);
+}
+.screenshot-actions > *:hover svg {
+    fill: var(--text);
+}
+.screenshot-actions .screenshot-delete {
+    background-color: var(--red);
+    border-color: var(--red);
+}
+.screenshot-actions .screenshot-delete svg {
+    fill: var(--accent-text);
 }
 
 .dash_content:has(.single_trade_wrap) {
@@ -1430,6 +1591,7 @@ div#tfa_disable_form .main_set_field label {
     border-radius: 10px;
     padding: 20px;
     display: none;
+    border: 1px solid var(--border);
 }
 
 .single_trtb_cnt_wrap .active.single_trtb_cnt {
