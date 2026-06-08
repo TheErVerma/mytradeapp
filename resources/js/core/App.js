@@ -17,6 +17,7 @@ export default class App {
 
     initModules() {
         this.HelpManager = new HelpManager();
+        this.EventsManager = new EventsManager();
         this.ConfirmPop = new ConfirmPop();
         this.AuthForm = new AuthForm();
         this.RegisterForm = new RegisterForm();

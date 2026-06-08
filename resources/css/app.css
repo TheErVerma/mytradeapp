@@ -142,6 +142,77 @@ a {
 
 /** Buttons End **/
 
+
+/** DatePicker Start **/
+.flatpickr-calendar {
+    background: var(--bg2) !important;
+    box-shadow: none !important;
+    border: 1px solid var(--border2) !important;
+    border-radius: 10px !important;
+}
+
+.flatpickr-calendar.arrowTop:before {
+    border-bottom-color: var(--border2) !important;
+}
+
+.flatpickr-calendar.arrowTop:after {
+    border-bottom-color: var(--border2) !important;
+}
+
+.flatpickr-months svg path {
+    stroke: var(--muted);
+}
+
+.flatpickr-calendar select,
+.flatpickr-calendar input {
+    color: var(--muted) !important;
+    font-size: var(--text-md) !important;
+    font-weight: 600 !important;
+}
+
+.flatpickr-day {
+    color: var(--muted2) !important;
+    font-size: var(--text-sm) !important;
+}
+
+.flatpickr-weekday {
+    color: var(--muted) !important;
+}
+
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+    color: var(--border2) !important;
+}
+
+.flatpickr-day.prevMonthDay:hover,
+.flatpickr-day.nextMonthDay:hover {
+    background: var(--bg3) !important;
+    border-radius: 4px;
+    border: 0px !important;
+}
+
+.flatpickr-day.today {
+    border: 0px !important;
+    border-radius: 4px !important;
+    background: var(--bg4);
+}
+
+.flatpickr-day:hover {
+    background: var(--bg3) !important;
+    border-radius: 4px;
+    border: 0px !important;
+}
+
+.flatpickr-day.selected {
+    background: var(--accent) !important;
+    border-radius: 4px;
+    border: 0px !important;
+    color: var(--accent-text) !important;
+}
+/** DatePicker End **/
+
+
+
 /** Global Sections Start **/
 .main_section {
     height: 100dvh;
@@ -248,6 +319,7 @@ header.main_header .user-profile-thumb {
     border: 1px solid var(--border);
     cursor: pointer;
 }
+
 header.main_header .user-profile-menu ul {
     display: none;
     position: absolute;
@@ -262,28 +334,34 @@ header.main_header .user-profile-menu ul {
     border-radius: 10px;
     font-size: var(--text-md);
 }
+
 header.main_header .user-profile-menu ul.active {
     display: flex;
     flex-direction: column;
     gap: 0px;
 }
-header.main_header .user-profile-menu ul > li {
+
+header.main_header .user-profile-menu ul>li {
     padding: 3px 0;
 }
-header.main_header .user-profile-menu ul > li:first-child {
+
+header.main_header .user-profile-menu ul>li:first-child {
     padding: 0 0 3px;
 }
-header.main_header .user-profile-menu ul > li:last-child {
+
+header.main_header .user-profile-menu ul>li:last-child {
     border-top: 1px solid color-mix(in srgb, var(--border2) 30%, transparent);
     padding: 3px 0 0;
 }
-header.main_header .user-profile-menu ul > li a {
+
+header.main_header .user-profile-menu ul>li a {
     color: var(--text);
     display: block;
     padding: 5px;
     border-radius: 5px;
 }
-header.main_header .user-profile-menu ul > li:hover a {
+
+header.main_header .user-profile-menu ul>li:hover a {
     background-color: var(--bg3);
 }
 
@@ -591,21 +669,25 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
 .form_fields .form_field:not(.icon) textarea::placeholder {
     color: var(--muted2);
 }
+
 .form_fields .screenshot-gallery .image_gallery {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
-.form_fields .screenshot-gallery .image_gallery > * {
+
+.form_fields .screenshot-gallery .image_gallery>* {
     max-width: 150px;
     width: 100%;
 }
+
 .form_fields .screenshot-gallery .image_gallery img {
     width: 150px;
     height: 150px;
     object-fit: cover;
     object-position: center;
 }
+
 .form_fields .form_field .dropzone {
     background: var(--bg4);
     border-radius: 10px;
@@ -920,12 +1002,14 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
     left: 10px;
     color: var(--muted);
 }
+
 .trades_table_wrapper .trades_table_inner .trades_search_wrap .trades_additional_actions {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 20px;
 }
+
 .trades_table_wrapper .trades_table_inner .trades_search_wrap .trades_additional_actions button.export_all_trades {
     border: 0px;
     background: transparent;
@@ -1469,7 +1553,8 @@ div#tfa_disable_form .main_set_field label {
     gap: 20px;
     flex-direction: row;
 }
-.single_trade_wrap .journal-content > * {
+
+.single_trade_wrap .journal-content>* {
     max-width: 50%;
     width: 100%;
     background-color: var(--bg2);
@@ -1477,21 +1562,25 @@ div#tfa_disable_form .main_set_field label {
     padding: 20px;
     border-radius: 10px;
 }
+
 .single_trade_wrap #notesForm {
     display: flex;
     flex-direction: column;
     margin-top: -30px;
     gap: 0px;
 }
+
 .single_trade_wrap #notesForm #save-notes {
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease-in-out;
 }
+
 .single_trade_wrap #notesForm #save-notes.show {
     opacity: 1;
     visibility: visible;
 }
+
 .single_trade_wrap textarea#journal_notes {
     max-width: 100%;
     min-width: 100%;
@@ -1503,10 +1592,12 @@ div#tfa_disable_form .main_set_field label {
     border-radius: 10px;
     color: var(--muted);
 }
+
 .single_trade_wrap textarea#journal_notes:focus {
     border-color: var(--border2);
     color: var(--text)
 }
+
 .single_trade_wrap #notesForm button {
     align-self: self-end;
 }
@@ -1532,9 +1623,11 @@ div#tfa_disable_form .main_set_field label {
 .screenshot-thumb {
     position: relative;
 }
+
 .screenshot-thumb:hover .screenshot-actions {
     display: flex;
 }
+
 .screenshot-actions {
     display: none;
     flex-direction: row;
@@ -1543,7 +1636,8 @@ div#tfa_disable_form .main_set_field label {
     top: 10px;
     right: 10px;
 }
-.screenshot-actions > * {
+
+.screenshot-actions>* {
     width: 30px;
     height: 30px;
     padding: 7px;
@@ -1552,18 +1646,22 @@ div#tfa_disable_form .main_set_field label {
     border: 1px solid var(--border);
     cursor: pointer;
 }
+
 .screenshot-actions svg {
     width: 100%;
     height: 100%;
     fill: var(--text);
 }
-.screenshot-actions > *:hover svg {
+
+.screenshot-actions>*:hover svg {
     fill: var(--text);
 }
+
 .screenshot-actions .screenshot-delete {
     background-color: var(--red);
     border-color: var(--red);
 }
+
 .screenshot-actions .screenshot-delete svg {
     fill: var(--accent-text);
 }

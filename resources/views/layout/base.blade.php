@@ -33,6 +33,7 @@
         
         
         @include('../components/popups/add-trade')
+        @include('../components/popups/coming-soon')
         @include('../components/popups/edit-trade')
         @include('../components/popups/confirm')
     @else

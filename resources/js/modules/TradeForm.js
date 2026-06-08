@@ -1,4 +1,3 @@
-
 export default class TradeForm {
 
     constructor() {
@@ -22,6 +21,11 @@ export default class TradeForm {
         }
         if (document.querySelectorAll('.export_all_trades').length >= 1) {
             document.querySelector('.export_all_trades').addEventListener('click', this.downloadTradeCsv.bind(this));
+        }
+        if (document.querySelectorAll('#trade_date_from, #trade_date_to').length >= 1) {
+            document.querySelectorAll('#trade_date_from, #trade_date_to').forEach((dt_inp, dt_indx) => {
+                dt_inp.addEventListener('change', this.FilterByDate.bind(this));
+            });
         }
         document.querySelectorAll('.form_fields .form_field ul.field_drop_down li').forEach((drop_itm) => {
             drop_itm.addEventListener(
@@ -65,9 +69,9 @@ export default class TradeForm {
 
             const date = new Date();
             const formatOptions = {
-            year: 'numeric', month: '2-digit', day: '2-digit',
-            hour: '2-digit', minute: '2-digit', second: '2-digit',
-            hour12: false
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false
             };
 
             const formatter = new Intl.DateTimeFormat('en-US', formatOptions);
@@ -75,7 +79,7 @@ export default class TradeForm {
 
             const formattedDate = `${year}${month}${day}_${hour}${minute}${second}`;
 
-            a.download = 'Trades_'+formattedDate+'.csv';
+            a.download = 'Trades_' + formattedDate + '.csv';
             document.body.appendChild(a);
 
             a.click();
@@ -179,6 +183,41 @@ export default class TradeForm {
     }
 
 
+    countTrades() {
+        document.querySelector('.main_trades_table').style.display = '';
+        document.querySelector('.no_trades_wrapper').style.display = 'none';
+        let has_trade = false;
+        let total_trades = 0;
+        let total_long_trades = 0;
+        let total_short_trades = 0;
+        document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr').forEach((itm) => {
+            if (itm.checkVisibility()) {
+                total_trades++;
+                has_trade = true;
+                if (itm.classList.contains('buy')) {
+                    total_long_trades++;
+                }
+                if (itm.classList.contains('sell')) {
+                    total_short_trades++;
+                }
+            }
+        });
+
+
+        if (!has_trade) {
+            document.querySelector('.main_trades_table').style.display = 'none';
+            document.querySelector('.no_trades_wrapper').style.display = '';
+        } else {
+            document.querySelector('.main_trades_table').style.display = '';
+            document.querySelector('.no_trades_wrapper').style.display = 'none';
+        }
+
+        document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="all"] .count').innerHTML = total_trades;
+        document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="long"] .count').innerHTML = total_long_trades;
+        document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="short"] .count').innerHTML = total_short_trades;
+    }
+
+
     FilterTradeTable(filterType, target) {
         this.trdTypeFilters.forEach((trdType) => {
             trdType.classList.remove('active');
@@ -265,6 +304,34 @@ export default class TradeForm {
             document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="all"] .count').innerHTML = total_trades;
             document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="long"] .count').innerHTML = total_long_trades;
             document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="short"] .count').innerHTML = total_short_trades;
+        }
+    }
+
+
+    FilterByDate() {
+        const fromDate = document.getElementById('trade_date_from').value;
+        const toDate = document.getElementById('trade_date_to').value;
+
+        if (fromDate != "" && toDate != "") {
+            const all_trades = document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr');
+            // console.log(all_trades);
+            if (all_trades && all_trades.length >= 1) {
+                all_trades.forEach((itm, elm) => {
+                    const this_date_elm = itm.querySelector('.trade_b_date');
+                    if (this_date_elm) {
+                        const this_date = this_date_elm.textContent;
+                        // console.log(this_date);
+
+                        if (this_date >= fromDate && this_date <= toDate) {
+                            itm.style.display = '';
+                        } else {
+                            itm.style.display = 'none';
+                        }
+                    }
+                })
+            }
+
+            this.countTrades();
         }
     }
 
