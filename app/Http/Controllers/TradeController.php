@@ -107,10 +107,16 @@ class TradeController extends Controller
         ]);
     }
 
-    public function getTrade($id)
+    public function getTrade(Request $request, $id)
     {
         $trade_obj = Trade::where('id', $id)->first();
         $trade = $trade_obj ? $trade_obj->toArray() : [];
+        if (!empty($trade['trd_screenshots']) && $request->is('trade/*')) {
+            $trade['trd_screenshots'] = unserialize($trade['trd_screenshots']);
+        }
+        if($request->is('journal/*')) {
+            return view('pages.single.trade', ['trade' => $trade]);
+        }
         return $trade;
     }
 

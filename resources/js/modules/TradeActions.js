@@ -84,6 +84,10 @@ export default class TradeActions {
                         if( clm == 'notes' ) {
                             trd_notes.value = data[clm];
                         }
+                        if (clm == 'trd_screenshots') {
+                            MainApp.Gallery.renderGallery(data[clm], trade_id);
+                            // MainApp.Gallery.uploadScreenshots();
+                        }
                         if(inp_arr && inp_arr.length >= 1){
                             inp_arr.forEach(inp_itm => {
                                 inp_itm.removeAttribute('checked');
@@ -121,6 +125,11 @@ export default class TradeActions {
 
         const formData = new FormData(form);
 
+        // for(let [name, value] of formData.entries()) {
+        //     console.log(name, value);
+        // }
+        // console.log(formData);
+
         form.classList.add('processing');
         fetch('/trade', {
             method: "PUT",
@@ -131,7 +140,8 @@ export default class TradeActions {
         }).then((response) => response.json())
         .then((data) => {
             console.log(data);
-            window.location.reload();
+            form.classList.remove('processing');
+            // window.location.reload();
         }).catch((err) => {
             form.classList.remove('processing');
         })

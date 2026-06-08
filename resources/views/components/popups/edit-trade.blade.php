@@ -90,8 +90,9 @@
                     </div>
                     <div class="form_field">
                         <label for="trade_screenshots">Chart Screenshots</label>
+                        <div class="screenshot-gallery"></div>
                         <label class="dropzone" for="trade_screenshots">
-                            <input type="file" name="trade_screenshots[]" id="trade_screenshots" accept="images/*" multiple/>
+                            <input type="file" name="trade_screenshots[]" id="trade_screenshots" accept="image/*" multiple/>
                             <span class="icon">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">

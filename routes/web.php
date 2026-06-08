@@ -76,11 +76,7 @@ Route::group(['middleware' => ['auth']], function () {
      * Single Pages
      **/
     Route::get('/trade/{id}', [TradeController::class, 'getTrade']);
-    Route::get('/journal/{id}', function ($id) {
-        $TradeController = new TradeController();
-        $trade = $TradeController->getTrade($id);
-        return view('pages/single/trade', ['trade' => $trade]);
-    });
+    Route::get('/journal/{id}', [TradeController::class, 'getTrade']);
 
 
     /***********************

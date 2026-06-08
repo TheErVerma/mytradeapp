@@ -564,7 +564,21 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
 .form_fields .form_field:not(.icon) textarea::placeholder {
     color: var(--muted2);
 }
-
+.form_fields .screenshot-gallery .image_gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.form_fields .screenshot-gallery .image_gallery > * {
+    max-width: 150px;
+    width: 100%;
+}
+.form_fields .screenshot-gallery .image_gallery img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    object-position: center;
+}
 .form_fields .form_field .dropzone {
     background: var(--bg4);
     border-radius: 10px;
@@ -1320,7 +1334,6 @@ div#tfa_disable_form .main_set_field label {
 
 .single_trade_wrap #uploadForm {
     margin-bottom: 10px;
-    
 }
 
 .single_trade_wrap .image_gallery {
