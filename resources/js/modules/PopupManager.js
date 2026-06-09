@@ -21,6 +21,9 @@ export default class PopupManager {
         if (event.target.closest('.close')) {
             this.closeAll();
         }
+        if(event.target.closest('.main_popup_overlay')) {
+            this.closeAll();
+        }
     }
 
     open(id) {
