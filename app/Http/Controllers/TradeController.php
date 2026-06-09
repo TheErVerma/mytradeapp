@@ -226,7 +226,7 @@ class TradeController extends Controller
             $shares = $shares == 0 ? (float) $trade->trd_lot : $shares;
             $price = (float) $trade->trd_price;
 
-            Log::debug('Shares: ' . $shares);
+            // Log::debug('Shares: ' . $shares);
             /**
              * BUY
              */

@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
             $user = Auth::user();
             if ($user) {
                 $total_trades = TradeController::getAll();
-                $portfolioSummry = $user && $user->initial_balance ? TradeController::summary($user->initial_balance) : [];
+                $portfolioSummry = $user && $user->initial_balance ? TradeController::summary($user->initial_balance ? $user->initial_balance : 1) : [];
                 $currency = $user->default_country;
                 $currency = $currency ? ($currency) : 'USD';
                 $view->with('trades', $total_trades);

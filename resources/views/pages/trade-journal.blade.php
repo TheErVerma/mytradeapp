@@ -30,8 +30,8 @@
                             </span>
                             <input type="search" name="trade_search" id="trade_search" placeholder="Search trades...">
                         </div>
-                        <input type="date" name="trade_date_from" id="trade_date_from" />
-                        <input type="date" name="trade_date_to" id="trade_date_to" />
+                        <input type="text" class="datepicker" name="trade_date_from" id="trade_date_from" date_type="from" placeholder="From"/>
+                        <input type="text" class="datepicker" name="trade_date_to" id="trade_date_to" date_type="to" placeholder="To"/>
                     </div>
                     <div class="trades_additional_actions">
                         <button type="button" class="export_all_trades" title="Export All Trades">
@@ -40,7 +40,7 @@
                             <path d="M5 16L5 17C5 18.1046 5.89543 19 7 19L17 19C18.1046 19 19 18.1046 19 17V16" stroke="currentColor" stroke-width="2"/>
                             </svg>
                         </button>
-                        <button type="button" class="btn btn-primary import_new_trades" title="Import All Trades">Import Trades</button>
+                        <button type="button" class="btn btn-primary import_new_trades" data-popup-target="coming-soon-pop" title="Import All Trades">Import Trades</button>
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                 <div class="no_trades_wrapper_inner">
                     <h4>No trades match your criteria</h4>
                     <p>Try adjusting your search or filters to see more results</p>
-                    <button type="button" class="btn btn-primary">+ Add New Trade</button>
+                    <button type="button" class="btn btn-primary" data-popup-target="add-trade-pop">+ Add New Trade</button>
                 </div>
             </div>
 

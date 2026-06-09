@@ -1,4 +1,5 @@
 import ConfirmPop from "../modules/ConfirmPop";
+import PopupManager from "../modules/PopupManager";
 
 
 export default class HelpManager {
@@ -80,4 +81,5 @@ export default class HelpManager {
                 })
         });
     }
+
 }

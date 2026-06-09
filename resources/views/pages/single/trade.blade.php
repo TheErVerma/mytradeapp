@@ -145,7 +145,7 @@
                             <form id="uploadForm" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" name="trade_id" value="{{ $trade_id }}" />
-                                <input type="file" id="imageInput" name="image" multiple hidden accept="image/*">
+                                <input type="file" id="imageInput" name="image" multiple hidden>
                                 <button class="btn btn-primary" type="button" id="uploadBtn">Upload Image</button>
                             </form>
                             @if(!empty($trade_ss))
