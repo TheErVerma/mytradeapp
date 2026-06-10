@@ -683,17 +683,17 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     flex-wrap: wrap;
     gap: 10px;
 }
-
-.form_fields .screenshot-gallery .image_gallery>* {
-    max-width: 150px;
+.form_fields .screenshot-gallery .image_gallery > * {
+    max-width: calc( ( 100% - 50px ) / 5 );
     width: 100%;
 }
 
 .form_fields .screenshot-gallery .image_gallery img {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: auto;
     object-fit: cover;
     object-position: center;
+    aspect-ratio: 1 / 1;
 }
 
 .form_fields .form_field .dropzone {
@@ -816,7 +816,6 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     left: 0;
     width: 100%;
     height: 100%;
-    background: #00000096;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -831,7 +830,16 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     visibility: hidden;
     opacity: 0;
 }
-
+.main_popup_overlay {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    background: #00000096;
+    overflow: visible;
+}
 .main_popup .main_popup_inner {
     width: 100%;
     background: var(--bg2);
@@ -1655,7 +1663,7 @@ div#tfa_disable_form .main_set_field label {
     border-radius: 7px;
     border: 1px solid var(--border);
     cursor: pointer;
-    background: var(--bg4);
+    background-color: var(--bg);
 }
 
 .screenshot-actions svg {
