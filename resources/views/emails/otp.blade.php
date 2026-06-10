@@ -15,7 +15,7 @@
           <!-- Header -->
           <tr>
             <td align="center" bgcolor="#4f6bff" style="padding: 40px 20px;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Reset Password Request</h1>
+              <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Verify Email Request</h1>
             </td>
           </tr>
 
@@ -23,7 +23,7 @@
           <tr>
             <td style="padding: 30px; color: #333333; line-height: 1.6;">
               <h2 style="margin-top: 0; color: #2c3e50;">Hi there, {{ $name }}</h2>
-              <p style="margin-bottom: 20px;">You requested to reset your password, here is the OTP to reset your password, please don't share it with anyone.</p>
+              <p style="margin-bottom: 20px;">To verify your email address, please use the below one time password (OTP).</p>
               
               <!-- Call to Action Button -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0">

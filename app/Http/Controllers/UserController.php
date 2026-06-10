@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Crypt;
 
 
 
@@ -26,26 +27,31 @@ class UserController extends Controller
         ]);
 
         $credentials_arr = [
-            "email"    => $request->input('email_address'),
+            "email" => $request->input('email_address'),
             "password" => $request->input('password')
         ];
 
         if (Auth::attempt($credentials_arr)) {
             $user = Auth::user();
+            if (is_null($user->email_verified_at)) {
+                Auth::logout();
+
+                return array(
+                    "status" => 500,
+                    "message" => "Invalid email or password."
+                );
+            }
 
             // If the user has 2FA enabled and confirmed, don't complete login yet.
             // Store the user ID in session and redirect to the 2FA challenge.
-            if (
-                ! is_null($user->two_factor_confirmed_at) &&
-                ! is_null($user->two_factor_secret)
-            ) {
+            if (!is_null($user->two_factor_confirmed_at) && !is_null($user->two_factor_secret)) {
                 // Log back out — login will be completed after 2FA verification.
                 Auth::logout();
                 session(['login.id' => $user->id]);
 
                 return array(
-                    "status"   => 202,
-                    "message"  => "2FA required.",
+                    "status" => 202,
+                    "message" => "2FA required.",
                     "redirect" => "/two-factor-authenticate"
                 );
             }
@@ -53,13 +59,13 @@ class UserController extends Controller
             $request->session()->regenerate();
 
             return array(
-                "status"   => 200,
-                "message"  => "Logged In.",
+                "status" => 200,
+                "message" => "Logged In.",
                 "redirect" => "/"
             );
         } else {
             return array(
-                "status"  => 500,
+                "status" => 500,
                 "message" => "Invalid email or password."
             );
         }
@@ -68,12 +74,12 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $credentials = $request->validate([
-            "email"               => ['required'],
-            "password"            => ['required'],
+            "email" => ['required'],
+            "password" => ['required'],
             "g-recaptcha-response" => ['required'],
         ]);
 
-        $user      = new User();
+        $user = new User();
         $fist_name = $request->input('first_name');
         $last_name = $request->input('last_name');
         $full_name = $fist_name;
@@ -83,38 +89,57 @@ class UserController extends Controller
 
         $has_user_email = User::where('email', $request->input('email'))->first();
         if ($has_user_email) {
-            return array(
-                "status"  => 500,
-                "message" => "Email Already Exists"
-            );
+            if(!is_null($has_user_email->email_verified_at)){
+                return array(
+                    "status" => 500,
+                    "message" => "Email Already Exists"
+                );
+            }else{
+                $user = User::findOrFail($has_user_email->id);
+            }
         }
 
         $user->password = Hash::make($request->input('password'));
-        $user->email    = $request->input('email');
-        $user->name     = $full_name;
+        $user->email = $request->input('email');
+        $user->name = $full_name;
+
+        $otp = rand(100000, 999999); 
+        $resp = Mail::to($user->email)->send(new OTPEmail($otp, $user->name));
+        
+        $user->verifyhash = $otp . '|' . time();
+        $user->save();
 
         if ($user->save()) {
-            $credentials = $request->validate([
-                "email"    => ['required'],
-                "password" => ['required'],
-            ]);
-            if (Auth::attempt($credentials)) {
-                $request->session()->regenerate();
-                return array(
-                    "status"   => 200,
-                    "message"  => "Logged In.",
-                    "redirect" => "/"
-                );
-            } else {
-                return array(
-                    "status"  => 500,
-                    "message" => "Not logged In."
-                );
+            // $credentials = $request->validate([
+            //     "email"    => ['required'],
+            //     "password" => ['required'],
+            // ]);
+            // if (Auth::attempt($credentials)) {
+            //     $request->session()->regenerate();
+            //     return array(
+            //         "status"   => 200,
+            //         "message"  => "Logged In.",
+            //         "redirect" => "/"
+            //     );
+            // } else {
+            //     return array(
+            //         "status"  => 500,
+            //         "message" => "Not logged In."
+            //     );
 
-            }
+            // }
+
+            $user_email = $user->email;
+
+            $encrypted = Crypt::encryptString(base64_encode(json_encode($user_email)));
+            return array(
+                "status" => 200,
+                "message" => "Verification Email Sent!",
+                "redirect" => "/verify-email?hash=".$encrypted
+            );
         } else {
             return array(
-                "status"  => 500,
+                "status" => 500,
                 "message" => "Registeration unsuccessful."
             );
         }
@@ -126,14 +151,14 @@ class UserController extends Controller
         $parameters = $request->validate([
             "email_address" => ['required'],
         ]);
-        $otp        = rand(100000, 999999);
+        $otp = rand(100000, 999999);
         $user_email = $request->input('email_address');
 
         $user = User::where('email', $user_email)->first();
         if ($user) {
             $resp = Mail::to($user_email)->send(new OTPEmail($otp, $user->name));
 
-            $user_obj             = User::findOrFail($user->id);
+            $user_obj = User::findOrFail($user->id);
             $user_obj->verifyhash = $otp . '|' . time();
             $user_obj->save();
 
@@ -145,7 +170,7 @@ class UserController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'Invalid Email',
-            'email'   => $user_email
+            'email' => $user_email
         ]);
     }
 
@@ -154,7 +179,7 @@ class UserController extends Controller
     {
         $parameters = $request->validate([
             "email_address" => ['required'],
-            "new_password"  => ['required'],
+            "new_password" => ['required'],
         ]);
         $user_email = $request->input('email_address');
 
@@ -162,13 +187,13 @@ class UserController extends Controller
         if ($user) {
             $resp = Mail::to($user_email)->send(new ResetPassEmail($user->name));
 
-            $user_obj           = User::findOrFail($user->id);
+            $user_obj = User::findOrFail($user->id);
             $user_obj->password = Hash::make($request->input('new_password'));
             $user_obj->save();
 
             return response()->json([
-                'success'  => true,
-                'message'  => 'Password Changed',
+                'success' => true,
+                'message' => 'Password Changed',
                 'redirect' => '/login'
             ]);
         }
@@ -182,28 +207,35 @@ class UserController extends Controller
     public function verifyOTP(Request $request)
     {
         $parameters = $request->validate([
-            "otp"           => ['required'],
+            "otp" => ['required'],
             "email_address" => ['required'],
         ]);
 
-        $otp           = $request->input('otp');
-        $user_email    = $request->input('email_address');
-        $user          = User::where('email', $user_email)->first();
+        $otp = $request->input('otp');
+        $user_email = $request->input('email_address');
+        $verify_type = $request->input('verify_type');
+        $user = User::where('email', $user_email)->first();
         $saved_otp_data = explode('|', $user->verifyhash);
-        $saved_otp     = isset($saved_otp_data[0]) ? $saved_otp_data[0] : '';
-        $saved_time    = isset($saved_otp_data[1]) ? $saved_otp_data[1] : '';
-        $valid_untill  = 600;
+        $saved_otp = isset($saved_otp_data[0]) ? $saved_otp_data[0] : '';
+        $saved_time = isset($saved_otp_data[1]) ? $saved_otp_data[1] : '';
+        $valid_untill = 600;
 
+        
         if ($saved_otp == $otp && ($saved_time + $valid_untill) >= time()) {
+            if($verify_type == 'register'){
+                $user_obj = User::findOrFail($user->id);
+                $user_obj->email_verified_at = date('Y-m-d h:i:s');
+                $user_obj->save();
+            }
             return response()->json([
                 'success' => true,
-                'email'   => $user_email,
+                'email' => $user_email,
                 'message' => 'OPT Verified',
             ]);
         }
         return response()->json([
             'success' => false,
-            'email'   => $user_email,
+            'email' => $user_email,
             'message' => 'Invalid OPT',
         ]);
     }
@@ -219,15 +251,15 @@ class UserController extends Controller
     {
 
         $request->validate([
-            'first_name'  => 'required|string|max:255',
-            'last_name'   => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'profile_pic' => 'image|mimes:jpg,jpeg,png,gif,webp|max:2048',
         ]);
 
         $f_name = $request->input('first_name');
         $l_name = $request->input('last_name');
 
-        $user       = User::findOrFail($id);
+        $user = User::findOrFail($id);
         $user->name = $f_name . ' ' . $l_name;
 
         $response = [
@@ -236,14 +268,14 @@ class UserController extends Controller
 
         if ($request->hasFile('profile_pic')) {
             $profile_pic = $request->file('profile_pic');
-            $picName     = time() . '.' . $profile_pic->getClientOriginalExtension();
+            $picName = time() . '.' . $profile_pic->getClientOriginalExtension();
             $profile_pic->storeAs('profile', $picName, 'public');
 
             $profile_pic_url = asset('storage/profile/' . $picName);
 
-            $file     = parse_url($user->profile_pic, PHP_URL_PATH);
+            $file = parse_url($user->profile_pic, PHP_URL_PATH);
             $response['file'] = $file;
-            $prevPic  = ltrim(str_replace('/storage', '', $file));
+            $prevPic = ltrim(str_replace('/storage', '', $file));
 
             if (Storage::disk('public')->exists($prevPic)) {
                 Storage::disk('public')->delete($prevPic);
@@ -267,10 +299,10 @@ class UserController extends Controller
             'initial_balance' => ['required'],
         ]);
 
-        $country      = $request->input('default_country');
+        $country = $request->input('default_country');
         $init_balance = $request->input('initial_balance');
 
-        $user                  = User::findOrFail($id);
+        $user = User::findOrFail($id);
         $user->default_country = $country;
         $user->initial_balance = $init_balance;
 
@@ -286,7 +318,8 @@ class UserController extends Controller
     }
 
 
-    public function resetAllData(Request $request){
+    public function resetAllData(Request $request)
+    {
         $response = [
             'success' => true,
             'message' => 'All data cleared'

@@ -125,4 +125,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/forget-password', function () {
         return view('pages/forget-password');
     })->name('forget_password');
+    Route::get('/verify-email', function () {
+        return view('pages/verify-email');
+    })->name('verify_email');
 });

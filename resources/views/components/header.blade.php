@@ -257,5 +257,7 @@
                 </li> -->
             </ul>
         </div>
+
+        <span class="sidebar_bottom_credits">TradeApp &copy; {{ date('Y') }}</span>
     </div>
 </aside>

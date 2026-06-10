@@ -31,11 +31,12 @@
     <p>We sent you an OTP to your email address. Please write in the below field.</p>
     <form action="" id="verify_otp_form">
       @csrf
+      <input type="hidden" name="verify_type" value="forget_password" />
       <input type="hidden" name="email_address" />
       <div class="form_fields">
 
         <div class="form_field">
-          <label for="otp">Password</label>
+          <label for="otp">OTP</label>
           <input type="number" name="otp" id="otp" required />
         </div>
       </div>

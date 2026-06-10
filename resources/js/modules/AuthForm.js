@@ -12,11 +12,11 @@ export default class AuthForm {
     }
 
     init() {
-        document.addEventListener('submit',this.handleSubmit.bind(this));
-        document.addEventListener('submit',this.forgetPassword.bind(this));
-        document.addEventListener('submit',this.verifyOTP.bind(this));
-        document.addEventListener('submit',this.resetPassword.bind(this));
-        document.addEventListener('click',this.togglePassword.bind(this));
+        document.addEventListener('submit', this.handleSubmit.bind(this));
+        document.addEventListener('submit', this.forgetPassword.bind(this));
+        document.addEventListener('submit', this.verifyOTP.bind(this));
+        document.addEventListener('submit', this.resetPassword.bind(this));
+        document.addEventListener('click', this.togglePassword.bind(this));
         this.logout();
     }
 
@@ -172,21 +172,21 @@ export default class AuthForm {
             .then((data) => {
                 console.log(data);
                 if (data.success) {
-                    this.addNotice(data.message, 'success');
-                    document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                    document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                    document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
-                    document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'none';
-                    document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
+                    if (document.querySelector('[name="verify_type"]').value == 'register') {
+                        window.location.href = '/login';
+                    } else {
+                        this.addNotice(data.message, 'success');
+                        document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                        document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                        document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
+                        document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'none';
+                        document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
+                    }
                 } else {
                     this.addNotice(data.message, 'warning');
                 }
 
                 this.OtpForm.classList.remove('processing');
-                // if (data.redirect) {
-                //     window.location.href = data.redirect;
-                // }
-
             }).catch((err) => {
                 console.log(err);
                 this.OtpForm.classList.remove('processing');

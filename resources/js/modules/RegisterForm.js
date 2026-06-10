@@ -41,6 +41,7 @@ export default class RegisterForm {
     }
 
     handleSubmit(event) {
+        this.removeAllNotices();
         this.loginForm = event.target;
 
         if (!this.loginForm.matches('#register_form')) {
@@ -48,6 +49,8 @@ export default class RegisterForm {
         }
 
         event.preventDefault();
+
+        this.loginForm.classList.add('processing');
 
         const formData = new FormData(this.loginForm);
 
@@ -68,11 +71,13 @@ export default class RegisterForm {
                     this.addNotice(data.message, 'warning');
                 }
 
+                this.loginForm.classList.remove('processing');
                 if(data.redirect){
                     window.location.href = data.redirect;
                 }
 
             }).catch((err) => {
+                this.loginForm.classList.remove('processing');
                 console.log(err);
             })
     }

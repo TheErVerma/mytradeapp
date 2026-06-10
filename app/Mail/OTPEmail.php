@@ -32,7 +32,7 @@ class OTPEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reset Password OTP',
+            subject: 'Verify Email OTP',
         );
     }
 

@@ -28,7 +28,8 @@
         </div>
       </div>
 
-      <div class="g-recaptcha" id="rcaptcha" data-theme="light" data-sitekey="6LfqhAItAAAAAN9WGjDB7vPoAwEUmqj7c2V6SmUc"></div>
+      <!-- <div class="g-recaptcha" id="rcaptcha" data-theme="light" data-sitekey="6LfqhAItAAAAAN9WGjDB7vPoAwEUmqj7c2V6SmUc"></div> -->
+      <div class="g-recaptcha" id="rcaptcha" data-theme="light" data-sitekey="6LeWX-EsAAAAAHgm1XAGiabkyStycb4P6jD_sVI5"></div>
 
       <div class="form_notices"></div>
 
