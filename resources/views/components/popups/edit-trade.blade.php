@@ -1,6 +1,5 @@
 
 <div class="main_popup" data_identity="edit-trade-pop">
-    <div class="main_popup_overlay"></div>
     <div class="main_popup_inner">
         <span class="close">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

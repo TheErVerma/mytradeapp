@@ -30,7 +30,7 @@
                             <div class="p_h_banner"></div>
                             <div class="profile_image">
                                 <img src="{{ $user->profile_pic }}" alt="">
-                                <input type="file" name="profile_pic" id="profile_pic" accept="images/*" />
+                                <input type="file" name="profile_pic" id="profile_pic" accept="image/*" />
                                 <span class="icon">
                                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
