@@ -3,7 +3,7 @@
     $user = Auth::user();
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" theme="{{ $user->theme_enabled != "" ? $user->theme_enabled : 'dark' }}" data_user_id="{{ $user->id }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" theme="{{ isset($user) && $user->theme_enabled != "" ? $user->theme_enabled : 'light' }}" data_user_id="{{isset($user) ? $user->id : false}}">
 
 <head>
     <meta charset="utf-8">
