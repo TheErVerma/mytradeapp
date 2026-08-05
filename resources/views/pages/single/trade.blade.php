@@ -59,9 +59,8 @@
             $trade_ss = isset($trade['trd_screenshots']) ? unserialize($trade['trd_screenshots']) : [];
 
             $trd_date = $trade['trd_date'];
-            $trd_time = $trade['trd_time'];
 
-            $tradeDateTime = new DateTime($trd_date . ' ' . $trd_time);
+            $tradeDateTime = new DateTime($trd_date);
             $now = new DateTime();
 
             $interval = $tradeDateTime->diff($now);
@@ -88,10 +87,6 @@
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Entry Date</div>
                                     <div class="sngltrd_tbl_value">{{ date('F d, Y', strtotime($trade['trd_date'])) }}</div>
-                                </div>
-                                <div class="sngltrd_tbl">
-                                    <div class="sngltrd_tbl_title">Entry Time</div>
-                                    <div class="sngltrd_tbl_value">{{ date('h:m A', strtotime($trade['trd_time'])) }}</div>
                                 </div>
                                 <div class="sngltrd_tbl">
                                     <div class="sngltrd_tbl_title">Duration</div>

@@ -73,6 +73,7 @@ export default class AuthForm {
         event.preventDefault();
 
         const formData = new FormData(this.loginForm);
+        this.removeAllNotices();
 
         // AJAX request here
         fetch('/login', {
@@ -85,14 +86,15 @@ export default class AuthForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                if (data.status == 200) {
-                    this.addNotice(data.message, 'success');
-                } else {
-                    this.addNotice(data.message, 'warning');
-                }
-
+                
                 if (data.redirect) {
                     window.location.href = data.redirect;
+                }else{
+                    if (data.status == 200) {
+                        this.addNotice(data.message, 'success');
+                    } else {
+                        this.addNotice(data.message, 'warning');
+                    }
                 }
 
             }).catch((err) => {
@@ -173,7 +175,7 @@ export default class AuthForm {
                 console.log(data);
                 if (data.success) {
                     if (document.querySelector('[name="verify_type"]').value == 'register') {
-                        window.location.href = '/login';
+                        window.location.href = '/login?verified=1';
                     } else {
                         this.addNotice(data.message, 'success');
                         document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value

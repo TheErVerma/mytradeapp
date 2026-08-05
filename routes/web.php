@@ -61,6 +61,7 @@ Route::group(['middleware' => ['auth']], function () {
      */
     Route::post('/user/{id}/savesettings', [UserController::class, 'saveSettings']);
     Route::post('/user/{id}/saveprofile', [UserController::class, 'saveProfile']);
+    Route::post('/user/{id}/save-theme', [UserController::class, 'saveTheme']);
     Route::post('/trade', [TradeController::class, 'addTrade']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
     Route::put('/trade', [TradeController::class, 'editTrade']);
@@ -103,6 +104,7 @@ Route::post('/forget-password', [UserController::class, 'forgetPassword']);
 Route::post('/verify-otp', [UserController::class, 'verifyOTP']);
 Route::post('/reset-password', [UserController::class, 'resetPassword']);
 Route::post('/reset-all-data', [UserController::class, 'resetAllData']);
+
 
 
 /***********************

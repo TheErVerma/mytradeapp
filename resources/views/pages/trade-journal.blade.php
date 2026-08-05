@@ -9,10 +9,9 @@
         // $all_trades
         $trad_actions = array_column($all_trades, 'trd_action');
         $trdActnCnt = array_count_values($trad_actions);
-        $trdLong = isset($trdActnCnt['Buy']) ? $trdActnCnt['Buy'] : 0;
-        $trdShort = isset($trdActnCnt['Sell']) ? $trdActnCnt['Sell'] : 0;
+        $trdLong = isset($trdActnCnt['Long']) ? $trdActnCnt['Long'] : 0;
+        $trdShort = isset($trdActnCnt['Short']) ? $trdActnCnt['Short'] : 0;
         $trdAllCnt = $trdLong + $trdShort;
-        $trdActionNm = ['Buy' => 'Long', 'Sell' => 'Short'];
     @endphp
 
     <div class="trades_table_wrapper">
@@ -71,7 +70,6 @@
                         <th class="trade_h_symbol">Symbol</th>
                         <th class="trade_h_action">Action</th>
                         <th class="trade_h_date">Date</th>
-                        <th class="trade_h_time">Time</th>
                         <th class="trade_h_shares">Shares</th>
                         <th class="trade_h_price">Price</th>
                         <!-- <th>Commissions</th>
@@ -97,9 +95,8 @@
                                 </td>
                                 <td class="trade_b_id">{{ $trade_item['id'] }}</td>
                                 <td class="trade_b_symbol"><a href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</a></td>
-                                <td class="trade_b_action"><span>{{ $trdActionNm[$trade_item['trd_action']] }}</span></td>
+                                <td class="trade_b_action"><span>{{ $trade_item['trd_action'] }}</span></td>
                                 <td class="trade_b_date">{{ $trade_item['trd_date'] }}</td>
-                                <td class="trade_b_time">{{ $trade_item['trd_time'] }}</td>
                                 <td class="trade_b_shares">{{ $shares }}</td>
                                 <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in:$currency) }}</td>
                                 <td class="trade_b_actions">

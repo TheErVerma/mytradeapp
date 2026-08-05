@@ -35,11 +35,13 @@ class TradeController extends Controller
         $validated = $request->validate([
             'trd_symbol' => 'required|string|max:255',
             'trd_date' => 'required|date',
-            'trd_time' => 'required',
+            // 'trd_time' => 'required',
 
             'trd_shares' => 'nullable|integer',
 
-            'trd_price' => 'required|numeric',
+            'trd_price' => 'required',
+            'trd_exit_price' => 'required',
+            'trd_charges_amount' => 'required',
             'trd_type' => 'nullable|string',
             'trd_lot' => 'nullable|numeric',
             'trd_notes' => 'nullable|string',
@@ -66,19 +68,25 @@ class TradeController extends Controller
             }
         }
 
+        $trd_entr_price = (float) str_replace(',', '', ($validated['trd_price'] ?? 0));
+        $trd_ext_price = (float) str_replace(',', '', ($validated['trd_exit_price'] ?? 0));
+        $trd_chrgs_amount = (float) str_replace(',', '', ($validated['trd_charges_amount'] ?? 0));
+
         $trade = Trade::create([
 
             'trd_symbol' => $validated['trd_symbol'] ?? 0,
-            'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : 'Sell',
+            'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : 'Long',
 
             'trd_date' => $validated['trd_date'] ?? 0,
-            'trd_time' => $validated['trd_time'] ?? 0,
+            // 'trd_time' => $validated['trd_time'] ?? 0,
 
             'trd_shares' => $validated['trd_shares'] ?? 0,
 
-            'trd_price' => $validated['trd_price'] ?? 0,
+            'trd_price' => $trd_entr_price,
+            'trd_exit_price' => $trd_ext_price,
+            'trd_charges_amount' => $trd_chrgs_amount,
             'trd_lot' => $validated['trd_lot'] ?? 0,
-            'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : 'F&O',
+            'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : 'Cash',
             'notes' => !empty($validated['trd_notes']) ? $validated['trd_notes'] : '',
             'user_id' => Auth::id(),
             'trd_screenshots' => serialize($screenshots)
@@ -126,7 +134,7 @@ class TradeController extends Controller
             'id' => 'required',
             'trd_symbol' => 'required|string|max:255',
             'trd_date' => 'required|date',
-            'trd_time' => 'required',
+            // 'trd_time' => 'required',
 
             'trd_shares' => 'nullable|integer',
 
@@ -170,7 +178,7 @@ class TradeController extends Controller
             'trd_action' => $validated['trd_action'] ?? $trade->trd_action,
 
             'trd_date' => $validated['trd_date'] ?? $trade->trd_date,
-            'trd_time' => $validated['trd_time'] ?? $trade->trd_time,
+            // 'trd_time' => $validated['trd_time'] ?? $trade->trd_time,
 
             'trd_shares' => $validated['trd_shares'] ?? $trade->trd_shares,
 
@@ -386,7 +394,7 @@ class TradeController extends Controller
 
         $trades = Trade::where('user_id', $userId)
             ->orderBy('trd_date')
-            ->orderBy('trd_time')
+            // ->orderBy('trd_time')
             ->get();
 
         $groupedTrades = $trades->groupBy(function ($trade) {

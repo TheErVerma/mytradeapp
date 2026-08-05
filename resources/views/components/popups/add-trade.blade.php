@@ -1,4 +1,7 @@
-
+@php
+$formatter = new NumberFormatter('en_US@currency=' . $currency, NumberFormatter::CURRENCY);
+$money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+@endphp
 <div class="main_popup" data_identity="add-trade-pop">
     <div class="main_popup_inner">
         <span class="close">
@@ -8,8 +11,7 @@
         </span>
         <div class="main_pop_content">
             <h2>Add Trade</h2>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate similique ducimus impedit eligendi
-                aut nobis mollitia maiores, assumenda perspiciatis pariatur quisquam!</p>
+            <p>Add your latest trade to your journal. Fill in the trade details to maintain an accurate trading history</p>
             <form action="" id="add_trade_popup" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="form_fields">
@@ -45,52 +47,68 @@
                         </div>
 
                         <div class="form_field toggle">
-                            <div class="form_field_label">Action</div>
-                            <div class="form_field toggle_inner">
-                                <label for="action_buy" class="positive">Long
-                                    <input type="radio" name="trd_action" id="action_buy" value="Buy" checked />
-                                </label>
-                                <label for="action_sell" class="negative">Short
-                                    <input type="radio" name="trd_action" id="action_sell" value="Sell" />
+                            <div class="form_field_label">Type</div>
+                            <div class="form_field togglebtn">
+                                <label for="trd_action" class="positive">
+                                    <span class="option_1">Long</span>
+                                    <span class="option_2">Short</span>
+                                    <input type="checkbox" name="trd_action" id="trd_action" value="Short" />
                                 </label>
                             </div>
                         </div>
+                        
                     </div>
-                    <div class="form_field_group">
-                        <div class="form_field">
-                            <label for="trade_date">Date</label>
-                            <input type="date" name="trd_date" id="trade_date" required />
-                        </div>
-                        <div class="form_field">
-                            <label for="trade_time">Time</label>
-                            <input type="time" name="trd_time" id="trade_time" required />
-                        </div>
-                    </div>
+                    
                     <div class="form_field_group">
                         <div class="form_field toggle">
                             <div class="form_field_label">Type</div>
-                            <div class="form_field toggle_inner">
-                                <label for="type_cash" class="positive">Cash
-                                    <input type="radio" name="trd_type" id="type_cash" value="Cash" checked />
-                                </label>
-                                <label for="type_fno" class="negative">F&O
-                                    <input type="radio" name="trd_type" id="type_fno" value="F&O" />
+                            <div class="form_field togglebtn">
+                                <label for="trd_type" class="positive">
+                                    <span class="option_1">Cash</span>
+                                    <span class="option_2">F&O</span>
+                                    <input type="checkbox" name="trd_type" id="trd_type" value="F&O" />
                                 </label>
                             </div>
                         </div>
                         <div class="form_field">
                             <label for="shares_amount">Shares</label>
-                            <input type="text" name="trd_shares" id="shares_amount" placeholder="0.00" />
+                            <input type="number" name="trd_shares" id="shares_amount" placeholder="0.00" />
                         </div>
                         <div class="form_field" style="display:none;">
                             <label for="trd_lot">Lot</label>
-                            <input type="text" name="trd_lot" id="trd_lot" placeholder="0" />
+                            <input type="number" name="trd_lot" id="trd_lot" placeholder="0" />
                         </div>
-
                     </div>
                     <div class="form_field">
-                        <label for="price_amount">Price</label>
-                        <input type="text" name="trd_price" id="price_amount" placeholder="0.0000" required />
+                        <label for="trade_date">Date</label>
+                        <input type="text" class="datepicker" name="trd_date" id="trade_date" required value="
+                        @php 
+                        echo date('Y-m-d');
+                        @endphp
+                        "/>
+                    </div>
+                    <div class="form_field_group">
+                        <div class="form_field">
+                            <label for="entry_price_amount">Entry Price</label>
+                            <div class="price_field">
+                                <span class="currency">{{ $money_symbol }}</span>
+                                <input type="text" class="price" name="trd_price" id="entry_price_amount" placeholder="0.00" required />
+                            </div>
+                        </div>
+                        <div class="form_field">
+                            <label for="exit_price_amount">Exit Price</label>
+                            <div class="price_field">
+                                <span class="currency">{{ $money_symbol }}</span>
+                                <input type="text" class="price" name="trd_exit_price" id="exit_price_amount" placeholder="0.00" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form_field">
+                        <label for="trd_charges_amount">Charges</label>
+                        <div class="price_field">
+                            <span class="currency">{{ $money_symbol }}</span>
+                            <input type="text" class="price" name="trd_charges_amount" id="trd_charges_amount" placeholder="0.00" required />
+                        </div>
                     </div>
                     <div class="form_field">
                         <label for="trade_notes">Notes</label>

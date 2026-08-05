@@ -9,11 +9,16 @@
         <div class="main_dash_inner">
             <h4>Account Summary</h4>
 
+            @php
+            /*
             <div class="hightlight_dash_amount">
                 <p>Net Account Value</p>
                 <h2>{{ Number::currency($net_amount, in: $currency) }}</h2>
                 <h5>+{{ Number::currency($net_amount, in: $currency) }}</h5>
-            </div>
+            </div> */ 
+            @endphp
+            
+
             @php
                 $items = [
                     'net_realized_pnl' => 'Net Realized P&L',

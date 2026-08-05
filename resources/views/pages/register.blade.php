@@ -2,8 +2,8 @@
 
 @section('content')
   <div class="main_log_reg_form">
-    <h2>Register</h2>
-    <p>Lorem ipsum, dolor sit amet consetur adsicing elit. Minus, quibusdam amet consetur.</p>
+    <h2>Start Trading Smarter</h2>
+    <p>Create your account to log trades, analyze your performance, and improve with every trade.</p>
     <form action="" id="register_form">
       @csrf
       <div class="form_fields">
@@ -29,7 +29,6 @@
       </div>
 
       <div class="g-recaptcha" id="rcaptcha" data-theme="light" data-sitekey="6LctLHUtAAAAAHqVUBvi3nP8abT6QBLoRivwi-oB"></div>
-      <!-- <div class="g-recaptcha" id="rcaptcha" data-theme="light" data-sitekey="6LeWX-EsAAAAAHgm1XAGiabkyStycb4P6jD_sVI5"></div> -->
 
       <div class="form_notices"></div>
 

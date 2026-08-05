@@ -30,7 +30,11 @@ $countries = [
                             <label for="default_country">Default Country</label>
                             <select name="default_country" id="default_country">
                                 @foreach ($countries as $country_code => $countrty)
-                                    <option value="{{ $country_code }}" @php echo $country_code == $user->default_country ? 'selected' : ''; @endphp >{{ $countrty }}</option>
+                                    @php
+                                    $usr_dfl_country = $user->default_country;
+                                    $usr_dfl_country = $usr_dfl_country == "" ? 'USD' : $usr_dfl_country;
+                                    @endphp
+                                    <option value="{{ $country_code }}" @php echo $country_code == $usr_dfl_country ? 'selected' : ''; @endphp >{{ $countrty }}</option>
                                 @endforeach
                             </select>
                             <span class="field_bmt_text">This will be used throughout the app for all monetary

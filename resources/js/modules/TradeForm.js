@@ -97,19 +97,18 @@ export default class TradeForm {
             trd_type.addEventListener('change', function () {
                 const this_itm = this;
                 const this_wrapper = this_itm.closest('.form_fields');
-                const this_checked = this_wrapper.querySelector('[name="trd_type"]:checked').value;
-                if (this_checked == 'Cash') {
+                const this_checked_obj = this_wrapper.querySelector('[name="trd_type"]:checked');
+                const this_checked = this_checked_obj ? this_checked_obj.value : false;
+                if (this_checked != 'F&O') {
                     this_wrapper.querySelector('[name="trd_shares"]').closest('.form_field').style.display = 'flex';
                     this_wrapper.querySelector('[name="trd_lot"]').closest('.form_field').style.display = 'none';
-                } else if (this_checked == 'F&O') {
+                } else {
                     this_wrapper.querySelector('[name="trd_shares"]').closest('.form_field').style.display = 'none';
                     this_wrapper.querySelector('[name="trd_lot"]').closest('.form_field').style.display = 'flex';
                 }
             });
         })
     }
-
-
 
     handleSubmit(event) {
         const form = event.target;
@@ -132,7 +131,7 @@ export default class TradeForm {
         }).then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                window.location.reload();
+                window.location.href = '/journal';//reload();
             }).catch((err) => {
                 console.log(err);
                 form.classList.remove('processing');
@@ -194,10 +193,10 @@ export default class TradeForm {
             if (itm.checkVisibility()) {
                 total_trades++;
                 has_trade = true;
-                if (itm.classList.contains('buy')) {
+                if (itm.classList.contains('long')) {
                     total_long_trades++;
                 }
-                if (itm.classList.contains('sell')) {
+                if (itm.classList.contains('short')) {
                     total_short_trades++;
                 }
             }
@@ -227,18 +226,18 @@ export default class TradeForm {
         // console.log(filterType);
         switch (filterType) {
             case 'long':
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.buy').forEach((itm) => {
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.long').forEach((itm) => {
                     itm.style.display = '';
                 });
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.sell').forEach((itm) => {
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.short').forEach((itm) => {
                     itm.style.display = 'none';
                 });
                 break;
             case 'short':
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.sell').forEach((itm) => {
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.short').forEach((itm) => {
                     itm.style.display = '';
                 });
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.buy').forEach((itm) => {
+                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.long').forEach((itm) => {
                     itm.style.display = 'none';
                 });
                 break;
@@ -268,7 +267,7 @@ export default class TradeForm {
                 if ((this_text.toLowerCase()).includes(searchText)) {
                     itm.style.display = '';
                     total_trades++;
-                    if (itm.classList.contains('buy')) {
+                    if (itm.classList.contains('long')) {
                         total_long_trades++;
                         if (tabFilter == 'long' || tabFilter == 'all') {
                             has_trade = true;
@@ -277,7 +276,7 @@ export default class TradeForm {
                             itm.style.display = 'none';
                         }
                     }
-                    if (itm.classList.contains('sell')) {
+                    if (itm.classList.contains('short')) {
                         total_short_trades++;
                         if (tabFilter == 'short' || tabFilter == 'all') {
                             has_trade = true;

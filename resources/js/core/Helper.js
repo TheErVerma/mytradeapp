@@ -23,12 +23,16 @@ export default class HelpManager {
         const isDarkMode = themeQuery.matches;
         // this.toggleTheme(isDarkMode ? 'dark' : 'light');
 
-        // themeQuery.addEventListener("change", (event) => {
-        //     const newTheme = event.matches ? "dark" : "light";
-        //     this.toggleTheme(newTheme);
-        // });
         const theme = localStorage.getItem('theme');
-        this.toggleTheme(theme);
+        if (theme == null) {
+            themeQuery.addEventListener("change", (event) => {
+                const newTheme = event.matches ? "dark" : "light";
+                this.toggleTheme(newTheme);
+            });
+            // this.toggleTheme(isDarkMode ? 'dark' : 'light');
+        } else {
+            // this.toggleTheme(theme);
+        }
     }
 
     handleClick(e) {
@@ -49,7 +53,22 @@ export default class HelpManager {
     }
 
     toggleTheme(theme) {
+        const user_id = document.querySelector('html[data_user_id]').getAttribute('data_user_id');
         document.querySelector('html').setAttribute('theme', theme);
+        fetch(`/user/${user_id}/save-theme`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': this.token
+            },
+            body: JSON.stringify({theme})
+        }).then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            }).catch((err) => {
+                console.log(err);
+            })
 
     }
 

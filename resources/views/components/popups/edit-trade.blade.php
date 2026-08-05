@@ -8,7 +8,7 @@
         </span>
         <div class="main_pop_content">
             <h2>Edit Trade</h2>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate similique ducimus impedit eligendi aut nobis mollitia maiores, assumenda perspiciatis pariatur quisquam!</p>
+            <p>Update the details of an existing trade and save your changes to keep your trade log accurate.</p>
 
             <form action="" id="edit_trade_popup" enctype="multipart/form-data">
                 @csrf
@@ -34,7 +34,7 @@
                             </div>
                         </div>
 
-                        <div class="form_field toggle">
+                        <!-- <div class="form_field toggle">
                             <div class="form_field_label">Action</div>
                             <div class="form_field toggle_inner">
                                 <label for="edit_action_buy" class="positive">Long
@@ -44,7 +44,19 @@
                                     <input type="radio" name="trd_action" id="edit_action_sell" value="Sell"/>
                                 </label>
                             </div>
+                        </div> -->
+
+                        <div class="form_field toggle">
+                            <div class="form_field_label">Action</div>
+                            <div class="form_field togglebtn">
+                                <label for="trd_action" class="positive">
+                                    <span class="option_1">Long</span>
+                                    <span class="option_2">Short</span>
+                                    <input type="checkbox" name="trd_action" id="trd_action" value="Short" />
+                                </label>
+                            </div>
                         </div>
+
                     </div>
                     <div class="form_field_group">
                         <div class="form_field">
@@ -57,7 +69,7 @@
                         </div>
                     </div>
                     <div class="form_field_group">
-                        <div class="form_field toggle">
+                        <!-- <div class="form_field toggle">
                             <div class="form_field_label">Type</div>
                             <div class="form_field toggle_inner">
                                 <label for="edit_type_cash" class="positive">Cash
@@ -65,6 +77,17 @@
                                 </label>
                                 <label for="edit_type_fno" class="negative">F&O
                                     <input type="radio" name="trd_type" id="edit_type_fno" value="F&O"/>
+                                </label>
+                            </div>
+                        </div> -->
+
+                        <div class="form_field toggle">
+                            <div class="form_field_label">Type</div>
+                            <div class="form_field togglebtn">
+                                <label for="trd_type" class="positive">
+                                    <span class="option_1">Cash</span>
+                                    <span class="option_2">F&O</span>
+                                    <input type="checkbox" name="trd_type" id="trd_type" value="F&O" />
                                 </label>
                             </div>
                         </div>

@@ -249,7 +249,6 @@ class UserController extends Controller
 
     public function saveProfile(Request $request, $id)
     {
-
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -323,6 +322,25 @@ class UserController extends Controller
         $response = [
             'success' => true,
             'message' => 'All data cleared'
+        ];
+
+        return response()->json($response);
+    }
+
+    public function saveTheme(Request $request, $id)
+    {
+        $request->validate([
+            'theme' => ['required'],
+        ]);
+
+        $theme = $request->input('theme');
+        $user = User::findOrFail($id);
+
+        $user->theme_enabled = $theme;
+        $user->save();
+        $response = [
+            'success' => true,
+            'message' => 'Theme Saved!'
         ];
 
         return response()->json($response);

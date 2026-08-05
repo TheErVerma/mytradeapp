@@ -44,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('total_trades', count($total_trades));
                 $view->with('portfolioSummry', $portfolioSummry);
                 $view->with('currency', $currency);
+                // $view->with('theme', $user->);
             }
         });
         // View::composer('pages.*', function ($view) {

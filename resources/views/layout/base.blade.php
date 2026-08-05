@@ -1,8 +1,9 @@
 @php
     use Illuminate\Support\Facades\Route;
+    $user = Auth::user();
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" theme="dark" >
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" theme="{{ $user->theme_enabled != "" ? $user->theme_enabled : 'dark' }}" data_user_id="{{ $user->id }}">
 
 <head>
     <meta charset="utf-8">
@@ -14,16 +15,13 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     @fonts
 
-    
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
 
 <body>
-    @php
-    $user = Auth::user();
-    @endphp
+
     @if(isset($user))
         @include('../components/header')
         
