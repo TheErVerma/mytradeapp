@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('default_country')->nullable();
-            $table->string('initial_balance')->nullable();
+        Schema::create('cache', function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->text('value');
+            $table->bigInteger('expiration')->index();
         });
     }
 
@@ -22,9 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('default_country');
-            $table->dropColumn('initial_balance');
-        });
+        Schema::dropIfExists('cache');
     }
 };

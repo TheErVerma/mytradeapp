@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('trades', function (Blueprint $table) {
-            $table->string('user_id')->nullable()->before('trd_market_name');
+        Schema::create('options', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('option_name');
+            $table->string('option_value')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('trades', function (Blueprint $table) {
-            $table->dropColumn('user_id');
-        });
+        Schema::dropIfExists('options');
     }
 };
