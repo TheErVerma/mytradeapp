@@ -263,7 +263,7 @@ export default class TradeForm {
             let total_long_trades = 0;
             let total_short_trades = 0;
             document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr').forEach((itm) => {
-                const this_text = itm.querySelector('.trade_b_symbol a').textContent;
+                const this_text = itm.querySelector('.trade_b_symbol').textContent;
                 if ((this_text.toLowerCase()).includes(searchText)) {
                     itm.style.display = '';
                     total_trades++;

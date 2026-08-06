@@ -1237,7 +1237,7 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     position: relative;
 }
 .trades_table_wrapper .trades_table_inner table tbody td.trade_b_pnl span.pnl_info .pnl_sub_info {
-    background-color: #fff;
+    background-color: var(--bg4);
     position: absolute;
     top: 16px;
     left: -40px;
