@@ -7,6 +7,7 @@
 
     @php
         // $all_trades
+        // $all_trades = array_reverse($all_trades);
         $trad_actions = array_column($all_trades, 'trd_action');
         $trdActnCnt = array_count_values($trad_actions);
         $trdLong = isset($trdActnCnt['Long']) ? $trdActnCnt['Long'] : 0;
@@ -82,6 +83,9 @@
                 </thead>
                 <tbody>
                     @if(is_array($all_trades) && count($all_trades) >= 1)
+                    @php
+                    $td_cnt = 1;
+                    @endphp
                         @foreach ($all_trades as $trade_item)
                             @php
                                 $tred_classes = [];
@@ -102,7 +106,7 @@
                                 <td class="trade_b_select">
                                     <input type="checkbox" name="selected_trades" id="selected_trades"/>
                                 </td>
-                                <td class="trade_b_id">{{ $trade_item['id'] }}</td>
+                                <td class="trade_b_id">{{ $td_cnt/*$trade_item['id']*/ }}</td>
                                 <td class="trade_b_symbol"><span data-href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</span></td>
                                 <td class="trade_b_action"><span>{{ $trade_item['trd_action'] }}</span></td>
                                 <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
@@ -149,6 +153,9 @@
                                     </div>
                                 </td>
                             </tr>
+                            @php
+                            $td_cnt++;
+                            @endphp
                         @endforeach
                     @endif
                 </tbody>

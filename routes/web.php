@@ -43,6 +43,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/analytics', function () {
         return view('pages/analytics');
     })->name('journal');
+    Route::get('/stocks', function () {
+        return view('pages/stocks');
+    })->name('journal');
 
     Route::get('/settings', function () {
         return view('pages/settings/settings');

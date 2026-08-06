@@ -122,8 +122,8 @@ class TradeController extends Controller
         if (!empty($trade['trd_screenshots']) && $request->is('trade/*')) {
             $trade['trd_screenshots'] = unserialize($trade['trd_screenshots']);
         }
-        
-        if($request->is('journal/*')) {
+
+        if ($request->is('journal/*')) {
             return view('pages.single.trade', ['trade' => $trade]);
         }
         return $trade;
@@ -198,7 +198,7 @@ class TradeController extends Controller
             'notes' => $validated['trd_notes'] ?? $trade->notes,
             'trd_charges_amount' => $trd_chrgs_amount
         ];
-        $trade->update( $update );
+        $trade->update($update);
 
         return response()->json([
             'status' => 200,
@@ -209,177 +209,63 @@ class TradeController extends Controller
     }
 
 
-    public static function summary($startingBalance = 500000)
+    public static function summary()
     {
         $userId = Auth::id();
+
         $trades = Trade::where('user_id', $userId)
             ->orderBy('trd_date', 'asc')
             ->get();
 
-        $positions = [];
+        $totalPnL = 0;
+        $winningTrades = 0;
+        $losingTrades = 0;
+        $breakevenTrades = 0;
 
-        $realizedPnL = 0;
-        $deployedCapital = 0;
-        $unrealizedPnL = 0;
-
-        /**
-         * PROCESS TRADES
-         */
         foreach ($trades as $trade) {
 
-            $symbol = strtoupper($trade->trd_symbol);
+            $qty = (float) ($trade->trd_shares ?: $trade->trd_lot);
 
-            if (!isset($positions[$symbol])) {
+            $entry = (float) $trade->trd_price;
+            $exit = (float) $trade->trd_exit_price;
 
-                $positions[$symbol] = [
-                    'qty' => 0,
-                    'avg_price' => 0,
-                ];
-            }
-
-            $qty = (float) $positions[$symbol]['qty'];
-            $avg = (float) $positions[$symbol]['avg_price'];
-
-            $shares = (float) $trade->trd_shares;
-            $shares = $shares == 0 ? (float) $trade->trd_lot : $shares;
-            $price = (float) $trade->trd_price;
-
-            // Log::debug('Shares: ' . $shares);
-            /**
-             * BUY
-             */
-            if ($trade->trd_action == 'Buy') {
-
-                $newQty = $qty + $shares;
-
-                $newAvg = $newQty > 0 ?
-                    (
-                        ($qty * $avg)
-                        +
-                        ($shares * $price)
-                    ) / $newQty : 0;
-
-                $positions[$symbol]['qty'] = $newQty;
-
-                $positions[$symbol]['avg_price'] = $newAvg;
-            }
-
-            /**
-             * SELL
-             */
-            if ($trade->trd_action == 'Sell') {
-
-                /**
-                 * REALIZED PNL
-                 */
-                $profit =
-                    ($price - $avg)
-                    * $shares;
-
-                $realizedPnL += $profit;
-
-
-
-                /**
-                 * REDUCE OPEN QTY
-                 */
-                $positions[$symbol]['qty']
-                    = $qty - $shares;
-            }
-        }
-
-        /**
-         * CALCULATE OPEN POSITIONS
-         */
-        foreach ($positions as $symbol => $position) {
-
-            $openQty = $position['qty'];
-
-            if ($openQty <= 0) {
+            // Skip if trade is still open
+            if (!$exit) {
                 continue;
             }
 
-            $avgPrice = $position['avg_price'];
+            if ($trade->trd_action === 'Long') {
 
-            /**
-             * Replace with live market price API later
-             */
-            $currentPrice = self::marketPrice($symbol);
+                $pnl = ($exit - $entry) * $qty;
 
-            /**
-             * DEPLOYED CAPITAL
-             */
-            $deployedCapital +=
-                $openQty * $avgPrice;
+            } elseif ($trade->trd_action === 'Short') {
 
-            /**
-             * UNREALIZED PNL
-             */
-            $unrealizedPnL +=
-                (
-                    $currentPrice - $avgPrice
-                ) * $openQty;
-        }
+                $pnl = ($entry - $exit) * $qty;
 
-        /**
-         * AVAILABLE CASH
-         */
-        $availableCash =
-            $startingBalance
-            + $realizedPnL
-            - $deployedCapital;
+            } else {
 
-        /**
-         * OPEN RISK %
-         */
-        $portfolioValue =
-            $availableCash + $deployedCapital;
+                $pnl = 0;
+            }
 
-        $riskPercent = 0;
+            $totalPnL += $pnl;
 
-        if ($portfolioValue > 0) {
-
-            $riskPercent =
-                (
-                    $deployedCapital
-                    / $portfolioValue
-                ) * 100;
+            if ($pnl > 0) {
+                $winningTrades++;
+            } elseif ($pnl < 0) {
+                $losingTrades++;
+            } else {
+                $breakevenTrades++;
+            }
         }
 
         return [
-
-            'net_realized_pnl'
-            => round($realizedPnL, 2),
-
-            'unrealized_pnl'
-            => round($unrealizedPnL, 2),
-
-            'available_cash'
-            => round($availableCash, 2),
-
-            'deployed_capital'
-            => round($deployedCapital, 2),
-
-            'total_open_risk_percent'
-            => round($riskPercent, 2),
-
-            'total_open_risk_amount'
-            => round($deployedCapital, 2),
-
-            'starting_account_balance'
-            => round($startingBalance, 2),
-
-            'portfolio_value'
-            => round(
-                    $portfolioValue + $unrealizedPnL,
-                    2
-                ),
-
-            'positions'
-            => $positions
+            'net_pnl' => round($totalPnL, 2),
+            'winning_trades' => $winningTrades,
+            'losing_trades' => $losingTrades,
+            'breakeven_trades' => $breakevenTrades,
+            'total_trades' => $winningTrades + $losingTrades + $breakevenTrades,
         ];
     }
-
     /**
      * TEMP MARKET PRICES
      */
@@ -537,7 +423,8 @@ class TradeController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
 
-                if (!$image->isValid()) continue;
+                if (!$image->isValid())
+                    continue;
 
                 $imageName = Str::uuid() . '.' . $image->getClientOriginalExtension();
                 $path = $image->storeAs('screenshots', $imageName, 'public');
@@ -575,11 +462,11 @@ class TradeController extends Controller
 
         $screenshots = unserialize($trade->trd_screenshots);
         $updatedScreenshots = [];
-        foreach($screenshots as $screenshot) {
-            if( $screenshot == $validated['screenshotURL'] ) {
-                $screenshot = parse_url( $screenshot, PHP_URL_PATH );
+        foreach ($screenshots as $screenshot) {
+            if ($screenshot == $validated['screenshotURL']) {
+                $screenshot = parse_url($screenshot, PHP_URL_PATH);
                 $screenshot = ltrim(str_replace('/storage', '', $screenshot));
-                if( Storage::disk('public')->exists($screenshot) ) {
+                if (Storage::disk('public')->exists($screenshot)) {
                     Storage::disk('public')->delete($screenshot);
                 }
             } else {
@@ -598,7 +485,8 @@ class TradeController extends Controller
         ]);
     }
 
-    public function updateNotes() {
+    public function updateNotes()
+    {
         $validated = request()->validate([
             'trade_id' => 'required|integer',
             'journal_notes' => 'required|string',
@@ -621,11 +509,11 @@ class TradeController extends Controller
     public function exportCsv()
     {
         $data = self::getAll();
-        array_walk($data, function(&$row) {
+        array_walk($data, function (&$row) {
             unset($row['trd_screenshots']);
         });
 
-        $fileName = 'Trades_'.date('Ymd_His').'.csv';
+        $fileName = 'Trades_' . date('Ymd_His') . '.csv';
 
         $headers = [
             'Content-Type' => 'text/csv',

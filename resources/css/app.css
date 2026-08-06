@@ -2262,3 +2262,27 @@ div#tfa_disable_form .main_set_field label {
 }
 
 /** Help Page End **/
+
+
+
+/** Stocks Page Start **/
+.stocks_wrapper {
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg2);
+}
+.stocks_wrapper h1 {
+    font-size: var(--text-xl);
+    color: var(--muted2);
+    font-weight: 400;
+}
+.stocks_wrapper > p {
+    font-size: var(--text-md);
+    color: var(--muted);
+    margin: 4px 0px;
+}
+.stocks_wrapper .stocks_inner {
+    margin-top: 20px;
+}
+/** Stocks Page End **/
