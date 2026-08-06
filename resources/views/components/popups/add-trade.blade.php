@@ -47,7 +47,7 @@ $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
                         </div>
 
                         <div class="form_field toggle">
-                            <div class="form_field_label">Type</div>
+                            <div class="form_field_label">Action</div>
                             <div class="form_field togglebtn">
                                 <label for="trd_action" class="positive">
                                     <span class="option_1">Long</span>
@@ -110,6 +110,11 @@ $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
                             <input type="text" class="price" name="trd_charges_amount" id="trd_charges_amount" placeholder="0.00" required />
                         </div>
                     </div>
+                    <div class="form_text_field p_n_l" data_currency_symbol="{{ $money_symbol }}" style="display:none;">
+                        <p><strong>Loss: </strong><span>-$20</span></p>
+                        <p><strong>Profit: </strong><span>+$20</span></p>
+                    </div>
+
                     <div class="form_field">
                         <label for="trade_notes">Notes</label>
                         <textarea name="trd_notes" id="trade_notes" rows="6"

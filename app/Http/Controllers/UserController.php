@@ -194,7 +194,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Password Changed',
-                'redirect' => '/login'
+                'redirect' => '/login?resetpass=1'
             ]);
         }
         return response()->json([

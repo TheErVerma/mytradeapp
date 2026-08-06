@@ -9,6 +9,11 @@
       <p><strong>Your account has been verified!</strong> You can now log in to your account.</p>
     </div>';
     }
+    if(isset($_GET['resetpass']) && $_GET['resetpass'] == 1){
+      echo '<div class="verified-notice">
+      <p><strong>Your password has been reset successfully!</strong> You can now log in to your account.</p>
+    </div>';
+    }
     @endphp
     <div class="main_log_reg_form">
       <h2>Welcome to Trade Log</h2>

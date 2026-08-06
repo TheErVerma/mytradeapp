@@ -122,6 +122,7 @@ class TradeController extends Controller
         if (!empty($trade['trd_screenshots']) && $request->is('trade/*')) {
             $trade['trd_screenshots'] = unserialize($trade['trd_screenshots']);
         }
+        
         if($request->is('journal/*')) {
             return view('pages.single.trade', ['trade' => $trade]);
         }
@@ -138,10 +139,12 @@ class TradeController extends Controller
 
             'trd_shares' => 'nullable|integer',
 
-            'trd_price' => 'required|numeric',
+            'trd_price' => 'required',
+            'trd_exit_price' => 'required',
             'trd_type' => 'nullable|string',
             'trd_lot' => 'nullable|numeric',
             'trd_notes' => 'nullable|string',
+            'trd_charges_amount' => 'nullable',
         ]);
 
         $trade = Trade::where('id', '=', $validated['id'], false)->first();
@@ -173,20 +176,27 @@ class TradeController extends Controller
                 }
             }
         }
+
+        $trd_entr_price = (float) str_replace(',', '', ($validated['trd_price'] ?? 0));
+        $trd_ext_price = (float) str_replace(',', '', ($validated['trd_exit_price'] ?? 0));
+        $trd_chrgs_amount = (float) str_replace(',', '', ($validated['trd_charges_amount'] ?? 0));
+
         $update = [
             'trd_symbol' => $validated['trd_symbol'] ?? $trade->trd_symbol,
-            'trd_action' => $validated['trd_action'] ?? $trade->trd_action,
+            'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : 'Long',
 
             'trd_date' => $validated['trd_date'] ?? $trade->trd_date,
             // 'trd_time' => $validated['trd_time'] ?? $trade->trd_time,
 
             'trd_shares' => $validated['trd_shares'] ?? $trade->trd_shares,
 
-            'trd_price' => $validated['trd_price'] ?? $trade->trd_price,
+            'trd_price' => $trd_entr_price,
+            'trd_exit_price' => $trd_ext_price,
             'trd_lot' => $validated['trd_lot'] ?? $trade->trd_lot,
-            'trd_type' => $validated['trd_type'] ?? $trade->trd_type,
+            'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : 'Cash',
             'trd_screenshots' => !empty($screenshots) ? serialize($screenshots) : $trade->trd_screenshots,
             'notes' => $validated['trd_notes'] ?? $trade->notes,
+            'trd_charges_amount' => $trd_chrgs_amount
         ];
         $trade->update( $update );
 

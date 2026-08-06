@@ -221,8 +221,10 @@ a {
     height: 100dvh;
 }
 
-.main_section .container.center {
+body.not-logged-in:not(.help) .main_section .container.center {
     height: 100dvh;
+}
+.main_section .container.center {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -493,6 +495,18 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     flex-direction: column;
     gap: 6px;
     position: relative;
+}
+
+.pnl_text {
+    font-size: var(--text-md);
+    font-weight: 400;
+    color: var(--muted2);
+}
+.pnl_text.profit {
+    color: var(--green);
+}
+.pnl_text.loss {
+    color: var(--red);
 }
 
 .form_fields .form_field_group .form_field:not(.toggle) {
@@ -1214,6 +1228,13 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
 .trades_table_wrapper .trades_table_inner table tbody td a {
     text-decoration: none;
     color: var(--accent2);
+}
+
+.trades_table_wrapper .trades_table_inner table tbody td.profit {
+    color: var(--green);
+}
+.trades_table_wrapper .trades_table_inner table tbody td.loss {
+    color: var(--red);
 }
 
 .trades_table_wrapper .trades_table_inner table tr td.trade_b_symbol,

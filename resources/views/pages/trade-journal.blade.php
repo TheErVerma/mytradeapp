@@ -51,7 +51,7 @@
                 </ul>
             </div>
 
-             <div class="no_trades_wrapper" style="display:none;">
+             <div class="no_trades_wrapper" @if(is_array($all_trades) && count($all_trades) >= 1)) style="display:none;" @endif>
                 <div class="no_trades_wrapper_inner">
                     <h4>No trades match your criteria</h4>
                     <p>Try adjusting your search or filters to see more results</p>
@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            <table class="main_trades_table">
+            <table class="main_trades_table" @if(!is_array($all_trades) || (is_array($all_trades) && count($all_trades) <= 0)) style="display:none;" @endif>
                 <thead>
                     <tr>
                         <th class="trade_h_select">
@@ -71,7 +71,10 @@
                         <th class="trade_h_action">Action</th>
                         <th class="trade_h_date">Date</th>
                         <th class="trade_h_shares">Shares</th>
+                        <th class="trade_h_lot">Lot</th>
                         <th class="trade_h_price">Price</th>
+                        <th class="trade_h_exit_price">Exit Price</th>
+                        <th class="trade_h_pnl">P&L</th>
                         <!-- <th>Commissions</th>
                             <th>Fees</th> -->
                         <th class="trade_h_actions">Actions</th>
@@ -87,18 +90,26 @@
                                 }
 
                                 $shares = $trade_item['trd_shares'];
-                                $shares = $shares <= 0 ? $trade_item['trd_lot'] : $shares;
+                                $lot_size = $trade_item['trd_lot'];
+
+                                $entry_prc = $trade_item['trd_price'];
+                                $exit_prc = $trade_item['trd_exit_price'];
+                                $pnl_val = $exit_prc - $entry_prc;
+                                $pnl_status = $pnl_val < 0 ? 'loss' : 'profit';
                             @endphp
                             <tr class="@php echo implode(' ', $tred_classes); @endphp ">
                                 <td class="trade_b_select">
                                     <input type="checkbox" name="selected_trades" id="selected_trades"/>
                                 </td>
                                 <td class="trade_b_id">{{ $trade_item['id'] }}</td>
-                                <td class="trade_b_symbol"><a href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</a></td>
+                                <td class="trade_b_symbol"><span data-href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</span></td>
                                 <td class="trade_b_action"><span>{{ $trade_item['trd_action'] }}</span></td>
-                                <td class="trade_b_date">{{ $trade_item['trd_date'] }}</td>
+                                <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
                                 <td class="trade_b_shares">{{ $shares }}</td>
+                                <td class="trade_b_lot">{{ $lot_size }}</td>
                                 <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in:$currency) }}</td>
+                                <td class="trade_b_exit_price">{{ Number::currency(floatval($trade_item['trd_exit_price']), in:$currency) }}</td>
+                                <td class="trade_b_pnl {{ $pnl_status }}">{{ Number::currency(floatval($pnl_val), in:$currency) }}</td>
                                 <td class="trade_b_actions">
                                     <div class="trade_action_wrap">
                                         <button type="button" class="icon_btn edit" data_id="{{ $trade_item['id'] }}">

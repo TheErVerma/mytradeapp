@@ -1,4 +1,7 @@
-
+@php
+    $formatter = new NumberFormatter('en_US@currency=' . $currency, NumberFormatter::CURRENCY);
+    $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+@endphp
 <div class="main_popup" data_identity="edit-trade-pop">
     <div class="main_popup_inner">
         <span class="close">
@@ -33,19 +36,6 @@
                                     required />
                             </div>
                         </div>
-
-                        <!-- <div class="form_field toggle">
-                            <div class="form_field_label">Action</div>
-                            <div class="form_field toggle_inner">
-                                <label for="edit_action_buy" class="positive">Long
-                                    <input type="radio" name="trd_action" id="edit_action_buy" value="Buy" checked/>
-                                </label>
-                                <label for="edit_action_sell" class="negative">Short
-                                    <input type="radio" name="trd_action" id="edit_action_sell" value="Sell"/>
-                                </label>
-                            </div>
-                        </div> -->
-
                         <div class="form_field toggle">
                             <div class="form_field_label">Action</div>
                             <div class="form_field togglebtn">
@@ -58,29 +48,8 @@
                         </div>
 
                     </div>
-                    <div class="form_field_group">
-                        <div class="form_field">
-                            <label for="trade_date">Date</label>
-                            <input type="date" name="trd_date" id="trade_date" required />
-                        </div>
-                        <div class="form_field">
-                            <label for="trade_time">Time</label>
-                            <input type="time" name="trd_time" id="trade_time" required />
-                        </div>
-                    </div>
-                    <div class="form_field_group">
-                        <!-- <div class="form_field toggle">
-                            <div class="form_field_label">Type</div>
-                            <div class="form_field toggle_inner">
-                                <label for="edit_type_cash" class="positive">Cash
-                                    <input type="radio" name="trd_type" id="edit_type_cash" value="Cash" checked/>
-                                </label>
-                                <label for="edit_type_fno" class="negative">F&O
-                                    <input type="radio" name="trd_type" id="edit_type_fno" value="F&O"/>
-                                </label>
-                            </div>
-                        </div> -->
 
+                    <div class="form_field_group">
                         <div class="form_field toggle">
                             <div class="form_field_label">Type</div>
                             <div class="form_field togglebtn">
@@ -99,11 +68,42 @@
                             <label for="trd_lot">Lot</label>
                             <input type="text" name="trd_lot" id="trd_lot" placeholder="0" />
                         </div>
+                    </div>
 
+                    <div class="form_field">
+                        <label for="trade_date">Date</label>
+                        <input type="text" class="datepicker" name="trd_date" id="trade_date" required />
+                    </div>
+
+                    <div class="form_field_group">
+                        <div class="form_field">
+                            <label for="entry_price_amount">Entry Price</label>
+                            <div class="price_field">
+                                <span class="currency">{{ $money_symbol }}</span>
+                                <input type="text" class="price" name="trd_price" id="entry_price_amount" placeholder="0.00"
+                                    required />
+                            </div>
+                        </div>
+                        <div class="form_field">
+                            <label for="exit_price_amount">Exit Price</label>
+                            <div class="price_field">
+                                <span class="currency">{{ $money_symbol }}</span>
+                                <input type="text" class="price" name="trd_exit_price" id="exit_price_amount" placeholder="0.00"
+                                    required />
+                            </div>
+                        </div>
                     </div>
                     <div class="form_field">
-                        <label for="price_amount">Price</label>
-                        <input type="text" name="trd_price" id="price_amount" placeholder="0.0000" required />
+                        <label for="trd_charges_amount">Charges</label>
+                        <div class="price_field">
+                            <span class="currency">{{ $money_symbol }}</span>
+                            <input type="text" class="price" name="trd_charges_amount" id="trd_charges_amount" placeholder="0.00"
+                                required />
+                        </div>
+                    </div>
+                    <div class="form_text_field p_n_l" data_currency_symbol="{{ $money_symbol }}" style="display:none;">
+                        <p><strong>Loss: </strong><span>-$20</span></p>
+                        <p><strong>Profit: </strong><span>+$20</span></p>
                     </div>
                     <div class="form_field">
                         <label for="trade_notes">Notes</label>
@@ -113,9 +113,12 @@
                     </div>
                     <div class="form_field">
                         <label for="trade_screenshots">Chart Screenshots</label>
-                        <div class="screenshot-gallery"><div class="image_gallery"></div></div>
+                        <div class="screenshot-gallery">
+                            <div class="image_gallery"></div>
+                        </div>
                         <label class="dropzone" for="trade_screenshots">
-                            <input type="file" name="trade_screenshots[]" id="trade_screenshots" accept="image/*" multiple/>
+                            <input type="file" name="trade_screenshots[]" id="trade_screenshots" accept="image/*"
+                                multiple />
                             <span class="icon">
                                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">

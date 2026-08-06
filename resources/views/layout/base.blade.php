@@ -20,7 +20,7 @@
     @endif
 </head>
 
-<body>
+<body class="{{ isset($user) ? 'logged-in' : 'not-logged-in' }} {{ Route::current()->uri() }}">
 
     @if(isset($user))
         @include('../components/header')
@@ -28,8 +28,7 @@
         <div class="dash_content">
             @yield('content')
         </div>
-        
-        
+
         @include('../components/popups/add-trade')
         @include('../components/popups/coming-soon')
         @include('../components/popups/edit-trade')

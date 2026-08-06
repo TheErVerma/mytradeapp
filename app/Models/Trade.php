@@ -10,13 +10,14 @@ class Trade extends Model
         'trd_symbol',
         'trd_action',
         'trd_date',
-        'trd_time',
         'trd_shares',
         'trd_price',
+        'trd_exit_price',
         'user_id',
         'trd_lot',
         'trd_type',
         'trd_screenshots',
-        'notes'
+        'notes',
+        'trd_charges_amount',
     ];
 }

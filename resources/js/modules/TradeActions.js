@@ -58,6 +58,51 @@ export default class TradeActions {
             });
         });
 
+        const formatePrice = (value) => {
+            value = (parseFloat(value)).toFixed(2);
+            let [integerPart, decimalPart] = value.split('.');
+            if (integerPart) {
+                integerPart = Number(integerPart).toLocaleString('en-IN');
+            }
+            if (decimalPart !== undefined) {
+                decimalPart = decimalPart.substring(0, 2);
+                value = `${integerPart}.${decimalPart}`;
+            } else {
+                value = integerPart;
+            }
+            return value;
+        }
+
+        const checkPNL = (elm) => {
+            
+            const this_wrapper = elm.closest('.form_field_group');
+            const form = this_wrapper.closest('form');
+            const entry_price = (this_wrapper.querySelector('[name="trd_price"]').value).replaceAll(',', '');
+            const exit_price = (this_wrapper.querySelector('[name="trd_exit_price"]').value).replaceAll(',', '');
+            const sum = exit_price - entry_price;
+            
+            const pnl_wrap = form.querySelector('.form_text_field.p_n_l');
+            const symbol = pnl_wrap.getAttribute('data_currency_symbol');
+            const formatted = (sum < 0 ? '-' : '') + symbol + formatePrice(Math.abs(sum));
+
+            if(sum < 0){
+                pnl_wrap.innerHTML = `<div class="pnl_text loss"><strong>Loss: </strong><span>${formatted}</span></div>`;
+            }else{
+                pnl_wrap.innerHTML = `<div class="pnl_text profit"><strong>Profit: </strong><span>${formatted}</span></div>`;
+            }
+            if(entry_price != "" && exit_price != ""){
+                pnl_wrap.style.display = '';
+            }else{
+                pnl_wrap.style.display = 'none';
+            }
+            // console.log(entry_price, exit_price, sum);
+        }
+        document.querySelectorAll('[name="trd_price"],[name="trd_exit_price"] ').forEach(input => {
+            input.addEventListener('input', function(){
+                checkPNL(this);
+            });
+        });
+
     }
 
     delete(trade_id) {
@@ -91,6 +136,9 @@ export default class TradeActions {
             }
         }).then((response) => response.json())
             .then((data) => {
+                const changeEvent = new Event('change');
+                const inputEvent = new Event('input');
+                // console.log(data);
                 if(typeof data == 'object' && Object.keys(data).length >= 1){
                     Object.keys(data).forEach((clm, ind) => {
                         const inp = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
@@ -108,18 +156,49 @@ export default class TradeActions {
                                 inp_itm.removeAttribute('checked');
                             });
                         }
+                        
                         if(inp && inp.getAttribute('type') == 'radio'){
                             const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"][value="'+data[clm]+'"]');
                             if(radio_){
-                                const changeEvent = new Event('change');
                                 radio_.setAttribute('checked', 'true');//.dispatchEvent(changeEvent);
                                 radio_.dispatchEvent(changeEvent);
                             }else{
                                 console.log('#edit_trade_popup [name="'+clm+'"][value="'+data[clm]+'"]');
                             }
+                        }else if(inp && inp.getAttribute('type') == 'checkbox'){
+                            if(clm == 'trd_type'){
+                                const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
+                                if(data[clm] == "F&O"){
+                                    radio_.setAttribute('checked', 'true');
+                                    radio_.dispatchEvent(changeEvent);
+                                }else{
+                                    radio_.removeAttribute('checked');
+                                    radio_.dispatchEvent(changeEvent);
+                                }
+                            }
+
+                            if(clm == 'trd_action'){
+                                const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
+                                if(data[clm] == "Short"){
+                                    radio_.setAttribute('checked', 'true');
+                                    radio_.dispatchEvent(changeEvent);
+                                }else{
+                                    radio_.removeAttribute('checked');
+                                    radio_.dispatchEvent(changeEvent);
+                                }
+                            }
                         }else{
                             if(inp){
                                 inp.value = data[clm];
+
+                                if(clm == 'trd_date'){
+                                    const ddpinp = document.querySelector('#edit_trade_popup [name='+clm+']');
+                                    ddpinp._flatpickr.setDate(data[clm]);
+                                }
+                                if(inp.classList.contains('price')){
+                                    console.log(inp);
+                                    inp.dispatchEvent(inputEvent);
+                                }
                             }
                         }
                     });

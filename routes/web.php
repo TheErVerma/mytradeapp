@@ -48,9 +48,6 @@ Route::group(['middleware' => ['auth']], function () {
         return view('pages/settings/settings');
     })->name('settings');
 
-    Route::get('/help', function () {
-        return view('pages/help');
-    })->name('help');
     /**
      * Pages End
      ***********************/
@@ -116,6 +113,9 @@ Route::post('/two-factor-authenticate', [TwoFactorController::class, 'challenge'
  * 2FA Challenge End
  **********************/
 
+Route::get('/help', function () {
+    return view('pages/help');
+})->name('help');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {

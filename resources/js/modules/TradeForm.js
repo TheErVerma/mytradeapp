@@ -99,7 +99,7 @@ export default class TradeForm {
                 const this_wrapper = this_itm.closest('.form_fields');
                 const this_checked_obj = this_wrapper.querySelector('[name="trd_type"]:checked');
                 const this_checked = this_checked_obj ? this_checked_obj.value : false;
-                if (this_checked != 'F&O') {
+                if (!this_checked) {
                     this_wrapper.querySelector('[name="trd_shares"]').closest('.form_field').style.display = 'flex';
                     this_wrapper.querySelector('[name="trd_lot"]').closest('.form_field').style.display = 'none';
                 } else {
@@ -131,7 +131,7 @@ export default class TradeForm {
         }).then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                window.location.href = '/journal';//reload();
+                // window.location.href = '/journal';//reload();
             }).catch((err) => {
                 console.log(err);
                 form.classList.remove('processing');

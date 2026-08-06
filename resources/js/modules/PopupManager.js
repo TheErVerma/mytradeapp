@@ -22,7 +22,7 @@ export default class PopupManager {
             this.closeAll();
         }
         if(event.target.closest('.main_popup_overlay') || (event.target.closest('.main_popup_inner') == null && event.target.closest('.btn') == null)) {
-            event.target.closest('.main_popup').classList.remove('active');
+            event.target.closest('.main_popup') ? event.target.closest('.main_popup').classList.remove('active') : false;
         }
     }
 
