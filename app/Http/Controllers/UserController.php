@@ -295,15 +295,15 @@ class UserController extends Controller
 
         $request->validate([
             'default_country' => ['required'],
-            'initial_balance' => ['required'],
+            // 'initial_balance' => ['required'],
         ]);
 
         $country = $request->input('default_country');
-        $init_balance = $request->input('initial_balance');
+        // $init_balance = $request->input('initial_balance');
 
         $user = User::findOrFail($id);
         $user->default_country = $country;
-        $user->initial_balance = $init_balance;
+        // $user->initial_balance = $init_balance;
 
         $user->save();
 

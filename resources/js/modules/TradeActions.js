@@ -74,21 +74,21 @@ export default class TradeActions {
         }
 
         const checkPNL = (elm) => {
-            
-            const this_wrapper = elm.closest('.form_field_group');
-            const form = this_wrapper.closest('form');
-            const entry_price = (this_wrapper.querySelector('[name="trd_price"]').value).replaceAll(',', '');
-            const exit_price = (this_wrapper.querySelector('[name="trd_exit_price"]').value).replaceAll(',', '');
-            const sum = exit_price - entry_price;
+        
+            const form = elm.closest('form');
+            const entry_price = (form.querySelector('[name="trd_price"]').value).replaceAll(',', '');
+            const exit_price = (form.querySelector('[name="trd_exit_price"]').value).replaceAll(',', '');
+            const charges_price = (form.querySelector('[name="trd_charges_amount"]').value).replaceAll(',', '');
+            const sum = (exit_price - entry_price) - charges_price;
             
             const pnl_wrap = form.querySelector('.form_text_field.p_n_l');
             const symbol = pnl_wrap.getAttribute('data_currency_symbol');
             const formatted = (sum < 0 ? '-' : '') + symbol + formatePrice(Math.abs(sum));
 
             if(sum < 0){
-                pnl_wrap.innerHTML = `<div class="pnl_text loss"><strong>Loss: </strong><span>${formatted}</span></div>`;
+                pnl_wrap.innerHTML = `<div class="pnl_text loss"><strong>Total P&L: </strong><span>${formatted}</span></div>`;
             }else{
-                pnl_wrap.innerHTML = `<div class="pnl_text profit"><strong>Profit: </strong><span>${formatted}</span></div>`;
+                pnl_wrap.innerHTML = `<div class="pnl_text profit"><strong>Total P&L: </strong><span>${formatted}</span></div>`;
             }
             if(entry_price != "" && exit_price != ""){
                 pnl_wrap.style.display = '';
@@ -97,7 +97,7 @@ export default class TradeActions {
             }
             // console.log(entry_price, exit_price, sum);
         }
-        document.querySelectorAll('[name="trd_price"],[name="trd_exit_price"] ').forEach(input => {
+        document.querySelectorAll('[name="trd_price"],[name="trd_exit_price"], [name="trd_charges_amount"] ').forEach(input => {
             input.addEventListener('input', function(){
                 checkPNL(this);
             });

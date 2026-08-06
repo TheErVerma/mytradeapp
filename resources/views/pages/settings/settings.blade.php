@@ -32,7 +32,7 @@ $countries = [
                                 @foreach ($countries as $country_code => $countrty)
                                     @php
                                     $usr_dfl_country = $user->default_country;
-                                    $usr_dfl_country = $usr_dfl_country == "" ? 'USD' : $usr_dfl_country;
+                                    $usr_dfl_country = $usr_dfl_country == "" ? 'INR' : $usr_dfl_country;
                                     @endphp
                                     <option value="{{ $country_code }}" @php echo $country_code == $usr_dfl_country ? 'selected' : ''; @endphp >{{ $countrty }}</option>
                                 @endforeach
@@ -40,12 +40,12 @@ $countries = [
                             <span class="field_bmt_text">This will be used throughout the app for all monetary
                                 values.</span>
                         </div>
-                        <div class="main_set_field">
+                        <?php /* <div class="main_set_field">
                             <label for="initial_balance">Initial Account Balance</label>
                             <input type="text" name="initial_balance" id="initial_balance" placeholder="e.g. $2,000.00" value="{{ $user->initial_balance }}"/>
                             <span class="field_bmt_text">Your account balance when you started using the system. This is
                                 used as the starting point for all financial calculations.</span>
-                        </div>
+                        </div> */ ?>
 
                         <div class="form_notices"></div>
                         <div class="main_set_actions">

@@ -1230,11 +1230,42 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     color: var(--accent2);
 }
 
+
+.trades_table_wrapper .trades_table_inner table tbody td.trade_b_pnl span.pnl_info {
+    display: inline-flex;
+    cursor: pointer;
+    position: relative;
+}
+.trades_table_wrapper .trades_table_inner table tbody td.trade_b_pnl span.pnl_info .pnl_sub_info {
+    background-color: #fff;
+    position: absolute;
+    top: 16px;
+    left: -40px;
+    width: 125px;
+    box-shadow: var(--shadow-md);
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: var(--text-sm);
+    color: var(--text);
+    display: none;
+    z-index: 2;
+}
+.trades_table_wrapper .trades_table_inner table tbody td.trade_b_pnl span.pnl_info:hover .pnl_sub_info {
+    display: block;
+}
 .trades_table_wrapper .trades_table_inner table tbody td.profit {
     color: var(--green);
 }
 .trades_table_wrapper .trades_table_inner table tbody td.loss {
     color: var(--red);
+}
+
+.trades_table_wrapper .trades_table_inner table tbody td.profit svg path {
+    fill: var(--green);
+}
+.trades_table_wrapper .trades_table_inner table tbody td.loss svg path {
+    fill: var(--red);
 }
 
 .trades_table_wrapper .trades_table_inner table tr td.trade_b_symbol,

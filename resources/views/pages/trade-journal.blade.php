@@ -94,7 +94,8 @@
 
                                 $entry_prc = $trade_item['trd_price'];
                                 $exit_prc = $trade_item['trd_exit_price'];
-                                $pnl_val = $exit_prc - $entry_prc;
+                                $charges_prc = $trade_item['trd_charges_amount'];
+                                $pnl_val = ($exit_prc - $entry_prc) - $charges_prc;
                                 $pnl_status = $pnl_val < 0 ? 'loss' : 'profit';
                             @endphp
                             <tr class="@php echo implode(' ', $tred_classes); @endphp ">
@@ -105,11 +106,21 @@
                                 <td class="trade_b_symbol"><span data-href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</span></td>
                                 <td class="trade_b_action"><span>{{ $trade_item['trd_action'] }}</span></td>
                                 <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
-                                <td class="trade_b_shares">{{ $shares }}</td>
-                                <td class="trade_b_lot">{{ $lot_size }}</td>
+                                <td class="trade_b_shares">{{ $trade_item['trd_type'] == 'Cash' ? $shares : '--' }}</td>
+                                <td class="trade_b_lot">{{ $trade_item['trd_type'] == 'F&O' ? $lot_size : '--' }}</td>
                                 <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in:$currency) }}</td>
                                 <td class="trade_b_exit_price">{{ Number::currency(floatval($trade_item['trd_exit_price']), in:$currency) }}</td>
-                                <td class="trade_b_pnl {{ $pnl_status }}">{{ Number::currency(floatval($pnl_val), in:$currency) }}</td>
+                                <td class="trade_b_pnl {{ $pnl_status }}">
+                                    {{ Number::currency(floatval($pnl_val), in:$currency) }} 
+                                    <span class="pnl_info">
+                                        <svg width="14px" height="14px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12 7C12.5523 7 13 7.44772 13 8V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V8C11 7.44772 11.4477 7 12 7Z"/>
+                                            <path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z"/>
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z"/>
+                                        </svg>
+                                        <div class="pnl_sub_info">Charges: -{{ Number::currency(floatval($charges_prc), in:$currency) }}</div>
+                                    </span>
+                                </td>
                                 <td class="trade_b_actions">
                                     <div class="trade_action_wrap">
                                         <button type="button" class="icon_btn edit" data_id="{{ $trade_item['id'] }}">

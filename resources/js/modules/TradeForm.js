@@ -131,7 +131,7 @@ export default class TradeForm {
         }).then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                // window.location.href = '/journal';//reload();
+                window.location.href = '/journal';//reload();
             }).catch((err) => {
                 console.log(err);
                 form.classList.remove('processing');
