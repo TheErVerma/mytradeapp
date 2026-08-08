@@ -244,6 +244,17 @@
 
         <div class="summry_wrapper">
             <h5>Summary</h5>
+            <select class="mini-selector summary-card-filter" id="summary-card-filter">
+                <option value="today">Today</option>
+                <option value="last_week">Last Week</option>
+                <option value="last_month">Last Month</option>
+                <option value="last_3_month">Last 3 Month</option>
+                <option value="last_6_month">Last 6 Month</option>
+                <option value="last_year">Last Year</option>
+                <option value="last_3_year">Last 3 Year</option>
+                <option value="last_5_year">Last 5 Year</option>
+                <option value="last_10_year">Last 10 Year</option>
+            </select>
             <ul>
                 <li>
                     <span class="label">Total Trades</span>
@@ -255,7 +266,7 @@
                 </li> -->
                 <li>
                     <span class="label">Net P&L</span>
-                    <span class="value profit">{{ Number::currency((isset($portfolioSummry['net_realized_pnl']) ? $portfolioSummry['net_realized_pnl'] : 0), in:$currency) }}</span>
+                    <span class="value summary_total_npl {{ $portfolioSummry['net_pnl'] < 0 ? 'loss' : 'profit' }}">{{ Number::currency((isset($portfolioSummry['net_pnl']) ? $portfolioSummry['net_pnl'] : 0), in:$currency) }}</span>
                 </li>
                 <!-- <li>
                     <span class="label">Avg WinL</span>

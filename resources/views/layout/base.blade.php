@@ -13,6 +13,7 @@
 
     <link rel="shortcut icon" href="{{ asset('imgs/favicon.ico') }}">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/modern-screenshot@4.5.0/dist/index.js"></script>
     @fonts
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -22,6 +23,7 @@
 
 <body class="{{ isset($user) ? 'logged-in' : 'not-logged-in' }} {{ Route::current()->uri() }}">
 
+    <audio id="main_audio_player" style="display:none;"></audio>
     @if(isset($user))
         @include('../components/header')
         

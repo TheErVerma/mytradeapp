@@ -119,15 +119,31 @@ a {
     border-radius: 6px;
     background: var(--bg4);
     border: 1px solid var(--border);
-    color: var(--text);
+    color: var(--muted2);
     text-decoration: none;
     font-size: var(--text-md);
     cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn .icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn.btn-primary {
     background: var(--accent);
     border-color: var(--accent);
+    color: var(--accent-text);
+}
+
+.btn.btn-success {
+    background: var(--green);
+    border-color: var(--green);
     color: var(--accent-text);
 }
 
@@ -144,6 +160,59 @@ a {
 
 /** Buttons End **/
 
+
+/** Toast Start **/
+.global_toast {
+    position: fixed;
+    top: -40%;
+    background: var(--green-bg);
+    padding: 10px 14px;
+    z-index: 9;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: var(--text-md);
+    width: fit-content;
+    margin: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    display: inline-block;
+    box-shadow: var(--shadow-md);
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0, 0.14, 0.42, 1.38);
+}
+.global_toast.success {
+    background: var(--green-bg);
+    color: var(--green);
+    border-color: var(--green);
+}
+.global_toast.error {
+    background: var(--red-bg);
+    color: var(--red);
+    border-color: var(--red);
+}
+.global_toast.warning {
+    background: var(--yellow-bg);
+    color: var(--yellow);
+    border-color: var(--yellow);
+}
+.global_toast.active {
+    top: 10%;
+    visibility: visible;
+    opacity: 1;
+}
+/** Toast End **/
+
+select.mini-selector {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px 8px;
+    margin: 0px 10px;
+    font-size: var(--text-sm);
+    color: var(--muted2);
+    background-color: var(--bg2);
+}
 
 /** DatePicker Start **/
 .flatpickr-calendar {
@@ -224,6 +293,7 @@ a {
 body.not-logged-in:not(.help) .main_section .container.center {
     height: 100dvh;
 }
+
 .main_section .container.center {
     display: flex;
     justify-content: center;
@@ -388,6 +458,8 @@ aside.main_sidebar {
     left: 0;
     top: 74px;
     width: 100%;
+    overflow-y: auto;
+    max-height: calc(100dvh - 91px);
 }
 
 aside.main_sidebar .aside_inner {
@@ -468,9 +540,9 @@ aside.main_sidebar .aside_inner .summry_wrapper ul li .value.loss {
 aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     font-size: var(--text-sm);
     color: var(--muted);
-    position: absolute;
+    /* position: absolute;
     bottom: 20px;
-    left: 20px;
+    left: 20px; */
 }
 
 /** Sidebar End **/
@@ -502,9 +574,11 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     font-weight: 400;
     color: var(--muted2);
 }
+
 .pnl_text.profit {
     color: var(--green);
 }
+
 .pnl_text.loss {
     color: var(--red);
 }
@@ -1113,6 +1187,12 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     margin: 0px 0px 8px 0px;
 }
 
+.trades_table_wrapper .trades_table_inner .trades_table_filter_btm {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .trades_table_wrapper .trades_table_inner .trades_search_wrap {
     display: flex;
     gap: 10px;
@@ -1171,7 +1251,42 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
 
 .trades_table_wrapper .trades_table_inner table {
     width: 100%;
+    position: relative;
 }
+
+@keyframes snapshot {
+    0% {
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    25% {
+        opacity: 0.85;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.trades_table_wrapper .trades_table_inner table.main_trades_table.snap_takken:after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: var(--bg2);
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    animation: snapshot 0.35s ease-out 1;
+}
+/* .trades_table_wrapper .trades_table_inner table.main_trades_table.capturing .trade_h_actions,
+.trades_table_wrapper .trades_table_inner table.main_trades_table.capturing .trade_b_actions{
+    display: none;
+} */
 
 .trades_table_wrapper .trades_table_inner table .trade_h_select {
     width: 40px;
@@ -1236,6 +1351,7 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     cursor: pointer;
     position: relative;
 }
+
 .trades_table_wrapper .trades_table_inner table tbody td.trade_b_pnl span.pnl_info .pnl_sub_info {
     background-color: var(--bg4);
     position: absolute;
@@ -1251,12 +1367,15 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
     display: none;
     z-index: 2;
 }
+
 .trades_table_wrapper .trades_table_inner table tbody td.trade_b_pnl span.pnl_info:hover .pnl_sub_info {
     display: block;
 }
+
 .trades_table_wrapper .trades_table_inner table tbody td.profit {
     color: var(--green);
 }
+
 .trades_table_wrapper .trades_table_inner table tbody td.loss {
     color: var(--red);
 }
@@ -1264,6 +1383,7 @@ aside.main_sidebar .aside_inner span.sidebar_bottom_credits {
 .trades_table_wrapper .trades_table_inner table tbody td.profit svg path {
     fill: var(--green);
 }
+
 .trades_table_wrapper .trades_table_inner table tbody td.loss svg path {
     fill: var(--red);
 }
@@ -1985,7 +2105,7 @@ div#tfa_disable_form .main_set_field label {
     grid-template-columns: 6fr 6fr;
     margin-bottom: 20px;
     gap: 20px;
-    margin-top:20px;
+    margin-top: 20px;
 }
 
 .main_dash_wrap .main_dash_inner .other_dash_amounts .other_dash_amount_itm {
@@ -2272,17 +2392,21 @@ div#tfa_disable_form .main_set_field label {
     border-radius: 10px;
     background: var(--bg2);
 }
+
 .stocks_wrapper h1 {
     font-size: var(--text-xl);
     color: var(--muted2);
     font-weight: 400;
 }
-.stocks_wrapper > p {
+
+.stocks_wrapper>p {
     font-size: var(--text-md);
     color: var(--muted);
     margin: 4px 0px;
 }
+
 .stocks_wrapper .stocks_inner {
     margin-top: 20px;
 }
+
 /** Stocks Page End **/

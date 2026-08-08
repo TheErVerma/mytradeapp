@@ -9,6 +9,8 @@ import ConfirmPop from '../modules/ConfirmPop';
 import TradeActions from '../modules/TradeActions';
 import Tabs from '../modules/Tabs';
 import Gallery from '../modules/Gallery';
+import AudioPlayer from '../modules/AudioControl';
+import Toast from '../modules/Toast';
 
 export default class App {
     constructor() {
@@ -27,5 +29,7 @@ export default class App {
         this.tradeActions = new TradeActions();
         this.tabs = new Tabs();
         this.Gallery = new Gallery();
+        this.Audio = new AudioPlayer();
+        this.Toast = new Toast();
     }
 }

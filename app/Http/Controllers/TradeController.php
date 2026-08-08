@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Number;
 
 
 class TradeController extends Controller
@@ -224,7 +225,12 @@ class TradeController extends Controller
 
         foreach ($trades as $trade) {
 
-            $qty = (float) ($trade->trd_shares ?: $trade->trd_lot);
+            if ($trade->trd_type == "F&O") {
+                $qty = (float) ($trade->trd_lot);
+            }
+            if ($trade->trd_type == "Cash") {
+                $qty = (float) ($trade->trd_shares);
+            }
 
             $entry = (float) $trade->trd_price;
             $exit = (float) $trade->trd_exit_price;
@@ -535,5 +541,83 @@ class TradeController extends Controller
         };
 
         return response()->streamDownload($callback, $fileName, $headers);
+    }
+
+
+    public function getPnL(Request $request, $period)
+    {
+        $user = Auth::user();
+        $resp = ['status' => 400, 'message' => 'Invalid Request'];
+
+        $startDate = date('Y-m-d');
+        $endDate = date('Y-m-d', strtotime('+1 day'));
+
+        if ($period != 'today') {
+            $endDate = date('Y-m-d', strtotime('-1 day'));
+        }
+
+        if ($period == 'last_week') {
+            $startDate = date('Y-m-d', strtotime('-1 week'));
+        }
+        if ($period == 'last_month') {
+            $startDate = date('Y-m-d', strtotime('-1 month'));
+        }
+        if ($period == 'last_3_month') {
+            $startDate = date('Y-m-d', strtotime('-3 month'));
+        }
+        if ($period == 'last_6_month') {
+            $startDate = date('Y-m-d', strtotime('-6 month'));
+        }
+        if ($period == 'last_year') {
+            $startDate = date('Y-m-d', strtotime('-1 year'));
+        }
+        if ($period == 'last_3_year') {
+            $startDate = date('Y-m-d', strtotime('-3 year'));
+        }
+        if ($period == 'last_5_year') {
+            $startDate = date('Y-m-d', strtotime('-5 year'));
+        }
+        if ($period == 'last_10_year') {
+            $startDate = date('Y-m-d', strtotime('-10 year'));
+        }
+
+
+        $trades = Trade::where('user_id', Auth::id())->whereBetween('trd_date', [$startDate, $endDate])->get();
+
+        $totalPnL = 0;
+        $pnl = 0;
+        foreach ($trades as $trade) {
+
+            if ($trade->trd_type == "F&O") {
+                $qty = (float) ($trade->trd_lot);
+            }
+            if ($trade->trd_type == "Cash") {
+                $qty = (float) ($trade->trd_shares);
+            }
+
+            $entry = (float) $trade->trd_price;
+            $exit = (float) $trade->trd_exit_price;
+
+            if (!$exit) {
+                continue;
+            }
+
+            if ($trade->trd_action === 'Long') {
+                $pnl = ($exit - $entry) * $qty;
+            } elseif ($trade->trd_action === 'Short') {
+                $pnl = ($entry - $exit) * $qty;
+            } else {
+                $pnl = 0;
+            }
+
+            $totalPnL += $pnl;
+        }
+
+        $currency = $user->default_country;
+        $currency = $currency ? ($currency) : 'USD';
+        $totalPnL_ = Number::currency($totalPnL, in: $currency);
+        $resp = ['status' => 200, 'message' => $period, 'date_range' => [$startDate, $endDate], 'trades' => $totalPnL_];
+
+        return response()->json($resp);
     }
 }
