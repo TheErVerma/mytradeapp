@@ -266,7 +266,7 @@
                 </li> -->
                 <li>
                     <span class="label">Net P&L</span>
-                    <span class="value summary_total_npl {{ $portfolioSummry['net_pnl'] < 0 ? 'loss' : 'profit' }}">{{ Number::currency((isset($portfolioSummry['net_pnl']) ? $portfolioSummry['net_pnl'] : 0), in:$currency) }}</span>
+                    <span class="value summary_total_npl {{ (isset($portfolioSummry['net_pnl']) && $portfolioSummry['net_pnl'] < 0) ? 'loss' : 'profit' }}">{{ Number::currency((isset($portfolioSummry['net_pnl']) ? $portfolioSummry['net_pnl'] : 0), in:$currency) }}</span>
                 </li>
                 <!-- <li>
                     <span class="label">Avg WinL</span>
