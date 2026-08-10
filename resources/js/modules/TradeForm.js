@@ -311,6 +311,7 @@ export default class TradeForm {
         const fromDate = document.getElementById('trade_date_from').value;
         const toDate = document.getElementById('trade_date_to').value;
 
+        
         if (fromDate != "" && toDate != "") {
             const all_trades = document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr');
             // console.log(all_trades);
@@ -318,10 +319,11 @@ export default class TradeForm {
                 all_trades.forEach((itm, elm) => {
                     const this_date_elm = itm.querySelector('.trade_b_date');
                     if (this_date_elm) {
-                        const this_date = this_date_elm.textContent;
-                        // console.log(this_date);
+                        const this_date = new Date(this_date_elm.textContent);
+                        const this_fdate = this_date.toISOString().split('T')[0];
 
-                        if (this_date >= fromDate && this_date <= toDate) {
+                        console.log(this_fdate);
+                        if (this_fdate >= fromDate && this_fdate <= toDate) {
                             itm.style.display = '';
                         } else {
                             itm.style.display = 'none';

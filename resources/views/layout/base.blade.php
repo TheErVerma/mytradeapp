@@ -13,6 +13,7 @@
 
     <link rel="shortcut icon" href="{{ asset('imgs/favicon.ico') }}">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/modern-screenshot@4.5.0/dist/index.js"></script>
     @fonts
 
@@ -35,6 +36,7 @@
         @include('../components/popups/coming-soon')
         @include('../components/popups/edit-trade')
         @include('../components/popups/confirm')
+        @include('../components/popups/share-live')
     @else
         <div class="main_section">
             <div class="container center">

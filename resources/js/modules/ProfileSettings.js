@@ -131,11 +131,11 @@ export default class ProfileSettingsForm {
         const profileMenuList = document.querySelector('.user-profile-menu > ul');
         
         document.addEventListener( 'click', function(e){
-            const listContainer = profileMenuList.contains(e.target);
+            const listContainer = profileMenuList ? profileMenuList.contains(e.target) : false;
             if( e.target.parentElement === profileThumb ) {
                 profileThumb.parentElement.querySelector('ul').classList.toggle('active');
             } else if( !listContainer ) {
-                profileThumb.parentElement.querySelector('ul').classList.remove('active');
+                profileThumb ? profileThumb.parentElement.querySelector('ul').classList.remove('active') : false;
             }
         });
 

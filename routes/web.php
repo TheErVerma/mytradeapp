@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/user/{id}/saveprofile', [UserController::class, 'saveProfile']);
     Route::post('/user/{id}/save-theme', [UserController::class, 'saveTheme']);
     Route::post('/trade', [TradeController::class, 'addTrade']);
+    Route::post('/generate-livesharelink', [TradeController::class, 'generateLiveShareLink']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
     Route::put('/trade', [TradeController::class, 'editTrade']);
     Route::post('/upload-image', [TradeController::class, 'uploadScreenshots']);
@@ -120,6 +121,8 @@ Route::post('/two-factor-authenticate', [TwoFactorController::class, 'challenge'
 Route::get('/help', function () {
     return view('pages/help');
 })->name('help');
+
+Route::get('/liveshare/{id}', [TradeController::class, 'liveShare']);
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
@@ -619,5 +620,70 @@ class TradeController extends Controller
         $resp = ['status' => 200, 'message' => $period, 'date_range' => [$startDate, $endDate], 'trades' => $totalPnL_];
 
         return response()->json($resp);
+    }
+
+
+    public function generateLiveShareLink(Request $request)
+    {
+        $validated = $request->validate([
+            'share_time_period' => 'required|string',
+            '_token' => 'required|string',
+        ]);
+
+        $userObj = Auth::user();
+        $user = User::findOrFail($userObj->id);
+
+        $live_link_key = bin2hex(random_bytes(16));
+
+        $time_period_stamp = strtotime('+' . $validated['share_time_period']);
+        $new_share_link = [
+            'key' => $live_link_key,
+            'timeperiod' => $time_period_stamp,
+            'period' => $validated['share_time_period'],
+            'hash' => "{$request->root()}/liveshare/{$live_link_key}"
+        ];
+
+        $user->live_sharing = $new_share_link;
+
+        $user->save();
+
+        $resp = [
+            'status' => 200,
+            'message' => 'Success',
+            'live_link' => $new_share_link['hash']
+        ];
+
+        return response()->json($resp);
+    }
+
+
+    public function liveShare(Request $request, $id)
+    {
+
+        $user = null;
+        $all_trades = [];
+        $sharing_data = '';
+        $expiry_time = 0;
+        $users = User::where('live_sharing', 'LIKE', "%{$id}%")->get();
+        if (!empty($users)) {
+            foreach ($users as $usr) {
+                $user = $usr;
+            }
+        }
+
+        if ($user != null) {
+            $sharing_data = $user->live_sharing;
+            $sharing_arr = json_decode($sharing_data, true);
+            if (isset($sharing_arr['timeperiod'])) {
+                $expiry_time = $sharing_arr['timeperiod'];
+                if ($sharing_arr['timeperiod'] > time()) {
+                    $all_trades = Trade::where('user_id', $user->id)->get()->toArray();
+                }else{
+                    $user = null;
+                }
+            }
+        }
+
+        return view('pages/liveShare', compact('all_trades', 'user', 'expiry_time'));
     }
 }
