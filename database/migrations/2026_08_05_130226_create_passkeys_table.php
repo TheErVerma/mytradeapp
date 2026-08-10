@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('passkeys', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->cascadeOnDelete();
+            $table->bigInteger('user_id')->index();
             $table->string('name');
             $table->string('credential_id')->unique();
             $table->json('credential');
             $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
+            
         });
     }
 
