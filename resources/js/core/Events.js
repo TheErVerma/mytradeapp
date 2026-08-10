@@ -146,25 +146,28 @@ export default class EventManager {
         }
 
         const generateQrInZone = () => {
-            const sharedLink = document.getElementById('live_share_link').value;
-            sharedLink != "" ? document.querySelector('.live_link_qr_zone_wrap').style.display = '' : '';
-            document.getElementById('live_share_link').closest('.form_field').classList.remove('disabled');
+            const live_link_inp = document.getElementById('live_share_link');
+            if(live_link_inp){
+                const sharedLink = document.getElementById('live_share_link').value;
+                sharedLink != "" ? document.querySelector('.live_link_qr_zone_wrap').style.display = '' : '';
+                document.getElementById('live_share_link').closest('.form_field').classList.remove('disabled');
 
-            const qrCodeLandingZone = document.getElementById('live_link_qr_zone');
-            if (qrCodeLandingZone) {
-                QRCode.toString(sharedLink, {
-                    type: 'svg',
-                    width: 300,
-                    margin: 2,
-                    errorCorrectionLevel: 'H'
-                }, function (error, svg) {
-                    if (error) {
-                        console.error(error);
-                        return;
-                    }
+                const qrCodeLandingZone = document.getElementById('live_link_qr_zone');
+                if (qrCodeLandingZone) {
+                    QRCode.toString(sharedLink, {
+                        type: 'svg',
+                        width: 300,
+                        margin: 2,
+                        errorCorrectionLevel: 'H'
+                    }, function (error, svg) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
 
-                    qrCodeLandingZone.innerHTML = svg;
-                });
+                        qrCodeLandingZone.innerHTML = svg;
+                    });
+                }
             }
         }
 
