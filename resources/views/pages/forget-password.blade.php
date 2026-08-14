@@ -44,7 +44,7 @@
       <div class="form_notices"></div>
       <div class="form_action_btn_outer">
         <div class="form_action_btns">
-          <button type="submit" class="btn btn-primary">Reset Password</button>
+          <button type="submit" class="btn btn-primary">Verify</button>
         </div>
       </div>
 

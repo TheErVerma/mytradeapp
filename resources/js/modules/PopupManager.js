@@ -4,7 +4,14 @@ export default class PopupManager {
     }
 
     init() {
+        const App = this;
         document.addEventListener('click', this.handleClick.bind(this));
+
+        document.addEventListener('keyup', function(e){
+            if(e.key == 'Escape'){
+                App.closeAll();
+            }
+        })
     }
 
     handleClick(event) {

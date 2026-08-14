@@ -44,6 +44,7 @@
     --radius-sm: 6px;
     --font: 'Syne', sans-serif;
     --mono: 'IBM Plex Mono', monospace;
+    --text-xs: 10px;
     --text-sm: 12px;
     --text-md: 14px;
     --text-lg: 16px;
@@ -146,7 +147,7 @@ span.saparator:after {
     left: 0;
     right: 0;
     margin: auto;
-    background: #fff;
+    background: var(--bg2);
     display: inline;
 }
 
@@ -341,19 +342,23 @@ select.mini-selector {
 .full_width_wrap {
     width: 100%;
     height: 100%;
-    padding:20px;
+    padding: 20px;
 }
-.full_width_wrap .live_share_head  {
+
+.full_width_wrap .live_share_head {
     margin-bottom: 20px;
 }
+
 .full_width_wrap .live_share_head h1 {
     font-size: var(--text-2xl);
     color: var(--muted2);
 }
+
 .full_width_wrap .live_share_head p {
     font-size: var(--text-md);
     color: var(--muted);
 }
+
 .full_width_wrap .live_share_head ul {
     list-style: none;
     background: var(--bg2);
@@ -367,6 +372,7 @@ select.mini-selector {
     color: var(--muted2);
     font-size: var(--text-md);
 }
+
 body.not-logged-in:not(.help):not(.liveshare) .main_section .container.center {
     height: 100dvh;
 }
@@ -381,6 +387,8 @@ body.not-logged-in:not(.help):not(.liveshare) .main_section .container.center {
     margin-top: 82px;
     margin-left: 240px;
     padding: 10px;
+    height: calc(100dvh - 81px);
+    overflow-y: auto;
 }
 
 span.line_separator {
@@ -525,6 +533,27 @@ header.main_header .user-profile-menu ul>li:hover a {
 
 
 /** Sidebar Start **/
+.sidebar_toggler {
+    position: fixed;
+    top: 90px;
+    left: 0;
+    background: var(--bg4);
+    z-index: 99;
+    height: 40px;
+    width: 30px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0px 10px 10px 0px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+body:has(.main_sidebar.active) .sidebar_toggler {
+    left: 240px;
+}
+body:has(.main_sidebar.active) .sidebar_toggler svg {
+    transform: rotateY(180deg);
+}
 aside.main_sidebar {
     padding: 10px;
     background: var(--bg2);
@@ -566,9 +595,11 @@ aside.main_sidebar .aside_inner .aside_menu_items ul li:has(a[disabled]) {
 }
 
 aside.main_sidebar .aside_inner .aside_menu_items ul li a.active {
-    background: var(--bg4);
+    background: linear-gradient(180deg, var(--bg), var(--bg4));
 }
-
+aside.main_sidebar .aside_inner .aside_menu_items ul li a:hover {
+    background: var(--bg);
+}
 aside.main_sidebar .aside_inner .aside_menu_items ul li a {
     color: var(--muted2);
     text-decoration: none;
@@ -578,6 +609,7 @@ aside.main_sidebar .aside_inner .aside_menu_items ul li a {
     font-size: var(--text-md);
     justify-content: flex-start;
     gap: 10px;
+    transition: all 0.2s;
 }
 
 aside.main_sidebar .aside_inner h5 {
@@ -669,12 +701,23 @@ div#live_link_qr_zone {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid var(--border);
+    /* border: 1px solid var(--border); */
     border-radius: 10px;
     max-width: 200px;
     margin: auto;
     overflow: hidden;
     max-height: 200px;
+}
+
+div#live_link_qr_zone svg {
+    /* background: var(--bg4); */
+}
+
+div#live_link_qr_zone svg path:first-child {
+    display: none;
+}
+div#live_link_qr_zone svg path {
+    stroke: var(--text);
 }
 
 .form_fields .form_field {
@@ -1465,7 +1508,7 @@ div#live_link_qr_zone {
     font-weight: 400;
     color: var(--muted2);
     text-align: left;
-    background: var(--bg4);
+    background: linear-gradient(180deg, var(--bg2), var(--bg4));
     border-radius: 4px;
 }
 
@@ -1535,15 +1578,17 @@ div#live_link_qr_zone {
 }
 
 .trades_table_wrapper .trades_table_inner table tr td.trade_b_action span {
-    padding: 6px 6px;
-    display: block;
-    background: var(--bg4);
+    padding: 4px 8px;
+    display: inline-block;
+    background: linear-gradient(
+180deg, var(--bg), var(--bg4));
     border-radius: 100px;
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     color: var(--muted2);
-    width: 100%;
     max-width: 60px;
     text-align: center;
+    font-weight: 600;
+    letter-spacing: 1px;
 }
 
 .trades_table_wrapper .trades_table_inner table tr:not(.buy) td.trade_b_symbol a {
@@ -1590,7 +1635,7 @@ div#live_link_qr_zone {
 
 .trade_action_wrap button.icon_btn {
     padding: 4px 6px;
-    border: 1px solid var(--muted);
+    border: 1px solid var(--border);
     background: var(--bg3);
     color: var(--muted2);
     display: flex;

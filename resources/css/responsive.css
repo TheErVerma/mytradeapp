@@ -1,0 +1,25 @@
+@media screen and (max-width: 768px) {
+
+    .sidebar_toggler{
+        display: flex;
+    }
+    aside.main_sidebar {
+        position: absolute;
+        top: 81px;
+        left: -240px;
+        z-index: 9;
+        transition: all 0.2s;
+    }
+
+    aside.main_sidebar.active {
+        left: 0;
+    }
+
+    .dash_content{
+        margin-left:0px;
+    }
+
+    .main_trades_table_outer {
+        overflow-x: auto;
+    }
+}

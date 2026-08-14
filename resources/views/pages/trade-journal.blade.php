@@ -78,106 +78,108 @@
                 </div>
             </div>
 
-            <table class="main_trades_table" @if(!is_array($all_trades) || (is_array($all_trades) && count($all_trades) <= 0)) style="display:none;" @endif>
-                <thead>
-                    <tr>
-                        <th class="trade_h_select">
-                            <input type="checkbox" name="select_all_trades" id="select_all_trades"/>
-                        </th>
-                        <th class="trade_h_id">ID</th>
-                        <!-- <th>Market Name</th> -->
-                        <th class="trade_h_symbol">Symbol</th>
-                        <th class="trade_h_action">Action</th>
-                        <th class="trade_h_date">Date</th>
-                        <th class="trade_h_shares">Shares</th>
-                        <th class="trade_h_lot">Lot</th>
-                        <th class="trade_h_price">Price</th>
-                        <th class="trade_h_exit_price">Exit Price</th>
-                        <th class="trade_h_pnl">P&L</th>
-                        <!-- <th>Commissions</th>
-                            <th>Fees</th> -->
-                        <th class="trade_h_actions">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if(is_array($all_trades) && count($all_trades) >= 1)
-                    @php
-                    $td_cnt = 1;
-                    @endphp
-                        @foreach ($all_trades as $trade_item)
-                            @php
-                                $tred_classes = [];
-                                if (isset($trade_item['trd_action'])) {
-                                    $tred_classes[] = strtolower($trade_item['trd_action']);
-                                }
+            <div class="main_trades_table_outer">
+                <table class="main_trades_table" @if(!is_array($all_trades) || (is_array($all_trades) && count($all_trades) <= 0)) style="display:none;" @endif>
+                    <thead>
+                        <tr>
+                            <th class="trade_h_select">
+                                <input type="checkbox" name="select_all_trades" id="select_all_trades"/>
+                            </th>
+                            <th class="trade_h_id">ID</th>
+                            <!-- <th>Market Name</th> -->
+                            <th class="trade_h_symbol">Symbol</th>
+                            <th class="trade_h_action">Action</th>
+                            <th class="trade_h_date">Date</th>
+                            <th class="trade_h_shares">Shares</th>
+                            <th class="trade_h_lot">Lot</th>
+                            <th class="trade_h_price">Price</th>
+                            <th class="trade_h_exit_price">Exit Price</th>
+                            <th class="trade_h_pnl">P&L</th>
+                            <!-- <th>Commissions</th>
+                                <th>Fees</th> -->
+                            <th class="trade_h_actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(is_array($all_trades) && count($all_trades) >= 1)
+                        @php
+                        $td_cnt = 1;
+                        @endphp
+                            @foreach ($all_trades as $trade_item)
+                                @php
+                                    $tred_classes = [];
+                                    if (isset($trade_item['trd_action'])) {
+                                        $tred_classes[] = strtolower($trade_item['trd_action']);
+                                    }
 
-                                $shares = $trade_item['trd_shares'];
-                                $lot_size = $trade_item['trd_lot'];
+                                    $shares = $trade_item['trd_shares'];
+                                    $lot_size = $trade_item['trd_lot'];
 
-                                $entry_prc = $trade_item['trd_price'];
-                                $exit_prc = $trade_item['trd_exit_price'];
-                                $charges_prc = $trade_item['trd_charges_amount'];
-                                $pnl_val = ($exit_prc - $entry_prc) - $charges_prc;
-                                $pnl_status = $pnl_val < 0 ? 'loss' : 'profit';
-                            @endphp
-                            <tr class="@php echo implode(' ', $tred_classes); @endphp ">
-                                <td class="trade_b_select">
-                                    <input type="checkbox" name="selected_trades" id="selected_trades"/>
-                                </td>
-                                <td class="trade_b_id">{{ $td_cnt/*$trade_item['id']*/ }}</td>
-                                <td class="trade_b_symbol"><span data-href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</span></td>
-                                <td class="trade_b_action"><span>{{ $trade_item['trd_action'] }}</span></td>
-                                <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
-                                <td class="trade_b_shares">{{ $trade_item['trd_type'] == 'Cash' ? $shares : '--' }}</td>
-                                <td class="trade_b_lot">{{ $trade_item['trd_type'] == 'F&O' ? $lot_size : '--' }}</td>
-                                <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in:$currency) }}</td>
-                                <td class="trade_b_exit_price">{{ Number::currency(floatval($trade_item['trd_exit_price']), in:$currency) }}</td>
-                                <td class="trade_b_pnl {{ $pnl_status }}">
-                                    {{ Number::currency(floatval($pnl_val), in:$currency) }} 
-                                    <span class="pnl_info">
-                                        <svg width="14px" height="14px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M12 7C12.5523 7 13 7.44772 13 8V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V8C11 7.44772 11.4477 7 12 7Z"/>
-                                            <path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z"/>
-                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z"/>
-                                        </svg>
-                                        <div class="pnl_sub_info">Charges: -{{ Number::currency(floatval($charges_prc), in:$currency) }}</div>
-                                    </span>
-                                </td>
-                                <td class="trade_b_actions">
-                                    <div class="trade_action_wrap">
-                                        <button type="button" class="icon_btn edit" data_id="{{ $trade_item['id'] }}">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                                    d="M14.2322 5.76777C15.2085 4.79146 16.7915 4.79146 17.7678 5.76777L18.4749 6.47487C19.4512 7.45118 19.4512 9.0341 18.4749 10.0104L10.3431 18.1421L7.10051 18.1421C6.54822 18.1421 6.1005 17.6944 6.10051 17.1421L6.10051 13.8995L14.2322 5.76777ZM16.3536 7.18198L17.0607 7.88909C17.2559 8.08435 17.2559 8.40093 17.0607 8.59619L16 9.65685L14.5858 8.24264L15.6464 7.18198C15.8417 6.98672 16.1583 6.98672 16.3536 7.18198ZM14.5858 11.0711L9.51472 16.1421L8.10051 16.1421L8.10051 14.7279L13.1716 9.65685L14.5858 11.0711Z"
-                                                    fill="currentColor" />
+                                    $entry_prc = $trade_item['trd_price'];
+                                    $exit_prc = $trade_item['trd_exit_price'];
+                                    $charges_prc = $trade_item['trd_charges_amount'];
+                                    $pnl_val = ($exit_prc - $entry_prc) - $charges_prc;
+                                    $pnl_status = $pnl_val < 0 ? 'loss' : 'profit';
+                                @endphp
+                                <tr class="@php echo implode(' ', $tred_classes); @endphp ">
+                                    <td class="trade_b_select">
+                                        <input type="checkbox" name="selected_trades" id="selected_trades"/>
+                                    </td>
+                                    <td class="trade_b_id">{{ $td_cnt/*$trade_item['id']*/ }}</td>
+                                    <td class="trade_b_symbol"><span data-href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</span></td>
+                                    <td class="trade_b_action"><span>{{ $trade_item['trd_action'] }}</span></td>
+                                    <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
+                                    <td class="trade_b_shares">{{ $trade_item['trd_type'] == 'Cash' ? $shares : '--' }}</td>
+                                    <td class="trade_b_lot">{{ $trade_item['trd_type'] == 'F&O' ? $lot_size : '--' }}</td>
+                                    <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in:$currency) }}</td>
+                                    <td class="trade_b_exit_price">{{ Number::currency(floatval($trade_item['trd_exit_price']), in:$currency) }}</td>
+                                    <td class="trade_b_pnl {{ $pnl_status }}">
+                                        {{ Number::currency(floatval($pnl_val), in:$currency) }} 
+                                        <span class="pnl_info">
+                                            <svg width="14px" height="14px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 7C12.5523 7 13 7.44772 13 8V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V8C11 7.44772 11.4477 7 12 7Z"/>
+                                                <path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z"/>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z"/>
                                             </svg>
-                                        </button>
-                                        <button type="button" class="icon_btn trash" data_id="{{ $trade_item['id'] }}">
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M5.16565 10.1534C5.07629 8.99181 5.99473 8 7.15975 8H16.8402C18.0053 8 18.9237 8.9918 18.8344 10.1534L18.142 19.1534C18.0619 20.1954 17.193 21 16.1479 21H7.85206C6.80699 21 5.93811 20.1954 5.85795 19.1534L5.16565 10.1534Z"
-                                                    stroke="currentColor" stroke-width="2" />
-                                                <path d="M19.5 5H4.5" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" />
-                                                <path d="M10 3C10 2.44772 10.4477 2 11 2H13C13.5523 2 14 2.44772 14 3V5H10V3Z"
-                                                    stroke="currentColor" stroke-width="2" />
-                                                <path d="M14 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                                <path d="M10 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                            </svg>
-                                        </button>
+                                            <div class="pnl_sub_info">Charges: -{{ Number::currency(floatval($charges_prc), in:$currency) }}</div>
+                                        </span>
+                                    </td>
+                                    <td class="trade_b_actions">
+                                        <div class="trade_action_wrap">
+                                            <button type="button" class="icon_btn edit" data_id="{{ $trade_item['id'] }}">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                        d="M14.2322 5.76777C15.2085 4.79146 16.7915 4.79146 17.7678 5.76777L18.4749 6.47487C19.4512 7.45118 19.4512 9.0341 18.4749 10.0104L10.3431 18.1421L7.10051 18.1421C6.54822 18.1421 6.1005 17.6944 6.10051 17.1421L6.10051 13.8995L14.2322 5.76777ZM16.3536 7.18198L17.0607 7.88909C17.2559 8.08435 17.2559 8.40093 17.0607 8.59619L16 9.65685L14.5858 8.24264L15.6464 7.18198C15.8417 6.98672 16.1583 6.98672 16.3536 7.18198ZM14.5858 11.0711L9.51472 16.1421L8.10051 16.1421L8.10051 14.7279L13.1716 9.65685L14.5858 11.0711Z"
+                                                        fill="currentColor" />
+                                                </svg>
+                                            </button>
+                                            <button type="button" class="icon_btn trash" data_id="{{ $trade_item['id'] }}">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M5.16565 10.1534C5.07629 8.99181 5.99473 8 7.15975 8H16.8402C18.0053 8 18.9237 8.9918 18.8344 10.1534L18.142 19.1534C18.0619 20.1954 17.193 21 16.1479 21H7.85206C6.80699 21 5.93811 20.1954 5.85795 19.1534L5.16565 10.1534Z"
+                                                        stroke="currentColor" stroke-width="2" />
+                                                    <path d="M19.5 5H4.5" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" />
+                                                    <path d="M10 3C10 2.44772 10.4477 2 11 2H13C13.5523 2 14 2.44772 14 3V5H10V3Z"
+                                                        stroke="currentColor" stroke-width="2" />
+                                                    <path d="M14 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                                    <path d="M10 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                                </svg>
+                                            </button>
 
-                                    </div>
-                                </td>
-                            </tr>
-                            @php
-                            $td_cnt++;
-                            @endphp
-                        @endforeach
-                    @endif
-                </tbody>
-            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @php
+                                $td_cnt++;
+                                @endphp
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

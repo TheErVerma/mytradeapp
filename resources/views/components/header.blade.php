@@ -6,6 +6,7 @@
 <header class="main_header">
     <div class="header_inner">
         <div class="left_head">
+            <!-- <img src="/storage/images/trade-logo-dark.png" width="120px"/> -->
             <h4>TradeApp</h4>
         </div>
         <div class="center_head"></div>
@@ -108,7 +109,11 @@
     </div>
 </header>
 
-
+<div class="sidebar_toggler">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M10 7L15 12L10 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+</div>
 <aside class="main_sidebar">
     <div class="aside_inner">
         <div class="aside_menu_items primary">
@@ -258,7 +263,7 @@
             <ul>
                 <li>
                     <span class="label">Total Trades</span>
-                    <span class="value">{{ $total_trades }}</span>
+                    <span class="value summary_total_entries">{{ $total_trades }}</span>
                 </li>
                 <!-- <li>
                     <span class="label">Win Rate</span>
@@ -266,7 +271,7 @@
                 </li> -->
                 <li>
                     <span class="label">Net P&L</span>
-                    <span class="value summary_total_npl {{ (isset($portfolioSummry['net_pnl']) && $portfolioSummry['net_pnl'] < 0) ? 'loss' : 'profit' }}">{{ Number::currency((isset($portfolioSummry['net_pnl']) ? $portfolioSummry['net_pnl'] : 0), in:$currency) }}</span>
+                    <span class="value summary_total_npl">--</span>
                 </li>
                 <!-- <li>
                     <span class="label">Avg WinL</span>

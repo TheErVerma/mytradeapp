@@ -243,11 +243,11 @@ class TradeController extends Controller
 
             if ($trade->trd_action === 'Long') {
 
-                $pnl = ($exit - $entry) * $qty;
+                $pnl = (($exit - $entry) - $trade->trd_charges_amount) * $qty;
 
             } elseif ($trade->trd_action === 'Short') {
 
-                $pnl = ($entry - $exit) * $qty;
+                $pnl = (($entry - $exit) - $trade->trd_charges_amount) * $qty;
 
             } else {
 
@@ -585,9 +585,11 @@ class TradeController extends Controller
 
         $trades = Trade::where('user_id', Auth::id())->whereBetween('trd_date', [$startDate, $endDate])->get();
 
+        $total_trades = 0;
         $totalPnL = 0;
         $pnl = 0;
         foreach ($trades as $trade) {
+            $total_trades++;
 
             if ($trade->trd_type == "F&O") {
                 $qty = (float) ($trade->trd_lot);
@@ -604,9 +606,9 @@ class TradeController extends Controller
             }
 
             if ($trade->trd_action === 'Long') {
-                $pnl = ($exit - $entry) * $qty;
+                $pnl = (($exit - $entry) - $trade->trd_charges_amount) * $qty;
             } elseif ($trade->trd_action === 'Short') {
-                $pnl = ($entry - $exit) * $qty;
+                $pnl = (($entry - $exit) - $trade->trd_charges_amount) * $qty;
             } else {
                 $pnl = 0;
             }
@@ -617,7 +619,7 @@ class TradeController extends Controller
         $currency = $user->default_country;
         $currency = $currency ? ($currency) : 'USD';
         $totalPnL_ = Number::currency($totalPnL, in: $currency);
-        $resp = ['status' => 200, 'message' => $period, 'date_range' => [$startDate, $endDate], 'trades' => $totalPnL_];
+        $resp = ['status' => 200, 'message' => $period, 'date_range' => [$startDate, $endDate], 'total_entries' => $total_trades, 'trade_num' => $totalPnL,'trades' => $totalPnL_];
 
         return response()->json($resp);
     }
@@ -678,7 +680,7 @@ class TradeController extends Controller
                 $expiry_time = $sharing_arr['timeperiod'];
                 if ($sharing_arr['timeperiod'] > time()) {
                     $all_trades = Trade::where('user_id', $user->id)->get()->toArray();
-                }else{
+                } else {
                     $user = null;
                 }
             }
