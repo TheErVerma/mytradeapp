@@ -548,12 +548,15 @@ header.main_header .user-profile-menu ul>li:hover a {
     cursor: pointer;
     transition: all 0.2s;
 }
+
 body:has(.main_sidebar.active) .sidebar_toggler {
     left: 240px;
 }
+
 body:has(.main_sidebar.active) .sidebar_toggler svg {
     transform: rotateY(180deg);
 }
+
 aside.main_sidebar {
     padding: 10px;
     background: var(--bg2);
@@ -597,9 +600,11 @@ aside.main_sidebar .aside_inner .aside_menu_items ul li:has(a[disabled]) {
 aside.main_sidebar .aside_inner .aside_menu_items ul li a.active {
     background: linear-gradient(180deg, var(--bg), var(--bg4));
 }
+
 aside.main_sidebar .aside_inner .aside_menu_items ul li a:hover {
     background: var(--bg);
 }
+
 aside.main_sidebar .aside_inner .aside_menu_items ul li a {
     color: var(--muted2);
     text-decoration: none;
@@ -716,6 +721,7 @@ div#live_link_qr_zone svg {
 div#live_link_qr_zone svg path:first-child {
     display: none;
 }
+
 div#live_link_qr_zone svg path {
     stroke: var(--text);
 }
@@ -822,6 +828,7 @@ div#live_link_qr_zone svg path {
     color: var(--muted2);
     cursor: pointer;
     transition: all 0.2s;
+    position: relative;
 }
 
 .form_fields .form_field ul.field_drop_down li:nth-child(odd) {
@@ -831,6 +838,31 @@ div#live_link_qr_zone svg path {
 .form_fields .form_field ul.field_drop_down li:hover {
     padding-left: 30px;
     transition: all 0.2s;
+}
+
+.form_fields .form_field ul.field_drop_down li span.exchange {
+    font-size: var(--text-xs);
+    background: var(--green);
+    color: var(--accent-text);
+    padding: 2px 6px;
+    display: inline-block;
+    border-radius: 100px;
+    font-weight: 600;
+    position: absolute;
+    top: 0px;
+    right: -40px;
+}
+
+.form_fields .form_field ul.field_drop_down li span.name {
+    display: block;
+    font-size: var(--text-sm);
+}
+
+.form_fields .form_field ul.field_drop_down li span.symbol {
+    font-size: var(--text-lg);
+    font-weight: 400;
+    margin-right: 4px;
+    position: relative;
 }
 
 .form_fields .form_field.icon .icon_field_inner {
@@ -843,6 +875,22 @@ div#live_link_qr_zone svg path {
     border-radius: 6px;
     overflow: hidden;
     position: relative;
+}
+
+.form_fields .form_field.icon .icon_field_inner span.loader {
+    position: absolute;
+    display: none;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+}
+
+.form_fields .form_field.icon .icon_field_inner.processing span.loader {
+    display: block;
+}
+
+.form_fields .form_field.icon .icon_field_inner span.loader img {
+    width: 100%;
 }
 
 .form_fields .form_field.icon .icon_field_inner span.icon {
@@ -1580,8 +1628,7 @@ div#live_link_qr_zone svg path {
 .trades_table_wrapper .trades_table_inner table tr td.trade_b_action span {
     padding: 4px 8px;
     display: inline-block;
-    background: linear-gradient(
-180deg, var(--bg), var(--bg4));
+    background: linear-gradient(180deg, var(--bg), var(--bg4));
     border-radius: 100px;
     font-size: var(--text-xs);
     color: var(--muted2);

@@ -11,6 +11,8 @@ import Tabs from '../modules/Tabs';
 import Gallery from '../modules/Gallery';
 import AudioPlayer from '../modules/AudioControl';
 import Toast from '../modules/Toast';
+import UpstoxActions from '../modules/UpstoxActions';
+
 
 export default class App {
     constructor() {
@@ -31,5 +33,6 @@ export default class App {
         this.Gallery = new Gallery();
         this.Audio = new AudioPlayer();
         this.Toast = new Toast();
+        this.UpstoxActions = new UpstoxActions();
     }
 }

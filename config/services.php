@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'upstox' => [
+        'access_token' => env('UPSTOX_ACCESS_TOKEN'),
+        'sandbox' => env('UPSTOX_SANDBOX', false),
+    ],
 
 ];

@@ -36,6 +36,7 @@ class TradeController extends Controller
 
         $validated = $request->validate([
             'trd_symbol' => 'required|string|max:255',
+            'trd_symbol_key' => 'required|string|max:255',
             'trd_date' => 'required|date',
             // 'trd_time' => 'required',
 
@@ -76,7 +77,8 @@ class TradeController extends Controller
 
         $trade = Trade::create([
 
-            'trd_symbol' => $validated['trd_symbol'] ?? 0,
+            'trd_symbol' => $validated['trd_symbol'] ?? '',
+            'trd_symbol_key' => $validated['trd_symbol_key'] ?? '',
             'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : 'Long',
 
             'trd_date' => $validated['trd_date'] ?? 0,

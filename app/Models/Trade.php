@@ -19,5 +19,6 @@ class Trade extends Model
         'trd_screenshots',
         'notes',
         'trd_charges_amount',
+        'trd_symbol_key',
     ];
 }

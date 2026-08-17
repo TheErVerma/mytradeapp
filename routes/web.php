@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelperController;
+use App\Http\Controllers\UpstoxController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\TwoFactorController;
@@ -70,6 +71,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/delete-image', [TradeController::class, 'deleteScreenshot']);
     Route::delete('/save-notes', [TradeController::class, 'updateNotes']);
     Route::get('/exporttrades', [TradeController::class, 'exportCsv']);
+    Route::post('/loadmorestocks', [UpstoxController::class, 'loadMoreData']);
     /**
      * APIs End
      **********************/

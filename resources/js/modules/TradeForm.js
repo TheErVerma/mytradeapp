@@ -178,7 +178,8 @@ export default class TradeForm {
 
     selectSuggestion(event) {
         const inp = event.target;
-        document.getElementById('symbol').value = inp.getAttribute('data_value');
+        document.getElementById('symbol').value = inp.getAttribute('data_name');;
+        document.getElementById('symbol_key').value = inp.getAttribute('data_value');
     }
 
 

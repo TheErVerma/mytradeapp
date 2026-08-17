@@ -2,6 +2,7 @@
 $formatter = new NumberFormatter('en_US@currency=' . $currency, NumberFormatter::CURRENCY);
 $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
 @endphp
+
 <div class="main_popup" data_identity="add-trade-pop">
     <div class="main_popup_inner">
         <span class="close">
@@ -32,17 +33,32 @@ $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
                                 </span>
                                 <input type="text" name="trd_symbol" id="symbol" placeholder="e.g. RELIANCE, TATA, APPL"
                                     required />
+                                <span class="loader">
+                                    <img src="/storage/images/loader.gif" />
+                                </span>
+                                <input type="hidden" name="trd_symbol_key" id="symbol_key" required />
                             </div>
                             <ul class="field_drop_down">
                                 @php
-                                $trade_symbols = array_column($trades, 'trd_symbol');
-                                $trade_symbols = array_unique($trade_symbols);
-                                @endphp
-                                @if (!empty($trade_symbols))
-                                    @foreach ($trade_symbols as $trade_symbol)
-                                        <li data_value="{{ $trade_symbol }}">{{ $trade_symbol }}</li>
+                                /*
+                                // echo "<pre>";
+                                // print_r($upstox);
+                                // echo "<pre>";
+                                $upstox_sub = array_map(function($upstox_itm) {
+                                    return [
+                                        'name'  => $upstox_itm['name'],
+                                        'key'  => $upstox_itm['instrument_key'],
+                                        'exch'  => $upstox_itm['exchange'],
+                                        'symbol'  => $upstox_itm['trading_symbol'],
+                                    ];
+                                }, $upstox);
+                                @if (!empty($upstox_sub))
+                                    @foreach ($upstox_sub as $trade_symbol)
+                                        <li data_value="{{ $trade_symbol['key'] }}">{{ $trade_symbol['name'] }} ({{ $trade_symbol['symbol'] }})</li>
                                     @endforeach
                                 @endif
+                                */
+                                @endphp
                             </ul>
                         </div>
 

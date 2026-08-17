@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\TradeController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\UpstoxController;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,9 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
             $user = Auth::user();
+
+
+            $upstox_data = UpstoxController::fetchData('TATA');
             if ($user) {
                 $total_trades = TradeController::getAll();
                 $portfolioSummry = $user && $user->initial_balance ? TradeController::summary($user->initial_balance ? $user->initial_balance : 1) : [];
@@ -44,11 +48,18 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('total_trades', count($total_trades));
                 $view->with('portfolioSummry', $portfolioSummry);
                 $view->with('currency', $currency);
+                $view->with('upstox', $upstox_data);
                 // $view->with('theme', $user->);
             }
         });
         // View::composer('pages.*', function ($view) {
         //     dd($view->getName());
         // });
+    }
+
+
+
+    private function fetchLiveData(){
+
     }
 }
