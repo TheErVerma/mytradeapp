@@ -15,14 +15,19 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/modern-screenshot@4.5.0/dist/index.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
     @fonts
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/css/output.css', 'resources/js/app.js'])
+        @vite(['resources/css/output.css', 'resources/css/app.css', 'resources/js/app.js'])
     @endif
 </head>
 
-<body class="{{ isset($user) ? 'logged-in' : 'not-logged-in' }} {{ Route::current()->uri() }}">
+<body class="{{ isset($user) ? 'logged-in' : 'not-logged-in' }} {{ Route::current() && Route::current()->uri() }}">
 
     <audio id="main_audio_player" style="display:none;"></audio>
     @if(isset($user))

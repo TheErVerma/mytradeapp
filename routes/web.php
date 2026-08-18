@@ -139,4 +139,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/verify-email', function () {
         return view('pages/verify-email');
     })->name('verify_email');
+    Route::get('/set-password', function () {
+        return view('pages/set-password');
+    })->name('set_password');
 });

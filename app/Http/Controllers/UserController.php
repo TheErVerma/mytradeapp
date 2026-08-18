@@ -93,12 +93,7 @@ class UserController extends Controller
         ]);
 
         $user = new User();
-        $fist_name = $request->input('first_name');
-        $last_name = $request->input('last_name');
-        $full_name = $fist_name;
-        if ($last_name != "") {
-            $full_name .= ' ' . $last_name;
-        }
+        $full_name = $request->input('full_name');
 
         $has_user_email = User::where('email', $request->input('email'))->first();
         if ($has_user_email) {
@@ -116,7 +111,7 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->name = $full_name;
 
-        $otp = rand(100000, 999999);
+        $otp = rand(1000, 9999);
         $resp = Mail::to($user->email)->send(new OTPEmail($otp, $user->name));
 
         $user->verifyhash = $otp . '|' . time();
@@ -144,7 +139,7 @@ class UserController extends Controller
 
             $user_email = $user->email;
 
-            $encrypted = Crypt::encryptString(base64_encode(json_encode($user_email)));
+            $encrypted = Crypt::encryptString(base64_encode(json_encode(['email' => $user_email, 'type' => 'register'])));
             return array(
                 "status" => 200,
                 "message" => "Verification Email Sent!",
@@ -164,7 +159,7 @@ class UserController extends Controller
         $parameters = $request->validate([
             "email_address" => ['required'],
         ]);
-        $otp = rand(100000, 999999);
+        $otp = rand(1000, 9999);
         $user_email = $request->input('email_address');
 
         $user = User::where('email', $user_email)->first();
@@ -175,9 +170,11 @@ class UserController extends Controller
             $user_obj->verifyhash = $otp . '|' . time();
             $user_obj->save();
 
+            $encrypted = Crypt::encryptString(base64_encode(json_encode(['email' => $user_email, 'type' => 'forget_pass'])));
             return response()->json([
                 'success' => true,
                 'message' => 'OPT Sent',
+                'redirect' => '/verify-email?hash=' . $encrypted
             ]);
         }
         return response()->json([
@@ -239,12 +236,20 @@ class UserController extends Controller
                 $user_obj = User::findOrFail($user->id);
                 $user_obj->email_verified_at = date('Y-m-d h:i:s');
                 $user_obj->save();
+                return response()->json([
+                    'success' => true,
+                    'email' => $user_email,
+                    'message' => 'OPT Verified',
+                ]);
+            }else{
+                $encrypted = Crypt::encryptString(base64_encode(json_encode(['email' => $user_email, 'type' => 'forget_pass'])));
+                return response()->json([
+                    'success' => true,
+                    'email' => $user_email,
+                    'message' => 'OPT Verified',
+                    'redirect' => '/set-password?hash='.$encrypted
+                ]);
             }
-            return response()->json([
-                'success' => true,
-                'email' => $user_email,
-                'message' => 'OPT Verified',
-            ]);
         }
         return response()->json([
             'success' => false,

@@ -33,6 +33,22 @@ export default class EventManager {
             allowInput: true
         });
 
+        const passwordVisibility = document.querySelector('.toggle-password-visibility');
+        if(passwordVisibility){
+            passwordVisibility.addEventListener('click', function(){
+                const parent = this.parentElement;
+                const thisInp = parent.querySelector('input');
+                
+                if(this.classList.contains('active')){
+                    this.classList.remove('active')
+                    thisInp.setAttribute('type', 'text');
+                }else{
+                    this.classList.add('active')
+                    thisInp.setAttribute('type', 'password');
+                }
+            })
+        }
+
         const priceInputs = document.querySelectorAll('input.price');
         if (priceInputs.length >= 1) {
             priceInputs.forEach((priceInput) => {
@@ -251,6 +267,35 @@ export default class EventManager {
 
             updateCountdown();
             const countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+
+        const OtpDigInp = document.querySelectorAll('#otp_dg1,#otp_dg2,#otp_dg3,#otp_dg4');
+        if(OtpDigInp){
+
+            OtpDigInp.forEach(function(dgInp, indx){
+                dgInp.addEventListener('keyup', function(e){
+                    dgInp.blur();
+                    const key = e.key;
+                    if(key == 'Backspace'){
+                        const prevInp = OtpDigInp[indx-1];
+                        if(prevInp){
+                            prevInp.focus();
+                        }
+                    }else{
+                        const nextInp = OtpDigInp[indx+1];
+                        if(nextInp){
+                            nextInp.focus();
+                        }
+                    }
+                    let finalOtp = [];
+                    OtpDigInp.forEach(function(dgInpV, indxS){
+                        finalOtp.push(dgInpV.value);
+                    });
+                    
+                    document.querySelector('#otp').value = finalOtp.join('');
+                });
+            })
         }
     }
 }

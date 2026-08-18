@@ -108,6 +108,7 @@ export default class AuthForm {
     }
 
     forgetPassword(event) {
+        const ThisApp = this;
         this.forgetForm = event.target;
 
         if (!this.forgetForm.matches('#forget_password_form')) {
@@ -131,22 +132,23 @@ export default class AuthForm {
             .then((data) => {
                 console.log(data);
                 if (data.success) {
-                    this.addNotice(data.message, 'success');
-                    document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                    document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                    document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
-                    document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'block';
+                    ThisApp.addNotice(data.message, 'success');
+
+                    // document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                    // document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                    // document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
+                    // document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'block';
 
                 } else {
-                    this.addNotice(data.message, 'warning');
+                    ThisApp.addNotice(data.message, 'warning');
                 }
 
                 this.forgetForm.classList.remove('processing');
 
                 // document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
-                // if (data.redirect) {
-                //     window.location.href = data.redirect;
-                // }
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                }
 
             }).catch((err) => {
                 console.log(err);
@@ -183,11 +185,12 @@ export default class AuthForm {
                         window.location.href = '/login?verified=1';
                     } else {
                         this.addNotice(data.message, 'success');
-                        document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                        document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
-                        document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
-                        document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'none';
-                        document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
+                        window.location.href = data.redirect;
+                        // document.querySelector('#verify_otp_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                        // document.querySelector('#reset_password_form [name="email_address"]').value = document.querySelector('#forget_password_form [name="email_address"]').value
+                        // document.querySelector('.main_log_reg_form.forget_password_form').style.display = 'none';
+                        // document.querySelector('.main_log_reg_form.verify_otp_form').style.display = 'none';
+                        // document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
                     }
                 } else {
                     this.addNotice(data.message, 'warning');

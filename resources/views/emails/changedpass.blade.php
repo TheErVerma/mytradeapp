@@ -23,7 +23,7 @@
           <tr>
             <td style="padding: 30px; color: #333333; line-height: 1.6;">
               <h2 style="margin-top: 0; color: #2c3e50;">Hi there, {{ $name }}</h2>
-              <p style="margin-bottom: 20px;color:#888;">Your password for trade has been updated, if you didn't make this changes please ping the support.</p>
+              <p style="margin-bottom: 20px;color:#888;">Your password for TradeApp has been updated, if you didn't make this changes please ping the support.</p>
               
               <p style="margin-top: 20px; margin-bottom: 0;color:#888;">If you have any questions, feel free to reach out to our support team. We're here to help!</p>
             </td>

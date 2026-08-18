@@ -250,8 +250,8 @@
             </svg>
 
             <div class="flex flex-col gap-2 md:gap-3">
-              <h1 class="text-xl font-semibold text-primary md:text-display-xs">Welcome back</h1>
-              <p class="text-md text-tertiary">Welcome back! Please enter your details.</p>
+              <h1 class="text-xl font-semibold text-primary md:text-display-xs">Welcome to Trade Log</h1>
+              <p class="text-md text-tertiary">Track your trades, analyze your performance, and grow as a smarter trader.</p>
             </div>
           </div>
 
@@ -269,6 +269,7 @@
           @endphp
           <form class="relative flex flex-col gap-6" id="login_form">
             @csrf
+            <div class="form_notices"></div>
             <div class="flex flex-col gap-5">
 
               <div class="group flex h-max w-full flex-col items-start justify-start gap-1.5">
@@ -326,12 +327,11 @@
                 <div class='text-secondary select-none text-sm font-medium'>Remember Me</div>
               </label>
 
-              <a class="form-internal__link" href="#">
+              <a class="form-internal__link" href="/forget-password">
                 <span data-text="true" class="transition">Forgot password</span>
               </a>
             </div>
 
-            <div class="form_notices"></div>
             <div class="flex flex-col gap-4">
 
               <button class="btn btn-lg btn-primary" type="submit">
