@@ -80,7 +80,7 @@ Route::group(['middleware' => ['auth']], function () {
     /**
      * Single Pages
      **/
-    Route::post('/pnl/{period}', [TradeController::class, 'getPnL']);
+    Route::post('/pnl/{period}', [TradeController::class, 'getPnL'])->middleware('web');
     Route::get('/trade/{id}', [TradeController::class, 'getTrade']);
     Route::get('/journal/{id}', [TradeController::class, 'getTrade']);
 
