@@ -4,11 +4,11 @@ import "@fancyapps/ui/dist/fancybox/fancybox.css";
 export default class Gallery {
     
     journalNotesForm = null;
+    token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     constructor() {
         this.updateNotes();
         this.deleteScreenshots();
-        this.token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
         this.init();
     }
@@ -60,6 +60,7 @@ export default class Gallery {
     }
 
     uploadScreenshots(e) {
+        const ThisApp = this;
         let uploadInput = e.target;
         let form = document.getElementById('uploadForm') || document.getElementById('edit_trade_popup');
         
@@ -106,7 +107,7 @@ export default class Gallery {
                 method: 'POST',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': this.token,
+                    'X-CSRF-TOKEN': ThisApp.token,
                     'Accept': 'application/json'
                 },
                 body: formData
@@ -122,7 +123,7 @@ export default class Gallery {
     }
 
     deleteScreenshots() {
-
+        const ThisApp = this;
         document.addEventListener('click', (e) => {
 
             const deleteBtn = e.target.closest('.screenshot-delete');
@@ -138,7 +139,7 @@ export default class Gallery {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': this.token
+                    'X-CSRF-TOKEN': ThisApp.token
                 },
                 body: JSON.stringify({
                     screenshotURL: img.src,
@@ -157,6 +158,7 @@ export default class Gallery {
     }
 
     updateNotes(e) {
+        const ThisApp = this;
         const notesForm = document.querySelector('#notesForm');
         const notesTextarea = document.querySelector('#journal_notes');
         const saveButton = document.querySelector('#save-notes');
@@ -186,7 +188,7 @@ export default class Gallery {
                 method: 'DELETE',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': this.token
+                    'X-CSRF-TOKEN': ThisApp.token
                 },
                 body: formData
             })

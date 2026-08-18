@@ -5,12 +5,14 @@ import QRCode from 'qrcode';
 
 export default class EventManager {
 
+    token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     constructor() {
-        this.token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         this.init();
     }
-
+    
     init() {
+        const ThisApp = this;
+
         const sidebar_toggler = document.querySelector('.sidebar_toggler');
         if (sidebar_toggler) {
             sidebar_toggler.addEventListener('click', function () {
@@ -121,7 +123,7 @@ export default class EventManager {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': this.token
+                        'X-CSRF-TOKEN': ThisApp.token
                     },
                 }).then((response) => response.json())
                     .then((data) => {

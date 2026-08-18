@@ -3,12 +3,13 @@ import PopupManager from "../modules/PopupManager";
 
 
 export default class HelpManager {
+    
+    token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     constructor() {
-        this.token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         this.init();
     }
-
+    
     init() {
         document.addEventListener(
             'click',
@@ -54,6 +55,7 @@ export default class HelpManager {
     }
 
     toggleTheme(theme) {
+        const ThisApp = this;
         const user_id = document.querySelector('html[data_user_id]').getAttribute('data_user_id');
         document.querySelector('html').setAttribute('theme', theme);
         fetch(`/user/${user_id}/save-theme`, {
@@ -61,7 +63,7 @@ export default class HelpManager {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': this.token
+                'X-CSRF-TOKEN': ThisApp.token
             },
             body: JSON.stringify({theme})
         }).then((response) => response.json())

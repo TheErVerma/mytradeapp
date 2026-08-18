@@ -5,13 +5,14 @@ export default class UpstoxActions {
     loading = false;
     debounceSearch = null;
     page = 1;
+    token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     constructor() {
-        this.token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         this.init();
     }
 
     init() {
+        const ThisApp = this;
         const UpstxCntr = this;
 
 
@@ -33,7 +34,7 @@ export default class UpstoxActions {
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': this.token
+                            'X-CSRF-TOKEN': ThisApp.token
                         },
                     }).then((response) => response.json())
                         .then((data) => {
@@ -87,7 +88,7 @@ export default class UpstoxActions {
         //             headers: {
         //                 'X-Requested-With': 'XMLHttpRequest',
         //                 'Content-Type': 'application/json',
-        //                 'X-CSRF-TOKEN': this.token
+        //                 'X-CSRF-TOKEN': ThisApp.token
         //             },
         //         }).then((response) => response.json())
         //             .then((data) => {
