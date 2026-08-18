@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -21,54 +22,66 @@ class UserController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            "email_address" => ['required'],
-            "password" => ['required'],
+        $validator = Validator::make($request->all(), [
+            'email_address' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
+        if ($validator->fails()) {
+            return [
+                'status' => 422,
+                'message' => $validator->errors()->first(),
+                'errors' => $validator->errors(),
+            ];
+        }
+
         $credentials_arr = [
-            "email" => $request->input('email_address'),
-            "password" => $request->input('password')
+            'email' => $request->input('email_address'),
+            'password' => $request->input('password'),
         ];
 
-        if (Auth::attempt($credentials_arr)) {
+        $remember_me = $request->has('remember_me');
+
+        if (Auth::attempt($credentials_arr, $remember_me)) {
             $user = Auth::user();
+
             if (is_null($user->email_verified_at)) {
                 Auth::logout();
 
-                return array(
-                    "status" => 500,
-                    "message" => "Invalid email or password."
-                );
+                return [
+                    'status' => 500,
+                    'message' => 'Invalid email or password.',
+                ];
             }
 
-            // If the user has 2FA enabled and confirmed, don't complete login yet.
-            // Store the user ID in session and redirect to the 2FA challenge.
-            if (!is_null($user->two_factor_confirmed_at) && !is_null($user->two_factor_secret)) {
-                // Log back out — login will be completed after 2FA verification.
+            if (
+                !is_null($user->two_factor_confirmed_at) &&
+                !is_null($user->two_factor_secret)
+            ) {
                 Auth::logout();
+
                 session(['login.id' => $user->id]);
 
-                return array(
-                    "status" => 202,
-                    "message" => "2FA required.",
-                    "redirect" => "/two-factor-authenticate"
-                );
+                return [
+                    'status' => 202,
+                    'message' => '2FA required.',
+                    'redirect' => '/two-factor-authenticate',
+                ];
             }
 
             $request->session()->regenerate();
 
-            return array(
-                "status" => 200,
-                "message" => "Logged In.",
-                "redirect" => "/"
-            );
-        } else {
-            return array(
-                "status" => 500,
-                "message" => "Invalid email or password."
-            );
+            return [
+                'status' => 200,
+                'message' => 'Logged In.',
+                'redirect' => '/',
+            ];
         }
+
+        return [
+            'status' => 500,
+            'message' => 'Invalid email or password.',
+        ];
     }
 
     public function register(Request $request)
@@ -89,12 +102,12 @@ class UserController extends Controller
 
         $has_user_email = User::where('email', $request->input('email'))->first();
         if ($has_user_email) {
-            if(!is_null($has_user_email->email_verified_at)){
+            if (!is_null($has_user_email->email_verified_at)) {
                 return array(
                     "status" => 500,
                     "message" => "Email Already Exists"
                 );
-            }else{
+            } else {
                 $user = User::findOrFail($has_user_email->id);
             }
         }
@@ -103,9 +116,9 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->name = $full_name;
 
-        $otp = rand(100000, 999999); 
+        $otp = rand(100000, 999999);
         $resp = Mail::to($user->email)->send(new OTPEmail($otp, $user->name));
-        
+
         $user->verifyhash = $otp . '|' . time();
         $user->save();
 
@@ -135,7 +148,7 @@ class UserController extends Controller
             return array(
                 "status" => 200,
                 "message" => "Verification Email Sent!",
-                "redirect" => "/verify-email?hash=".$encrypted
+                "redirect" => "/verify-email?hash=" . $encrypted
             );
         } else {
             return array(
@@ -220,9 +233,9 @@ class UserController extends Controller
         $saved_time = isset($saved_otp_data[1]) ? $saved_otp_data[1] : '';
         $valid_untill = 600;
 
-        
+
         if ($saved_otp == $otp && ($saved_time + $valid_untill) >= time()) {
-            if($verify_type == 'register'){
+            if ($verify_type == 'register') {
                 $user_obj = User::findOrFail($user->id);
                 $user_obj->email_verified_at = date('Y-m-d h:i:s');
                 $user_obj->save();

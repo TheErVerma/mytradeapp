@@ -65,6 +65,9 @@ export default class AuthForm {
 
     handleSubmit(event) {
         this.loginForm = event.target;
+        document.querySelectorAll('[name="password"], [name="email_address"]').forEach(function(inp, indx){
+            inp.classList.remove('invalid');
+        })
 
         if (!this.loginForm.matches('#login_form')) {
             return;
@@ -94,11 +97,13 @@ export default class AuthForm {
                         this.addNotice(data.message, 'success');
                     } else {
                         this.addNotice(data.message, 'warning');
+                        document.querySelectorAll('[name="password"], [name="email_address"]').forEach(function(inp, indx){
+                            inp.classList.add('invalid');
+                        })
                     }
                 }
-
             }).catch((err) => {
-                console.log(err);
+                // console.log(err);
             })
     }
 

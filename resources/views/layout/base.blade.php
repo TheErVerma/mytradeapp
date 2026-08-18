@@ -18,7 +18,7 @@
     @fonts
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/css/responsive.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/css/output.css', 'resources/js/app.js'])
     @endif
 </head>
 
@@ -38,11 +38,7 @@
         @include('../components/popups/confirm')
         @include('../components/popups/share-live')
     @else
-        <div class="main_section">
-            <div class="container center">
-                @yield('content')
-            </div>
-        </div>
+        @yield('content')
     @endif
 </body>
 
