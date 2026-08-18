@@ -38,16 +38,16 @@ export default class UpstoxActions {
                         },
                     }).then((response) => response.json())
                         .then((data) => {
-                            console.log(data);
+                            // console.log(data.data);
                             searchInp.closest('.icon_field_inner').classList.remove('processing');
                             document.querySelector('.form_fields .form_field ul.field_drop_down').innerHTML = '';
 
-                            if (data !== null) {
+                            if ((data.data) !== null) {
                                 UpstxCntr.loading = false;
-                                data.forEach(itemApd => {
+                                (data.data).forEach(itemApd => {
                                     const new_opt = document.createElement('li');
                                     new_opt.setAttribute('data_value', itemApd.instrument_key)
-                                    new_opt.setAttribute('data_name', itemApd.name)
+                                    new_opt.setAttribute('data_name', itemApd.trading_symbol)
                                     new_opt.innerHTML = `
                                     <span class="symbol">
                                         ${itemApd.trading_symbol}
@@ -55,10 +55,11 @@ export default class UpstoxActions {
                                     </span>
                                     <span class="name">${itemApd.name}</span>
                                     `;
+                                    document.querySelector('.form_fields .form_field ul.field_drop_down').appendChild(new_opt);
                                     new_opt.addEventListener('click', function (e) {
+                                        console.log(e.target);
                                         window.MainApp.tradeForm.selectSuggestion(e);
                                     });
-                                    document.querySelector('.form_fields .form_field ul.field_drop_down').appendChild(new_opt);
                                 });
                             }
                         }).catch((err) => {

@@ -68,7 +68,7 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CNTYjHI4.css",
+    "file": "assets/app-Dc2xSqgh.css",
     "name": "app",
     "names": [
       "app.css"
@@ -92,7 +92,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-CluJK0rZ.js",
+    "file": "assets/app-BvM_wxCW.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

@@ -19,7 +19,7 @@
                 <div class="form_fields">
                     <div class="form_field_group">
                         <div class="form_field icon">
-                            <label for="symbol">Symbol</label>
+                            <label for="edit-symbol">Symbol</label>
                             <div class="icon_field_inner">
                                 <span class="icon">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -32,7 +32,7 @@
                                         </g>
                                     </svg>
                                 </span>
-                                <input type="text" name="trd_symbol" id="symbol" placeholder="e.g. RELIANCE, TATA, APPL"
+                                <input type="text" name="trd_symbol" id="edit-symbol" placeholder="e.g. RELIANCE, TATA, APPL"
                                     required />
                             </div>
                         </div>

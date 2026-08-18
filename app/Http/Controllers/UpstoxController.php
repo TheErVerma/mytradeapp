@@ -19,39 +19,53 @@ class UpstoxController extends Controller
         //     'upstox_api_data_'.$page,
         //     now()->addSecond(1),
         //     function () use ($search, $type, $page) {
-                $upstox = app(UpstoxService::class);
+        // $upstox = app(UpstoxService::class);
 
-                $instrumentInstance = new InstrumentsApi(
-                    $upstox->client(),
-                    $upstox->config()
-                );
+        // $instrumentInstance = new InstrumentsApi(
+        //     $upstox->client(),
+        //     $upstox->config()
+        // );
 
-                $resp = $instrumentInstance->searchInstrument(
-                    $search,
-                    null,
-                    $type,
-                    null,
-                    null,
-                    null,
-                    $page,
-                    20
-                );
+        // $resp = $instrumentInstance->searchInstrument(
+        //     $search,
+        //     null,
+        //     $type,
+        //     null,
+        //     null,
+        //     null,
+        //     $page,
+        //     20
+        // );
 
-                $upstox_data = $resp->getData();
-                return self::refineUpstoxData($upstox_data);
+        // $upstox_data = $resp->getData();
+        // return self::refineUpstoxData($upstox_data);
+        return false;
         //     }
         // );
 
         // return $data;
     }
 
-    public function loadMoreData(Request $request){
+    public function loadMoreData(Request $request)
+    {
         $validated = $request->validate([
             'page' => 'required',
             'search' => '',
         ]);
 
         $srch_str = isset($validated['search']) && $validated['search'] != "" ? $validated['search'] : 'a';
+        // return Instruments::where('name', 'LIKE', '%'.$srch_str.'%')->get();
+
+        $instruments = Instruments::query()
+            ->whereRaw(
+                "row_to_json(instruments)::text ILIKE ?",
+                ["%{$srch_str}%"]
+            )
+            ->orderBy('id', 'asc')
+            ->paginate(10);
+
+        return $instruments;
+
         return self::fetchData($srch_str, null, $validated['page']);
     }
 

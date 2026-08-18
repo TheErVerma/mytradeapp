@@ -22,8 +22,19 @@
         rel="stylesheet">
     @fonts
 
+    @php
+    /*
+    
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/output.css', 'resources/css/app.css', 'resources/js/app.js'])
+    @endif
+    */
+    @endphp
+
+    @if (isset($user) && file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @elseif(file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/output.css', 'resources/js/app.js'])
     @endif
 </head>
 

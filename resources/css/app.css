@@ -831,6 +831,10 @@ div#live_link_qr_zone svg path {
     position: relative;
 }
 
+.form_fields .form_field ul.field_drop_down li>* {
+    pointer-events: none !important;
+}
+
 .form_fields .form_field ul.field_drop_down li:nth-child(odd) {
     background: var(--bg3);
 }
