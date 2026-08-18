@@ -7,6 +7,7 @@ export default class UpstoxActions {
     page = 1;
 
     constructor() {
+        this.token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         this.init();
     }
 

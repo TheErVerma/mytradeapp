@@ -6,6 +6,7 @@ import QRCode from 'qrcode';
 export default class EventManager {
 
     constructor() {
+        this.token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         this.init();
     }
 

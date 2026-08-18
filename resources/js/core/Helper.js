@@ -5,6 +5,7 @@ import PopupManager from "../modules/PopupManager";
 export default class HelpManager {
 
     constructor() {
+        this.token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         this.init();
     }
 
