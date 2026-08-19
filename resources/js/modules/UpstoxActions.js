@@ -60,7 +60,7 @@ export default class UpstoxActions {
                                     }
                                     new_opt.innerHTML = `
                                     <span class="symbol">
-                                        ${itemApd.trading_symbol}
+                                        ${itemApd.trading_symbol} ${itemApd.short_name ? `(${itemApd.short_name})` : ''}
                                         <div class="symbol_meta">
                                             <span class="exchange ${(itemApd.exchange)}">${itemApd.exchange}</span>
                                             <span class="segment">${(segment_type[(itemApd.segment).split('_')[1]])}</span>

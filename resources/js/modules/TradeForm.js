@@ -213,7 +213,7 @@ export default class TradeForm {
         const inp = event.target;
         const this_form = inp.closest('form');
         const this_data = JSON.parse(atob(inp.getAttribute('data_json')));
-        document.getElementById('symbol').value = this_data.trading_symbol;
+        document.getElementById('symbol').value = `${this_data.trading_symbol} ${this_data.short_name ? `(${this_data.short_name})` : ''}`;
         document.getElementById('symbol_key').value = this_data.instrument_key;
         console.log(this_data);
 
