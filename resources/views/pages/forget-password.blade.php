@@ -77,8 +77,8 @@
       <div class="form_notices"></div>
       <div class="form_action_btn_outer">
         <div class="form_action_btns">
-          <button type="submit" class="btn btn-primary">Send OTP</button>
-          <a href="/login" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-md btn-primary">Send OTP</button>
+          <a href="/login" class="btn btn-md btn-secondary">Cancel</a>
         </div>
       </div>
 
@@ -103,7 +103,7 @@
       <div class="form_notices"></div>
       <div class="form_action_btn_outer">
         <div class="form_action_btns">
-          <button type="submit" class="btn btn-primary">Verify</button>
+          <button type="submit" class="btn btn-md btn-primary">Verify</button>
         </div>
       </div>
 
@@ -127,7 +127,7 @@
       <div class="form_notices"></div>
       <div class="form_action_btn_outer">
         <div class="form_action_btns">
-          <button type="submit" class="btn btn-primary">Reset Password</button>
+          <button type="submit" class="btn btn-md btn-primary">Reset Password</button>
         </div>
       </div>
 

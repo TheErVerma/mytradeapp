@@ -52,7 +52,7 @@
                         <li data_type="short">Short (<span class="count">{{ $trdShort }}</span>)</li>
                     </ul>
                     <div class="trades_table_actions">
-                        <button type="button" class="btn" id="share_trade_screenshot">
+                        <button type="button" class="btn btn-sm btn-secondary" id="share_trade_screenshot">
                             <span class="icon">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                                     <path

@@ -4,8 +4,8 @@
             <h2>Confirmation</h2>
             <div class="confirmation_message"></div>
             <div class="confirm_actions">
-                <button type="button" class="btn btn-primary">Confirm</button>
-                <button type="button" class="btn btn-secondary">Cancel</button>
+                <button type="button" class="btn btn-md btn-primary">Confirm</button>
+                <button type="button" class="btn btn-md btn-secondary">Cancel</button>
             </div>
         </div>
     </div>

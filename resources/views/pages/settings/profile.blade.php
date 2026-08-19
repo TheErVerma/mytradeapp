@@ -80,7 +80,7 @@
                             <div class="form_notices"></div>
 
                             <div class="prf_set_actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="submit" class="btn btn-md btn-primary">Save Changes</button>
                             </div>
                         </div>
                     </form>
@@ -95,7 +95,7 @@
                                     <span class="description">Update your security credentials regularly</span>
                                 </div>
                                 <div class="prf_lft">
-                                    <button type="button" class="btn btn-secondary">Update</button>
+                                    <button type="button" class="btn btn-md btn-secondary">Update</button>
                                 </div>
                             </div>
                             {{-- ─── Two-Factor Authentication Card ────────────────────────── --}}
@@ -109,7 +109,7 @@
                         <div class="prf_lft">
                             <div id="tfa_state_disabled" @if($twoFactorEnabled) style="display:none;" @endif>
                                 <div class="main_set_actions">
-                                    <button type="button" class="btn btn-primary" id="btn_enable_2fa">Enable 2FA</button>
+                                    <button type="button" class="btn btn-md btn-primary" id="btn_enable_2fa">Enable 2FA</button>
                                 </div>
                             </div>
                         </div>
@@ -131,8 +131,8 @@
                                     </div>
                                     <div class="form_notices" id="tfa_setup_notices"></div>
                                     <div class="main_set_actions">
-                                        <button type="button" class="btn btn-primary" id="btn_confirm_2fa">Activate</button>
-                                        <button type="button" class="btn btn-secondary" id="btn_cancel_setup">Cancel</button>
+                                        <button type="button" class="btn btn-md btn-primary" id="btn_confirm_2fa">Activate</button>
+                                        <button type="button" class="btn btn-md btn-secondary" id="btn_cancel_setup">Cancel</button>
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +149,7 @@
                                         <p>Store these codes somewhere safe. Each code can be used once if you lose access to
                                         your authenticator app.</p>
                                         <div id="tfa_recovery_codes" style="display:none;"></div>
-                                        <button type="button" class="btn btn-secondary" id="btn_show_recovery">
+                                        <button type="button" class="btn btn-md btn-secondary" id="btn_show_recovery">
                                             Show / Regenerate Codes
                                         </button>
                                     </div>
@@ -166,7 +166,7 @@
                                             <div class="form_notices" id="tfa_disable_notices"></div>
                                             <div class="main_set_actions" style="margin-top:8px;">
                                                 <button type="button" class="btn btn-danger" id="btn_confirm_disable">Confirm Disable</button>
-                                                <button type="button" class="btn btn-secondary" id="btn_cancel_disable">Cancel</button>
+                                                <button type="button" class="btn btn-md btn-secondary" id="btn_cancel_disable">Cancel</button>
                                             </div>
                                         </div>
                                         <button type="button" class="btn btn-danger" id="btn_disable_2fa"

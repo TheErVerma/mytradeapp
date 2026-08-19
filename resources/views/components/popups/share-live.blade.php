@@ -95,7 +95,7 @@
                     <div class="form_field inline_btn_field {{ $is_enabled ? '' : 'disabled' }}">
                         <input type="text" name="live_share_link" id="live_share_link"
                             placeholder="e.g https://example.com/?trd_plk=xxxxxxxxxxxxxxxxxxxxxxxxxxx" value="{{ $is_enabled ? $shared_link :'' }}">
-                        <button type="button" class="copy_link_btn btn btn-primary">Copy</button>
+                        <button type="button" class="copy_link_btn btn btn-md btn-primary">Copy</button>
                     </div>
                 </div>
                 <div class="live_link_qr_zone_wrap" style="display: none;">
@@ -103,10 +103,10 @@
                     <div id="live_link_qr_zone"></div>
                 </div>
                 <div class="form_action_btns">
-                    <button type="button" class="btn btn-secondary close">
+                    <button type="button" class="btn btn-md btn-secondary close">
                         <span class="text">Cancel</span>
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-md  btn-primary">
                         <span class="text">Generate Link</span>
                         <span class="loader">Please wait...</span>
                     </button>

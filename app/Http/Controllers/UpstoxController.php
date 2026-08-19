@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Instruments;
+use DB;
 use Illuminate\Http\Request;
 use App\Services\UpstoxService;
 use Upstox\Client\Api\UserApi;
@@ -49,24 +50,91 @@ class UpstoxController extends Controller
     public function loadMoreData(Request $request)
     {
         $validated = $request->validate([
-            'page' => 'required',
+            // 'page' => 'required',
             'search' => '',
         ]);
 
         $srch_str = isset($validated['search']) && $validated['search'] != "" ? $validated['search'] : 'a';
         // return Instruments::where('name', 'LIKE', '%'.$srch_str.'%')->get();
 
-        $instruments = Instruments::query()
-            ->whereRaw(
-                "row_to_json(instruments)::text ILIKE ?",
-                ["%{$srch_str}%"]
-            )
-            ->orderBy('id', 'asc')
-            ->paginate(10);
+        $searchOperator = DB::connection()->getDriverName() === 'pgsql'
+        ? 'ILIKE'
+        : 'LIKE';
+
+        $searchableColumns = [
+            'name',
+            'segment',
+            'exchange',
+            'isin',
+            'expiry',
+            'country',
+            'latency',
+            'description',
+            'currency',
+            'weekly',
+            'instrument_key',
+            'exchange_token',
+            'trading_symbol',
+            'short_name',
+            'tick_size',
+            'lot_size',
+            'instrument_type',
+            'freeze_quantity',
+            'underlying_key',
+            'underlying_type',
+            'underlying_symbol',
+            'last_trading_date',
+            'strike_price',
+            'price_quote_unit',
+            'qty_multiplier',
+            'minimum_lot',
+            'start_time',
+            'end_time',
+            'week_days',
+            'general_denominator',
+            'general_numerator',
+            'price_numerator',
+            'price_denominator',
+            'mtf_enabled',
+            'mtf_bracket',
+            'security_type',
+        ];
+
+        $searchTerms = preg_split('/\s+/', trim($srch_str), -1, PREG_SPLIT_NO_EMPTY);
+
+        $instruments_qry = Instruments::query()
+            ->where(function ($query) use ($searchTerms, $searchableColumns, $searchOperator) {
+
+                foreach ($searchTerms as $term) {
+
+                    $query->where(function ($q) use ($term, $searchableColumns, $searchOperator) {
+
+                        $search = "%{$term}%";
+
+                        foreach ($searchableColumns as $column) {
+                            $q->orWhere($column, $searchOperator, $search);
+                        }
+
+                    });
+
+                }
+
+            })
+            ->orderByRaw("
+                CASE
+                    WHEN segment LIKE '%_FO' THEN 1
+                    WHEN segment LIKE '%_EQ' THEN 2
+                    ELSE 3
+                END
+            ")
+            ->orderBy('id', 'asc');
+
+        Log::debug($instruments_qry->toSql());
+        $instruments = $instruments_qry->paginate(10);
 
         return $instruments;
 
-        return self::fetchData($srch_str, null, $validated['page']);
+        // return self::fetchData($srch_str, null, $validated['page']);
     }
 
     static private function refineUpstoxData($resp_data)

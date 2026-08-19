@@ -32,7 +32,7 @@
                 </ul>
             </div>
             <div class="head_end">
-                <button type="button" class="btn btn-secondary">Edit</button>
+                <button type="button" class="btn btn-md btn-secondary">Edit</button>
             </div>
         </div>
 
@@ -131,7 +131,7 @@
                             <h3>Trade Journal</h3>
                             <form id="notesForm">
                                 <input type="hidden" name="trade_id" value="{{ $trade_id }}" />
-                                <button class="btn btn-primary" type="Submit" id="save-notes">Save Notes</button>
+                                <button class="btn btn-md btn-primary" type="Submit" id="save-notes">Save Notes</button>
                                 <textarea name="journal_notes" id="journal_notes" cols="30" rows="10">{{ $trade['notes'] }}</textarea>
                             </form>
                         </div>
@@ -141,7 +141,7 @@
                                 @csrf
                                 <input type="hidden" name="trade_id" value="{{ $trade_id }}" />
                                 <input type="file" id="imageInput" name="image" multiple hidden>
-                                <button class="btn btn-primary" type="button" id="uploadBtn">Upload Image</button>
+                                <button class="btn btn-md btn-primary" type="button" id="uploadBtn">Upload Image</button>
                             </form>
                             @if(!empty($trade_ss))
                                 <div class="image_gallery">

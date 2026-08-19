@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="help-page">
+    <div class="help-page prose prose-centered-quote mx-auto">
 
         <div class="help-header">
             <h1 class="help-title">Help & Support</h1>
@@ -12,7 +12,7 @@
             </p>
         </div>
 
-        <div class="help-section">
+        <div class="help-section prose">
             <h2 class="section-title">Getting Started</h2>
 
             <div class="help-card">

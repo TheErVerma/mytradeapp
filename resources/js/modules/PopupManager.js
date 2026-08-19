@@ -23,11 +23,15 @@ export default class PopupManager {
             const popupId = openBtn.dataset.popupTarget;
             this.open(popupId);
         }
-
+        
         // Close popup
         if (event.target.closest('.close')) {
-            this.closeAll();
+            const cls_btn = event.target.closest('.close');
+            const popWrap = cls_btn.closest('.main_popup');
+            const popupId = popWrap.getAttribute('data_identity');
+            this.close(popupId)
         }
+
         if(event.target.closest('.main_popup_overlay') || (event.target.closest('.main_popup_inner') == null && event.target.closest('.btn') == null)) {
             event.target.closest('.main_popup') ? event.target.closest('.main_popup').classList.remove('active') : false;
         }
@@ -40,6 +44,16 @@ export default class PopupManager {
 
         if (popup) {
             popup.classList.add('active');
+        }
+    }
+
+    close(id) {
+        const popup = document.querySelector(
+            `.main_popup[data_identity="${id}"]`
+        );
+
+        if (popup) {
+            popup.classList.remove('active');
         }
     }
 

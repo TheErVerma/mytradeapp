@@ -18,7 +18,7 @@ export default class UpstoxActions {
 
         const searchInp = document.querySelector('[name="trd_symbol"]');
         if (searchInp) {
-            searchInp.addEventListener('keyup', function () {
+            searchInp.addEventListener('input', function () {
                 clearTimeout(UpstxCntr.debounceSearch);
 
                 searchInp.closest('.icon_field_inner').classList.add('processing');
@@ -28,7 +28,7 @@ export default class UpstoxActions {
                     fetch(`/loadmorestocks/`, {
                         method: 'POST',
                         body: JSON.stringify({
-                            page: UpstxCntr.page++,
+                            // page: UpstxCntr.page++,
                             search: srchVal
                         }),
                         headers: {
@@ -38,6 +38,12 @@ export default class UpstoxActions {
                         },
                     }).then((response) => response.json())
                         .then((data) => {
+                            const segment_type = {
+                                'FO': 'Future',
+                                'EQ':'Cash',
+                                'COM': 'Commodity',
+                                'INDEX': 'Index'
+                            }
                             // console.log(data.data);
                             searchInp.closest('.icon_field_inner').classList.remove('processing');
                             document.querySelector('.form_fields .form_field ul.field_drop_down').innerHTML = '';
@@ -46,18 +52,25 @@ export default class UpstoxActions {
                                 UpstxCntr.loading = false;
                                 (data.data).forEach(itemApd => {
                                     const new_opt = document.createElement('li');
-                                    new_opt.setAttribute('data_value', itemApd.instrument_key)
-                                    new_opt.setAttribute('data_name', itemApd.trading_symbol)
+                                    new_opt.setAttribute('data_value', itemApd.instrument_key);
+                                    new_opt.setAttribute('data_name', itemApd.trading_symbol);
+                                    new_opt.setAttribute('data_json', btoa(JSON.stringify(itemApd)));
+                                    if(itemApd.underlying_type){
+                                        new_opt.classList.add((itemApd.underlying_type).toLowerCase());
+                                    }
                                     new_opt.innerHTML = `
                                     <span class="symbol">
                                         ${itemApd.trading_symbol}
-                                        <span class="exchange ${(itemApd.exchange)}">${itemApd.exchange}</span>
+                                        <div class="symbol_meta">
+                                            <span class="exchange ${(itemApd.exchange)}">${itemApd.exchange}</span>
+                                            <span class="segment">${(segment_type[(itemApd.segment).split('_')[1]])}</span>
+                                        </div>
                                     </span>
                                     <span class="name">${itemApd.name}</span>
                                     `;
                                     document.querySelector('.form_fields .form_field ul.field_drop_down').appendChild(new_opt);
                                     new_opt.addEventListener('click', function (e) {
-                                        console.log(e.target);
+                                        // console.log(e.target);
                                         window.MainApp.tradeForm.selectSuggestion(e);
                                     });
                                 });

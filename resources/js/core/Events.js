@@ -49,6 +49,36 @@ export default class EventManager {
             })
         }
 
+        const sideauthpop = document.querySelector('.author-open__popup');
+        if(sideauthpop){
+            sideauthpop.addEventListener('click', function(){
+                const sidepop = document.querySelector('.author-popup');
+                if(sidepop){
+                    if(sidepop.classList.contains('active')){
+                        sidepop.classList.remove('active');
+                    }else{
+                        sidepop.classList.add('active');
+                    }
+                }
+            })
+        }
+
+        const cs_trd_type_elm = document.querySelector('#cs_trd_type');
+        if(cs_trd_type_elm){
+            cs_trd_type_elm.addEventListener('change', function(){
+                if(this.checked){
+                    console.log('Checked');
+                    document.querySelector('#add_trade_popup #trd_type').checked = true;
+                }else{
+                    console.log('Not Checked');
+                    document.querySelector('#add_trade_popup #trd_type').checked = false;
+                }
+                const chngEvnt = new Event('change');
+                document.querySelector('#add_trade_popup #trd_type').dispatchEvent(chngEvnt);
+            });
+        }
+
+
         const priceInputs = document.querySelectorAll('input.price');
         if (priceInputs.length >= 1) {
             priceInputs.forEach((priceInput) => {
@@ -126,6 +156,20 @@ export default class EventManager {
         }
 
 
+        const toggle_mobile_sidebar = document.querySelector('.toggle_mobile_sidebar');
+        if(toggle_mobile_sidebar){
+            toggle_mobile_sidebar.addEventListener('click', function(){
+                document.querySelector('.mobile-sibebar').classList.add('active');
+            });
+        }
+
+        const toggle_sidebar_close = document.querySelector('.toggle_sidebar_close');
+        if(toggle_sidebar_close){
+            toggle_sidebar_close.addEventListener('click', function(){
+                document.querySelector('.mobile-sibebar').classList.remove('active');
+            });
+        }
+
 
 
         const summary_filter = document.querySelector('#summary-card-filter');
@@ -176,10 +220,12 @@ export default class EventManager {
             copyLiveLinkBtn.addEventListener('click', function () {
                 const this_btn = this;
                 const target_text = document.querySelector('#share_live_trade_popup #live_share_link');
-                // console.log(target_text);
-                if (target_text) {
+                console.log(target_text.value);
+                if (target_text && target_text.value) {
                     MainApp.Toast.dive('Copied', 'success');
                     copyText(target_text.value);
+                }else{
+                    MainApp.Toast.dive('Generate Link First', 'error');
                 }
             });
         }

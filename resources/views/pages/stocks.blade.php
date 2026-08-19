@@ -149,11 +149,11 @@
 
                 </div>
                 <div class="form_action_btns">
-                    <button type="button" class="btn btn-secondary">
+                    <button type="button" class="btn btn-md btn-secondary">
                         Cancel
                     </button>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-md btn-primary">
                         <span class="text">Save Stock</span>
                         <span class="loader">Please wait...</span>
                     </button>

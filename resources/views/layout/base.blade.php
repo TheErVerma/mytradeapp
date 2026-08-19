@@ -31,21 +31,24 @@
     */
     @endphp
 
-    @if (isset($user) && file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @elseif(file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/output.css', 'resources/js/app.js'])
+    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+        @vite(['resources/css/app-new.css', 'resources/css/output.css', 'resources/js/app.js'])
     @endif
 </head>
 
 <body class="{{ isset($user) ? 'logged-in' : 'not-logged-in' }} {{ Route::current() && Route::current()->uri() }}">
 
+
     <audio id="main_audio_player" style="display:none;"></audio>
     @if(isset($user))
-        @include('../components/header')
-        
-        <div class="dash_content">
-            @yield('content')
+        <div class="flex flex-col bg-primary lg:flex-row">
+            @include('../components/header')
+            
+            <!-- <div class="dash_content"> -->
+            <main class="min-w-0 min-h-svh flex-1 bg-secondary pt-8 px-4 lg:px-8 pb-12">
+                @yield('content')
+            </main>
+            <!-- </div> -->
         </div>
 
         @include('../components/popups/add-trade')
@@ -53,6 +56,8 @@
         @include('../components/popups/edit-trade')
         @include('../components/popups/confirm')
         @include('../components/popups/share-live')
+        @include('../components/popups/custom-symbol')
+        
     @else
         @yield('content')
     @endif

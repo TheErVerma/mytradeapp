@@ -1,6 +1,6 @@
 @php
-$formatter = new NumberFormatter('en_US@currency=' . $currency, NumberFormatter::CURRENCY);
-$money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+    $formatter = new NumberFormatter('en_US@currency=' . $currency, NumberFormatter::CURRENCY);
+    $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
 @endphp
 
 <div class="main_popup" data_identity="add-trade-pop">
@@ -12,7 +12,8 @@ $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
         </span>
         <div class="main_pop_content">
             <h2>Add Trade</h2>
-            <p>Add your latest trade to your journal. Fill in the trade details to maintain an accurate trading history</p>
+            <p>Add your latest trade to your journal. Fill in the trade details to maintain an accurate trading history
+            </p>
             <form action="" id="add_trade_popup" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <div class="form_fields">
@@ -31,35 +32,46 @@ $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
                                         </g>
                                     </svg>
                                 </span>
-                                <input type="text" name="trd_symbol" id="symbol" placeholder="e.g. RELIANCE, TATA, APPL"
+                                <input type="text" name="trd_symbol" id="symbol" placeholder="e.g. RELIANCE, TATA, JIO"
                                     required />
                                 <span class="loader">
                                     <img src="/storage/images/loader.gif" />
                                 </span>
                                 <input type="hidden" name="trd_symbol_key" id="symbol_key" required />
                             </div>
-                            <ul class="field_drop_down">
-                                @php
-                                /*
-                                // echo "<pre>";
-                                // print_r($upstox);
-                                // echo "<pre>";
-                                $upstox_sub = array_map(function($upstox_itm) {
-                                    return [
-                                        'name'  => $upstox_itm['name'],
-                                        'key'  => $upstox_itm['instrument_key'],
-                                        'exch'  => $upstox_itm['exchange'],
-                                        'symbol'  => $upstox_itm['trading_symbol'],
-                                    ];
-                                }, $upstox);
-                                @if (!empty($upstox_sub))
-                                    @foreach ($upstox_sub as $trade_symbol)
-                                        <li data_value="{{ $trade_symbol['key'] }}">{{ $trade_symbol['name'] }} ({{ $trade_symbol['symbol'] }})</li>
-                                    @endforeach
-                                @endif
-                                */
-                                @endphp
-                            </ul>
+                            <div class="field_drop_down_wrap">
+                                <ul class="field_drop_down">
+                                    @php
+                                        /*
+                                        // echo "
+                                                                            <pre>";
+                                        // print_r($upstox);
+                                        // echo "<pre>";
+                                        $upstox_sub = array_map(function($upstox_itm) {
+                                            return [
+                                                'name'  => $upstox_itm['name'],
+                                                'key'  => $upstox_itm['instrument_key'],
+                                                'exch'  => $upstox_itm['exchange'],
+                                                'symbol'  => $upstox_itm['trading_symbol'],
+                                            ];
+                                        }, $upstox);
+                                        @if (!empty($upstox_sub))
+                                            @foreach ($upstox_sub as $trade_symbol)
+                                                <li data_value="{{ $trade_symbol['key'] }}">{{ $trade_symbol['name'] }} ({{ $trade_symbol['symbol'] }})</li>
+                                            @endforeach
+                                        @endif
+                                        */
+                                    @endphp
+                                </ul>
+                                <div class="add_custom_symbol" data-popup-target="custom-symbol-pop">
+                                    <span class="icon">
+                                        <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none">
+                                            <path d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V11H3C2.44772 11 2 11.4477 2 12C2 12.5523 2.44772 13 3 13H11V21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21V13H21C21.5523 13 22 12.5523 22 12C22 11.4477 21.5523 11 21 11H13V3Z" fill="currentColor"/>
+                                        </svg>
+                                    </span>
+                                    <span class="text">Add Custom Symbol</span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form_field toggle">
@@ -76,7 +88,7 @@ $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
                     </div>
                     
                     <div class="form_field_group">
-                        <div class="form_field toggle">
+                        <div class="form_field toggle hidden_field">
                             <div class="form_field_label">Type</div>
                             <div class="form_field togglebtn">
                                 <label for="trd_type" class="positive">
@@ -99,7 +111,7 @@ $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
                         <label for="trade_date">Date</label>
                         <input type="text" class="datepicker" name="trd_date" id="trade_date" required value="
                         @php 
-                        echo date('Y-m-d');
+                            echo date('Y-m-d');
                         @endphp
                         "/>
                     </div>
@@ -163,8 +175,8 @@ $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
 
                 </div>
                 <div class="form_action_btns">
-                    <button type="button" class="btn btn-secondary" disabled>Add Execution</button>
-                    <button type="submit" class="btn btn-primary">
+                    <!-- <button type="button" class="btn btn-md btn-secondary" disabled>Add Execution</button> -->
+                    <button type="submit" class="btn btn-md btn-primary">
                         <span class="text">Save</span>
                         <span class="loader">Please wait...</span>
                     </button>

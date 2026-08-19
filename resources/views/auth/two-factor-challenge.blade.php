@@ -41,7 +41,7 @@
         <div class="form_action_btn_outer">
             <span class="text"><a href="/login">← Back to login</a></span>
             <div class="form_action_btns">
-                <button type="submit" class="btn btn-primary">Verify</button>
+                <button type="submit" class="btn btn-md btn-primary">Verify</button>
             </div>
         </div>
     </form>

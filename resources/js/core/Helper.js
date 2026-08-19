@@ -47,8 +47,8 @@ export default class HelpManager {
             return;
         }
 
-        const theme = document.querySelector('html').getAttribute('theme');
-        const new_theme = theme == 'light' ? 'dark' : 'light';
+        const theme = (document.querySelector('html').classList).contains('dark-mode');
+        const new_theme = !theme ? 'dark-mode' : '';
 
         localStorage.setItem('theme', new_theme);
         this.toggleTheme(new_theme);
@@ -57,7 +57,9 @@ export default class HelpManager {
     toggleTheme(theme) {
         const ThisApp = this;
         const user_id = document.querySelector('html[data_user_id]').getAttribute('data_user_id');
-        document.querySelector('html').setAttribute('theme', theme);
+        document.documentElement.classList.remove('dark-mode');
+
+        theme != "" ? document.querySelector('html').classList.add(theme) : false;
         fetch(`/user/${user_id}/save-theme`, {
             method: 'POST',
             headers: {

@@ -49,7 +49,7 @@ $countries = [
 
                         <div class="form_notices"></div>
                         <div class="main_set_actions">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <button type="submit" class="btn btn-md btn-primary">Save Changes</button>
                         </div>
                     </div>
                 </form>
