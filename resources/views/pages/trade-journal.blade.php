@@ -25,25 +25,35 @@
                     <div class="trades_date_filter">
                         <div class="trades_search_inp">
                             <span class="trades_search_inp_icon">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
                                     <g id="Interface / Search_Magnifying_Glass">
-                                        <path id="Vector" d="M15 15L21 21M10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10C17 13.866 13.866 17 10 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path id="Vector"
+                                            d="M15 15L21 21M10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10C17 13.866 13.866 17 10 17Z"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
                                     </g>
                                 </svg>
                             </span>
                             <input type="search" name="trade_search" id="trade_search" placeholder="Search trades...">
                         </div>
-                        <input type="text" class="datepicker" name="trade_date_from" id="trade_date_from" date_type="from" placeholder="From"/>
-                        <input type="text" class="datepicker" name="trade_date_to" id="trade_date_to" date_type="to" placeholder="To"/>
+                        <input type="text" class="datepicker" name="trade_date_from" id="trade_date_from" date_type="from"
+                            placeholder="From" />
+                        <input type="text" class="datepicker" name="trade_date_to" id="trade_date_to" date_type="to"
+                            placeholder="To" />
                     </div>
                     <div class="trades_additional_actions">
                         <button type="button" class="export_all_trades" title="Export All Trades">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" >
-                            <path d="M12 5L11.2929 4.29289L12 3.58579L12.7071 4.29289L12 5ZM13 14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14L13 14ZM6.29289 9.29289L11.2929 4.29289L12.7071 5.70711L7.70711 10.7071L6.29289 9.29289ZM12.7071 4.29289L17.7071 9.29289L16.2929 10.7071L11.2929 5.70711L12.7071 4.29289ZM13 5L13 14L11 14L11 5L13 5Z" fill="currentColor"/>
-                            <path d="M5 16L5 17C5 18.1046 5.89543 19 7 19L17 19C18.1046 19 19 18.1046 19 17V16" stroke="currentColor" stroke-width="2"/>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M12 5L11.2929 4.29289L12 3.58579L12.7071 4.29289L12 5ZM13 14C13 14.5523 12.5523 15 12 15C11.4477 15 11 14.5523 11 14L13 14ZM6.29289 9.29289L11.2929 4.29289L12.7071 5.70711L7.70711 10.7071L6.29289 9.29289ZM12.7071 4.29289L17.7071 9.29289L16.2929 10.7071L11.2929 5.70711L12.7071 4.29289ZM13 5L13 14L11 14L11 5L13 5Z"
+                                    fill="currentColor" />
+                                <path d="M5 16L5 17C5 18.1046 5.89543 19 7 19L17 19C18.1046 19 19 18.1046 19 17V16"
+                                    stroke="currentColor" stroke-width="2" />
                             </svg>
                         </button>
-                        <button type="button" class="btn btn-md btn-primary import_new_trades" data-popup-target="coming-soon-pop" title="Import All Trades">Import Trades</button>
+                        <button type="button" class="btn btn-md btn-primary import_new_trades"
+                            data-popup-target="coming-soon-pop" title="Import All Trades">Import Trades</button>
                     </div>
                 </div>
             </div>
@@ -57,27 +67,38 @@
                     <button type="button" class="btn btn-sm btn-secondary" id="share_trade_screenshot">
                         <span class="icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                                <path d="M5 10.2V14.533C5.00423 15.4569 5.3754 16.3413 6.0318 16.9915C6.68821 17.6418 7.57608 18.0045 8.5 18H15.5C16.4239 18.0045 17.3118 17.6418 17.9682 16.9915C18.6246 16.3413 18.9958 15.4569 19 14.533V10.2C18.9958 9.27608 18.6246 8.39169 17.9682 7.74148C17.3118 7.09126 16.4239 6.72849 15.5 6.73301C15.0147 6.66864 14.6001 6.3515 14.411 5.90001C14.1009 5.34285 13.5126 4.99815 12.875 5.00001H11.125C10.4874 4.99815 9.89908 5.34285 9.589 5.90001C9.39986 6.3515 8.98526 6.66864 8.5 6.73301C7.57608 6.72849 6.68821 7.09126 6.0318 7.74148C5.3754 8.39169 5.00423 9.27608 5 10.2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 14.533C10.8059 14.5214 9.84617 13.546 9.85405 12.3518C9.86193 11.1576 10.8344 10.1949 12.0286 10.1991C13.2228 10.2033 14.1885 11.1728 14.188 12.367C14.1851 12.9444 13.9529 13.4969 13.5426 13.9032C13.1323 14.3094 12.5774 14.5359 12 14.533Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path
+                                    d="M5 10.2V14.533C5.00423 15.4569 5.3754 16.3413 6.0318 16.9915C6.68821 17.6418 7.57608 18.0045 8.5 18H15.5C16.4239 18.0045 17.3118 17.6418 17.9682 16.9915C18.6246 16.3413 18.9958 15.4569 19 14.533V10.2C18.9958 9.27608 18.6246 8.39169 17.9682 7.74148C17.3118 7.09126 16.4239 6.72849 15.5 6.73301C15.0147 6.66864 14.6001 6.3515 14.411 5.90001C14.1009 5.34285 13.5126 4.99815 12.875 5.00001H11.125C10.4874 4.99815 9.89908 5.34285 9.589 5.90001C9.39986 6.3515 8.98526 6.66864 8.5 6.73301C7.57608 6.72849 6.68821 7.09126 6.0318 7.74148C5.3754 8.39169 5.00423 9.27608 5 10.2Z"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path
+                                    d="M12 14.533C10.8059 14.5214 9.84617 13.546 9.85405 12.3518C9.86193 11.1576 10.8344 10.1949 12.0286 10.1991C13.2228 10.2033 14.1885 11.1728 14.188 12.367C14.1851 12.9444 13.9529 13.4969 13.5426 13.9032C13.1323 14.3094 12.5774 14.5359 12 14.533Z"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
                             </svg>
                         </span>
                         Share Screenshot
                     </button>
-                    <button type="button" class="btn btn-sm btn-secondary" id="live_share_trade_journal" data-popup-target="share-trade-pop">
+                    <button type="button" class="btn btn-sm btn-secondary" id="live_share_trade_journal"
+                        data-popup-target="share-trade-pop">
                         <span class="icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 11C6.07003 11 5.60504 11 5.22354 11.1022C4.18827 11.3796 3.37962 12.1883 3.10222 13.2235C3 13.605 3 14.07 3 15V16.2C3 17.8802 3 18.7202 3.32698 19.362C3.6146 19.9265 4.07354 20.3854 4.63803 20.673C5.27976 21 6.11984 21 7.8 21H16.2C17.8802 21 18.7202 21 19.362 20.673C19.9265 20.3854 20.3854 19.9265 20.673 19.362C21 18.7202 21 17.8802 21 16.2V15C21 14.07 21 13.605 20.8978 13.2235C20.6204 12.1883 19.8117 11.3796 18.7765 11.1022C18.395 11 17.93 11 17 11M16 7L12 3M12 3L8 7M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path
+                                    d="M7 11C6.07003 11 5.60504 11 5.22354 11.1022C4.18827 11.3796 3.37962 12.1883 3.10222 13.2235C3 13.605 3 14.07 3 15V16.2C3 17.8802 3 18.7202 3.32698 19.362C3.6146 19.9265 4.07354 20.3854 4.63803 20.673C5.27976 21 6.11984 21 7.8 21H16.2C17.8802 21 18.7202 21 19.362 20.673C19.9265 20.3854 20.3854 19.9265 20.673 19.362C21 18.7202 21 17.8802 21 16.2V15C21 14.07 21 13.605 20.8978 13.2235C20.6204 12.1883 19.8117 11.3796 18.7765 11.1022C18.395 11 17.93 11 17 11M16 7L12 3M12 3L8 7M12 3V15"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </span>
                     </button>
                 </div>
             </div>
 
-             <div class="no_trades_wrapper" @if(is_array($all_trades) && count($all_trades) >= 1)) style="display:none;" @endif>
+            <div class="no_trades_wrapper" @if(is_array($all_trades) && count($all_trades) >= 1)) style="display:none;"
+            @endif>
                 <div class="no_trades_wrapper_inner">
                     <h4>No trades match your criteria</h4>
                     <p>Try adjusting your search or filters to see more results</p>
-                    <button type="button" class="btn btn-md btn-primary" data-popup-target="add-trade-pop">+ Add New Trade</button>
+                    <button type="button" class="btn btn-md btn-primary" data-popup-target="add-trade-pop">+ Add New
+                        Trade</button>
                 </div>
             </div>
 
@@ -86,7 +107,7 @@
                     <thead>
                         <tr>
                             <th class="trade_h_select">
-                                <input type="checkbox" name="select_all_trades" id="select_all_trades"/>
+                                <input type="checkbox" name="select_all_trades" id="select_all_trades" />
                             </th>
                             <th class="trade_h_id">ID</th>
                             <!-- <th>Market Name</th> -->
@@ -100,15 +121,15 @@
                             <th class="trade_h_exit_price">Exit Price</th>
                             <th class="trade_h_pnl">P&L</th>
                             <!-- <th>Commissions</th>
-                                <th>Fees</th> -->
+                                    <th>Fees</th> -->
                             <th class="trade_h_actions">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(is_array($all_trades) && count($all_trades) >= 1)
-                        @php
-                        $td_cnt = 1;
-                        @endphp
+                            @php
+                                $td_cnt = 1;
+                            @endphp
                             @foreach ($all_trades as $trade_item)
                                 @php
                                     $tred_classes = [];
@@ -124,31 +145,46 @@
                                     $entry_prc = $trade_item['trd_price'];
                                     $exit_prc = $trade_item['trd_exit_price'];
                                     $charges_prc = $trade_item['trd_charges_amount'];
-                                    $pnl_val = ($exit_prc - $entry_prc) - $charges_prc;
+                                    $lot_size_val = isset($instrument['lot_size']) ? $instrument['lot_size'] : 1;
+
+                                    $pnl_val = (($exit_prc - $entry_prc) * $lot_size_val) - $charges_prc;
+                                    if ($trade_item['trd_action'] == 'short') {
+                                        $pnl_val = (($entry_prc - $exit_prc) * $lot_size_val) - $charges_prc;
+                                    }
+
+
                                     $pnl_status = $pnl_val < 0 ? 'loss' : 'profit';
                                 @endphp
                                 <tr class="@php echo implode(' ', $tred_classes); @endphp ">
                                     <td class="trade_b_select">
-                                        <input type="checkbox" name="selected_trades" id="selected_trades"/>
+                                        <input type="checkbox" name="selected_trades" id="selected_trades" />
                                     </td>
                                     <td class="trade_b_id">{{ $td_cnt/*$trade_item['id']*/ }}</td>
-                                    <td class="trade_b_symbol"><span data-href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</span></td>
+                                    <td class="trade_b_symbol"><span
+                                            data-href="/journal/{{ $trade_item['id'] }}">{{ $trade_item['trd_symbol'] }}</span></td>
                                     <td class="trade_b_action"><span>{{ $trade_item['trd_action'] }}</span></td>
                                     <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
                                     <td class="trade_b_shares">{{ $trade_item['trd_type'] == 'Cash' ? $shares : '--' }}</td>
                                     <td class="trade_b_lot">{{ $trade_item['trd_type'] == 'F&O' ? $lot_size : '--' }}</td>
                                     <td class="trade_b_type">{{ $inst_type }}</td>
-                                    <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in:$currency) }}</td>
-                                    <td class="trade_b_exit_price">{{ Number::currency(floatval($trade_item['trd_exit_price']), in:$currency) }}</td>
+                                    <td class="trade_b_price">
+                                        {{ Number::currency(floatval($trade_item['trd_price']), in: $currency) }}</td>
+                                    <td class="trade_b_exit_price">
+                                        {{ Number::currency(floatval($trade_item['trd_exit_price']), in: $currency) }}</td>
                                     <td class="trade_b_pnl {{ $pnl_status }}">
-                                        {{ Number::currency(floatval($pnl_val), in:$currency) }} 
+                                        {{ Number::currency(floatval($pnl_val), in: $currency) }}
                                         <span class="pnl_info">
-                                            <svg width="14px" height="14px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M12 7C12.5523 7 13 7.44772 13 8V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V8C11 7.44772 11.4477 7 12 7Z"/>
-                                                <path d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z"/>
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z"/>
+                                            <svg width="14px" height="14px" viewBox="0 0 24 24" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M12 7C12.5523 7 13 7.44772 13 8V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V8C11 7.44772 11.4477 7 12 7Z" />
+                                                <path
+                                                    d="M12 17C12.5523 17 13 16.5523 13 16C13 15.4477 12.5523 15 12 15C11.4477 15 11 15.4477 11 16C11 16.5523 11.4477 17 12 17Z" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12Z" />
                                             </svg>
-                                            <div class="pnl_sub_info">Charges: -{{ Number::currency(floatval($charges_prc), in:$currency) }}</div>
+                                            <div class="pnl_sub_info">Charges:
+                                                -{{ Number::currency(floatval($charges_prc), in: $currency) }}</div>
                                         </span>
                                     </td>
                                     <td class="trade_b_actions">
@@ -171,8 +207,10 @@
                                                         stroke-linecap="round" />
                                                     <path d="M10 3C10 2.44772 10.4477 2 11 2H13C13.5523 2 14 2.44772 14 3V5H10V3Z"
                                                         stroke="currentColor" stroke-width="2" />
-                                                    <path d="M14 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                                                    <path d="M10 12V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                                                    <path d="M14 12V17" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" />
+                                                    <path d="M10 12V17" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" />
                                                 </svg>
                                             </button>
 
@@ -180,7 +218,7 @@
                                     </td>
                                 </tr>
                                 @php
-                                $td_cnt++;
+                                    $td_cnt++;
                                 @endphp
                             @endforeach
                         @endif

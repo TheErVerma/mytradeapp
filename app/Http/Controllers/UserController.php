@@ -115,6 +115,7 @@ class UserController extends Controller
         $resp = Mail::to($user->email)->send(new OTPEmail($otp, $user->name));
 
         $user->verifyhash = $otp . '|' . time();
+        $user->default_country = 'INR';
         $user->save();
 
         if ($user->save()) {

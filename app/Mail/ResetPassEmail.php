@@ -29,6 +29,7 @@ class ResetPassEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
+            from: config('mail.from.address'),
             subject: 'Password Changed',
         );
     }

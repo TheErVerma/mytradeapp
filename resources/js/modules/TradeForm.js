@@ -227,7 +227,7 @@ export default class TradeForm {
         const this_data = JSON.parse(atob(inp.getAttribute('data_json')));
         document.getElementById('symbol').value = `${this_data.trading_symbol} ${this_data.short_name ? `(${this_data.short_name})` : ''}`;
         document.getElementById('symbol_key').value = this_data.instrument_key;
-        console.log(this_data);
+        // console.log(this_data);
 
         const changeEvnt = new Event('change');
         const this_segment = this_data.segment;
@@ -237,6 +237,10 @@ export default class TradeForm {
             this_form.querySelector('[name="trd_type"]').checked = false;
         }
         this_form.querySelector('[name="trd_type"]').dispatchEvent(changeEvnt);
+
+        this_form.querySelector('[name="trd_qty_size"]').value = this_data.lot_size;
+        this_form.querySelector('[name="trd_qty_size"]').dispatchEvent(new Event('input'));
+        
     }
 
 

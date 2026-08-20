@@ -76,11 +76,18 @@ export default class TradeActions {
         const checkPNL = (elm) => {
         
             const form = elm.closest('form');
+            const is_short = form.querySelector('[name="trd_action"]').checked;
+            const qty_size = Number(form.querySelector('[name="trd_qty_size"]').value);
             const entry_price = (form.querySelector('[name="trd_price"]').value).replaceAll(',', '');
             const exit_price = (form.querySelector('[name="trd_exit_price"]').value).replaceAll(',', '');
             const charges_price = (form.querySelector('[name="trd_charges_amount"]').value).replaceAll(',', '');
-            const sum = (exit_price - entry_price) - charges_price;
             
+            let sum = ((exit_price - entry_price) * qty_size) - charges_price;
+            if(is_short){
+                sum = ((entry_price - exit_price) * qty_size) - charges_price;
+            }
+            
+            console.log(sum);
             const pnl_wrap = form.querySelector('.form_text_field.p_n_l');
             const symbol = pnl_wrap.getAttribute('data_currency_symbol');
             const formatted = (sum < 0 ? '-' : '') + symbol + formatePrice(Math.abs(sum));
@@ -97,7 +104,7 @@ export default class TradeActions {
             }
             // console.log(entry_price, exit_price, sum);
         }
-        document.querySelectorAll('[name="trd_price"],[name="trd_exit_price"], [name="trd_charges_amount"] ').forEach(input => {
+        document.querySelectorAll('[name="trd_qty_size"], [name="trd_action"], [name="trd_price"],[name="trd_exit_price"], [name="trd_charges_amount"] ').forEach(input => {
             input.addEventListener('input', function(){
                 checkPNL(this);
             });
