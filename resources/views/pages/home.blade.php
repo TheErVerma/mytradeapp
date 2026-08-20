@@ -18,7 +18,7 @@
                 <div class="relative flex flex-col gap-2 px-4 py-5 md:px-5">
                     <h3 class="text-sm font-medium text-tertiary">Profit & Loss</h3>
                     <div class="flex items-end gap-4">
-                        <p class="flex-1 text-display-sm font-semibold text-primary">$0.00</p>
+                        <p class="flex-1 text-display-sm font-semibold text-primary">{{ Number::currency(floatval($portfolioSummry['net_pnl']), in: $currency) }}</p>
                     </div>
                 </div>
             </div>

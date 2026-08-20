@@ -137,6 +137,7 @@
                                         $tred_classes[] = strtolower($trade_item['trd_action']);
                                     }
 
+                                    $trd_type = isset($trade_item['trd_type']) ? $trade_item['trd_type'] : 'Cash';
                                     $instrument = $trade_item['instrument'];
                                     $inst_type = $instrument && isset($instrument['underlying_type']) ? $instrument['underlying_type'] : 'OTHER';
                                     $shares = $trade_item['trd_shares'];
@@ -145,10 +146,14 @@
                                     $entry_prc = $trade_item['trd_price'];
                                     $exit_prc = $trade_item['trd_exit_price'];
                                     $charges_prc = $trade_item['trd_charges_amount'];
-                                    $lot_size_val = isset($instrument['lot_size']) ? $instrument['lot_size'] : 1;
+
+                                    $lot_size_val = isset($trade_item['trd_shares']) ? $trade_item['trd_shares'] : 1;
+                                    if($trd_type != 'Cash'){
+                                        $lot_size_val = (isset($instrument['lot_size']) ? $instrument['lot_size'] : 1) * $lot_size;
+                                    }
 
                                     $pnl_val = (($exit_prc - $entry_prc) * $lot_size_val) - $charges_prc;
-                                    if ($trade_item['trd_action'] == 'short') {
+                                    if ($trade_item['trd_action'] == 'Short') {
                                         $pnl_val = (($entry_prc - $exit_prc) * $lot_size_val) - $charges_prc;
                                     }
 

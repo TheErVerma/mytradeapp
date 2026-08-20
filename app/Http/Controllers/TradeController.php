@@ -224,7 +224,8 @@ class TradeController extends Controller
         $userId = Auth::id();
 
         $trades = Trade::where('user_id', $userId)
-            ->orderBy('trd_date', 'asc')
+            ->with('instrument')
+            ->orderBy('id', 'ASC')
             ->get();
 
         $totalPnL = 0;
@@ -235,7 +236,7 @@ class TradeController extends Controller
         foreach ($trades as $trade) {
 
             if ($trade->trd_type == "F&O") {
-                $qty = (float) ($trade->trd_lot);
+                $qty = (float) ($trade->trd_lot) * $trade->instrument['lot_size'];
             }
             if ($trade->trd_type == "Cash") {
                 $qty = (float) ($trade->trd_shares);
@@ -251,11 +252,11 @@ class TradeController extends Controller
 
             if ($trade->trd_action === 'Long') {
 
-                $pnl = (($exit - $entry) - $trade->trd_charges_amount) * $qty;
+                $pnl = ((($exit - $entry) * $qty) - $trade->trd_charges_amount);
 
             } elseif ($trade->trd_action === 'Short') {
 
-                $pnl = (($entry - $exit) - $trade->trd_charges_amount) * $qty;
+                $pnl = ((($entry - $exit) * $qty) - $trade->trd_charges_amount);
 
             } else {
 

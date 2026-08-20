@@ -77,7 +77,9 @@ export default class TradeActions {
         
             const form = elm.closest('form');
             const is_short = form.querySelector('[name="trd_action"]').checked;
-            const qty_size = Number(form.querySelector('[name="trd_qty_size"]').value);
+            const lot_size = Number(form.querySelector('[name="trd_lot"]').value);
+            const shr_size = Number(form.querySelector('[name="trd_shares"]').value);
+            const qty_size = Number(form.querySelector('[name="trd_qty_size"]').value) * (lot_size || shr_size);
             const entry_price = (form.querySelector('[name="trd_price"]').value).replaceAll(',', '');
             const exit_price = (form.querySelector('[name="trd_exit_price"]').value).replaceAll(',', '');
             const charges_price = (form.querySelector('[name="trd_charges_amount"]').value).replaceAll(',', '');
@@ -104,7 +106,7 @@ export default class TradeActions {
             }
             // console.log(entry_price, exit_price, sum);
         }
-        document.querySelectorAll('[name="trd_qty_size"], [name="trd_action"], [name="trd_price"],[name="trd_exit_price"], [name="trd_charges_amount"] ').forEach(input => {
+        document.querySelectorAll('[name="trd_shares"], [name="trd_lot"], [name="trd_qty_size"], [name="trd_action"], [name="trd_price"],[name="trd_exit_price"], [name="trd_charges_amount"] ').forEach(input => {
             input.addEventListener('input', function(){
                 checkPNL(this);
             });

@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
             $upstox_data = UpstoxController::fetchData('TATA');
             if ($user) {
                 $total_trades = TradeController::getAll();
-                $portfolioSummry = $user && $user->initial_balance ? TradeController::summary($user->initial_balance ? $user->initial_balance : 1) : [];
+                $portfolioSummry = TradeController::summary();
                 $currency = $user->default_country;
                 $currency = $currency ? ($currency) : 'USD';
                 $view->with('trades', $total_trades);

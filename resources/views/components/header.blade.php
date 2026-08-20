@@ -202,7 +202,7 @@
 
                     <div class="text-xs flex justify-between items-center gap-4">
                         <span class="label">Net P&amp;L</span>
-                        <span class="text-success-primary value summary_total_npl profit">$0.00</span>
+                        <span class="value summary_total_npl {{ $portfolioSummry['net_pnl'] >= 0 ? 'text-success-primary' : 'text-error-primary' }} ">{{ Number::currency(floatval($portfolioSummry['net_pnl']), in: $currency) }}</span>
                     </div>
                 </div>
             </div>
