@@ -246,7 +246,7 @@
                 $user = Auth::user();
                 $full_name = $user->name;
                 $email_adds = $user->email;
-                $profile_pic = $user->profile_pic;
+                $profile_pic = $user->profile_pic ?? '/storage/images/user.png';
                 @endphp
                 <figure class="group flex min-w-0 flex-1 items-center gap-2">
                     <div data-avatar="true"
