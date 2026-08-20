@@ -8,6 +8,9 @@
     @php
         // $all_trades
         // $all_trades = array_reverse($all_trades);
+        // echo "<pre>";
+        // print_r($all_trades);
+        // echo "</pre>";
         $trad_actions = array_column($all_trades, 'trd_action');
         $trdActnCnt = array_count_values($trad_actions);
         $trdLong = isset($trdActnCnt['Long']) ? $trdActnCnt['Long'] : 0;
@@ -92,6 +95,7 @@
                             <th class="trade_h_date">Date</th>
                             <th class="trade_h_shares">Shares</th>
                             <th class="trade_h_lot">Lot</th>
+                            <th class="trade_h_type">Type</th>
                             <th class="trade_h_price">Price</th>
                             <th class="trade_h_exit_price">Exit Price</th>
                             <th class="trade_h_pnl">P&L</th>
@@ -112,6 +116,8 @@
                                         $tred_classes[] = strtolower($trade_item['trd_action']);
                                     }
 
+                                    $instrument = $trade_item['instrument'];
+                                    $inst_type = $instrument && isset($instrument['underlying_type']) ? $instrument['underlying_type'] : 'OTHER';
                                     $shares = $trade_item['trd_shares'];
                                     $lot_size = $trade_item['trd_lot'];
 
@@ -131,6 +137,7 @@
                                     <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
                                     <td class="trade_b_shares">{{ $trade_item['trd_type'] == 'Cash' ? $shares : '--' }}</td>
                                     <td class="trade_b_lot">{{ $trade_item['trd_type'] == 'F&O' ? $lot_size : '--' }}</td>
+                                    <td class="trade_b_type">{{ $inst_type }}</td>
                                     <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in:$currency) }}</td>
                                     <td class="trade_b_exit_price">{{ Number::currency(floatval($trade_item['trd_exit_price']), in:$currency) }}</td>
                                     <td class="trade_b_pnl {{ $pnl_status }}">

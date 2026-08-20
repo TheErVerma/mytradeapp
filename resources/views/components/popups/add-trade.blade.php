@@ -100,11 +100,11 @@
                         </div>
                         <div class="form_field">
                             <label for="shares_amount">Shares</label>
-                            <input type="number" name="trd_shares" id="shares_amount" placeholder="0.00" />
+                            <input type="text" class="qtynumamnt" name="trd_shares" id="shares_amount" value="1" required/>
                         </div>
                         <div class="form_field" style="display:none;">
                             <label for="trd_lot">Lot</label>
-                            <input type="number" name="trd_lot" id="trd_lot" placeholder="0" />
+                            <input type="text" class="qtynumamnt" name="trd_lot" id="trd_lot" value="1" />
                         </div>
                     </div>
                     <div class="form_field">

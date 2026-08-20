@@ -132,12 +132,24 @@ export default class TradeForm {
                 const this_wrapper = this_itm.closest('.form_fields');
                 const this_checked_obj = this_wrapper.querySelector('[name="trd_type"]:checked');
                 const this_checked = this_checked_obj ? this_checked_obj.value : false;
+                const shr_inp = this_wrapper.querySelector('[name="trd_shares"]');
+                const lot_inp = this_wrapper.querySelector('[name="trd_lot"]');
                 if (!this_checked) {
-                    this_wrapper.querySelector('[name="trd_shares"]').closest('.form_field').style.display = 'flex';
-                    this_wrapper.querySelector('[name="trd_lot"]').closest('.form_field').style.display = 'none';
+                    shr_inp.value = 1;
+                    shr_inp.setAttribute('required', true)
+                    shr_inp.closest('.form_field').style.display = 'flex';
+
+                    lot_inp.value = null;
+                    lot_inp.removeAttribute('required');
+                    lot_inp.closest('.form_field').style.display = 'none';
                 } else {
-                    this_wrapper.querySelector('[name="trd_shares"]').closest('.form_field').style.display = 'none';
-                    this_wrapper.querySelector('[name="trd_lot"]').closest('.form_field').style.display = 'flex';
+                    shr_inp.value = null;
+                    shr_inp.removeAttribute('required', true)
+                    shr_inp.closest('.form_field').style.display = 'none';
+
+                    lot_inp.value = 1;
+                    lot_inp.setAttribute('required', true);
+                    lot_inp.closest('.form_field').style.display = 'flex';
                 }
             });
         })

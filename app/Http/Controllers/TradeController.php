@@ -27,7 +27,13 @@ class TradeController extends Controller
     static public function getAll()
     {
         // $trades = Trade::orderBy('id', 'ASC')->get()->toArray();;
-        $trades = Trade::where('user_id', Auth::id())->orderBy('id', 'ASC')->get()->toArray();
+        // $trades = Trade::where('user_id', Auth::id())->orderBy('id', 'ASC')->get()->toArray();
+        $trades = Trade::where('user_id', Auth::id())
+            ->with('instrument')
+            ->orderBy('id', 'ASC')
+            ->get()
+            ->toArray();
+
         return $trades;
     }
 

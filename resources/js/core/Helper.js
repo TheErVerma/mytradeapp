@@ -3,13 +3,13 @@ import PopupManager from "../modules/PopupManager";
 
 
 export default class HelpManager {
-    
+
     token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     constructor() {
         this.init();
     }
-    
+
     init() {
         document.addEventListener(
             'click',
@@ -35,6 +35,38 @@ export default class HelpManager {
         } else {
             // this.toggleTheme(theme);
         }
+
+
+        document.querySelectorAll('.qtynumamnt').forEach(input => {
+
+            // Allow only positive numbers
+            input.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                this.value = this.value.replace(/^0+(?=\d)/, '');
+            });
+
+            // Increase / decrease with arrow keys
+            input.addEventListener('keydown', function (e) {
+                if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') {
+                    return;
+                }
+
+                e.preventDefault();
+
+                let value = parseInt(this.value || 0, 10);
+
+                if (e.key === 'ArrowUp') {
+                    value++;
+                } else if (e.key === 'ArrowDown') {
+                    value = Math.max(1, value - 1);
+                }
+
+                this.value = value;
+
+                // Trigger input/change events if needed
+                this.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+        });
     }
 
     handleClick(e) {
@@ -67,7 +99,7 @@ export default class HelpManager {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': ThisApp.token
             },
-            body: JSON.stringify({theme})
+            body: JSON.stringify({ theme })
         }).then((response) => response.json())
             .then((data) => {
                 console.log(data);

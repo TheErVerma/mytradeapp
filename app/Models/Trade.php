@@ -21,4 +21,9 @@ class Trade extends Model
         'trd_charges_amount',
         'trd_symbol_key',
     ];
+
+    public function instrument()
+    {
+        return $this->belongsTo(Instruments::class, 'trd_symbol_key', 'instrument_key');
+    }
 }

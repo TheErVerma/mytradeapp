@@ -307,8 +307,7 @@ export default class EventManager {
                 const minutes = Math.floor((totalSeconds % 3600) / 60);
                 const seconds = totalSeconds % 60;
 
-                liveShareCountdown.textContent =
-                    `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                liveShareCountdown.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
             }
 
             updateCountdown();

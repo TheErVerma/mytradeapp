@@ -120,17 +120,25 @@ class UpstoxController extends Controller
                 }
 
             })
+            // ->orderByRaw("
+            //     CASE
+            //         WHEN segment LIKE '%_FO' THEN 2
+            //         WHEN segment LIKE '%_EQ' THEN 1
+            //         ELSE 3
+            //     END
+            // ")
             ->orderByRaw("
                 CASE
-                    WHEN segment LIKE '%_FO' THEN 1
-                    WHEN segment LIKE '%_EQ' THEN 2
-                    ELSE 3
+                    WHEN instrument_type IN ('EQ', 'A') THEN 1
+                    WHEN instrument_type = 'FUT' THEN 2
+                    WHEN instrument_type IN ('CE', 'PE') THEN 3
+                    ELSE 4
                 END
             ")
             ->orderBy('id', 'asc');
 
         Log::debug($instruments_qry->toSql());
-        $instruments = $instruments_qry->paginate(10);
+        $instruments = $instruments_qry->paginate(100);
 
         return $instruments;
 

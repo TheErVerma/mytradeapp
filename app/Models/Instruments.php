@@ -44,4 +44,5 @@ class Instruments extends Model
         "mtf_bracket",
         "security_type",
     ];
+    
 }

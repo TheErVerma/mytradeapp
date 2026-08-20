@@ -11,6 +11,7 @@ export default class ConfirmPop {
     }
 
     init() {
+        const App = this;
         this.popup = document.querySelector(
             '.main_popup[data_identity="confirm-pop"]'
         );
@@ -45,6 +46,12 @@ export default class ConfirmPop {
         this.cancelBtn.addEventListener('click', () => {
             this.cancel();
         });
+
+        document.addEventListener('keyup', function(e){
+            if(e.key == 'Escape'){
+                App.cancel()
+            }
+        })
     }
 
     confirm(message, callback) {
