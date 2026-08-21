@@ -79,7 +79,8 @@ export default class TradeActions {
             const is_short = form.querySelector('[name="trd_action"]').checked;
             const lot_size = Number(form.querySelector('[name="trd_lot"]').value);
             const shr_size = Number(form.querySelector('[name="trd_shares"]').value);
-            const qty_size = Number(form.querySelector('[name="trd_qty_size"]').value) * (lot_size || shr_size);
+            const qty_multiplier = Number(form.querySelector('[name="trd_qty_multiplier"]').value);
+            const qty_size = (Number(form.querySelector('[name="trd_qty_size"]').value) * (lot_size || shr_size)) * qty_multiplier;
             const entry_price = (form.querySelector('[name="trd_price"]').value).replaceAll(',', '');
             const exit_price = (form.querySelector('[name="trd_exit_price"]').value).replaceAll(',', '');
             const charges_price = (form.querySelector('[name="trd_charges_amount"]').value).replaceAll(',', '');
@@ -89,7 +90,7 @@ export default class TradeActions {
                 sum = ((entry_price - exit_price) * qty_size) - charges_price;
             }
             
-            console.log(sum);
+            // console.log(sum);
             const pnl_wrap = form.querySelector('.form_text_field.p_n_l');
             const symbol = pnl_wrap.getAttribute('data_currency_symbol');
             const formatted = (sum < 0 ? '-' : '') + symbol + formatePrice(Math.abs(sum));

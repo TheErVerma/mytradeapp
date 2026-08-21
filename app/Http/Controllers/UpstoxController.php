@@ -58,8 +58,8 @@ class UpstoxController extends Controller
         // return Instruments::where('name', 'LIKE', '%'.$srch_str.'%')->get();
 
         $searchOperator = DB::connection()->getDriverName() === 'pgsql'
-        ? 'ILIKE'
-        : 'LIKE';
+            ? 'ILIKE'
+            : 'LIKE';
 
         $searchableColumns = [
             'name',
@@ -120,24 +120,36 @@ class UpstoxController extends Controller
                 }
 
             })
-            // ->orderByRaw("
-            //     CASE
-            //         WHEN segment LIKE '%_FO' THEN 2
-            //         WHEN segment LIKE '%_EQ' THEN 1
-            //         ELSE 3
-            //     END
-            // ")
+        //     ->orderByRaw(
+        //         DB::connection()->getDriverName() === 'pgsql'
+        //         ? "CASE
+        //     WHEN LOWER(trading_symbol) LIKE LOWER(?) THEN 1
+        //     WHEN trading_symbol ~ '^[A-Za-z]' THEN 2
+        //     ELSE 3
+        //   END"
+        //         : "CASE
+        //     WHEN LOWER(trading_symbol) LIKE LOWER(?) THEN 1
+        //     WHEN trading_symbol REGEXP '^[A-Za-z]' THEN 2
+        //     ELSE 3
+        //   END",
+        //         [$searchTerms[0] . '%']
+        //     )
+        //     ->orderBy('trading_symbol', 'ASC')
             ->orderByRaw("
                 CASE
-                    WHEN instrument_type IN ('EQ', 'A') THEN 1
-                    WHEN instrument_type = 'FUT' THEN 2
-                    WHEN instrument_type IN ('CE', 'PE') THEN 3
+                    WHEN underlying_type = 'COM' AND instrument_type = 'FUT' THEN 1
+                    WHEN instrument_type = 'COM' THEN 2
+                    WHEN instrument_type = 'INDEX' THEN 3
+                    WHEN instrument_type IN ('EQ', 'A') THEN 4
+                    WHEN instrument_type = 'FUT' THEN 5
+                    WHEN instrument_type IN ('CE', 'PE') THEN 6
+
                     ELSE 4
                 END
             ")
             ->orderBy('id', 'asc');
 
-        Log::debug($instruments_qry->toSql());
+        // Log::debug($instruments_qry->toSql());
         $instruments = $instruments_qry->paginate(100);
 
         return $instruments;

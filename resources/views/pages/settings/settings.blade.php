@@ -65,7 +65,7 @@ $countries = [
                         <div class="main_sub_set_inner">
                             <h4>Clear All Trade Data</h4>
                             <p>This will permanently delete all your trade records. This action cannot be undone.</p>
-                            <button type="button" class="btn btn-danger remove_all_trade_data">Clear Data</button>
+                            <button type="button" class="btn btn-danger btn-secondary btn-xl remove_all_trade_data">Clear Data</button>
                         </div>
                     </div>
                 </div>

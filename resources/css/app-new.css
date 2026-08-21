@@ -1141,7 +1141,7 @@ div#live_link_qr_zone svg path {
     justify-content: center;
     align-items: flex-start;
     overflow-y: auto;
-    z-index: 9;
+    z-index: 99;
     visibility: visible;
     opacity: 1;
     transition: all 0.2s;

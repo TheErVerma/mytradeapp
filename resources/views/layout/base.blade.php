@@ -45,7 +45,7 @@
             @include('../components/header')
             
             <!-- <div class="dash_content"> -->
-            <main class="min-w-0 min-h-svh flex-1 bg-secondary pt-8 px-4 lg:px-8 pb-12">
+            <main class="min-w-0 flex-1 pt-8 pb-12 px-4 lg:px-8">
                 @yield('content')
             </main>
             <!-- </div> -->

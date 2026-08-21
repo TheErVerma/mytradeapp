@@ -165,11 +165,11 @@
                                             </div>
                                             <div class="form_notices" id="tfa_disable_notices"></div>
                                             <div class="main_set_actions" style="margin-top:8px;">
-                                                <button type="button" class="btn btn-danger" id="btn_confirm_disable">Confirm Disable</button>
+                                                <button type="button" class="btn btn-danger btn-secondary btn-xl" id="btn_confirm_disable">Confirm Disable</button>
                                                 <button type="button" class="btn btn-md btn-secondary" id="btn_cancel_disable">Cancel</button>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-danger" id="btn_disable_2fa"
+                                        <button type="button" class="btn btn-danger btn-secondary btn-xl" id="btn_disable_2fa"
                                                 @if(! $twoFactorConfirmed) style="display:none;" @endif>
                                             Disable 2FA
                                         </button>

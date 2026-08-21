@@ -1,12 +1,14 @@
 export default class TradeForm {
 
+    crnt_page = 1;
     token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     constructor() {
-        this.trdTypeFilters = document.querySelectorAll('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li');
+        this.trdTypeFilters = document.querySelectorAll('.trades_table_filter_btm .filter-tab');
         this.init();
     }
 
     init() {
+        const thisApp = this;
         document.addEventListener('submit', this.handleSubmit.bind(this));
         if (document.querySelectorAll('#symbol').length >= 1) {
             document.querySelector('#symbol').addEventListener('focus', this.openSuggestions.bind(this));
@@ -17,15 +19,31 @@ export default class TradeForm {
         if (document.querySelectorAll('#symbol').length >= 1) {
             document.querySelector('#symbol').addEventListener('blur', this.closeSuggestions.bind(this));
         }
+        if (document.querySelectorAll('#trades_per_page').length >= 1) {
+            document.querySelector('#trades_per_page').addEventListener('change', function(){
+                thisApp.crnt_page = 1;
+                thisApp.FilterJournal();
+            });
+        }
         if (document.querySelectorAll('#trade_search').length >= 1) {
-            document.querySelector('#trade_search').addEventListener('input', this.SearchTrades.bind(this));
+            let debounceSearch = false;
+            document.querySelector('#trade_search').addEventListener('input', function(){
+                clearTimeout(debounceSearch);
+                debounceSearch = setTimeout(() => {
+                    thisApp.crnt_page = 1;
+                    thisApp.FilterJournal();
+                }, 400);
+            });
         }
         if (document.querySelectorAll('.export_all_trades').length >= 1) {
             document.querySelector('.export_all_trades').addEventListener('click', this.downloadTradeCsv.bind(this));
         }
         if (document.querySelectorAll('#trade_date_from, #trade_date_to').length >= 1) {
             document.querySelectorAll('#trade_date_from, #trade_date_to').forEach((dt_inp, dt_indx) => {
-                dt_inp.addEventListener('change', this.FilterByDate.bind(this));
+                dt_inp.addEventListener('change', function(){
+                    thisApp.crnt_page = 1;
+                    thisApp.FilterJournal();
+                });
             });
         }
         document.querySelectorAll('.form_fields .form_field .field_drop_down li').forEach((drop_itm) => {
@@ -37,13 +55,56 @@ export default class TradeForm {
 
         this.trdTypeFilters.forEach((trdType) => {
             trdType.addEventListener('click', () => {
-                this.FilterTradeTable(trdType.getAttribute('data_type'), trdType);
+                
+                thisApp.trdTypeFilters.forEach((trdType) => {
+                    trdType.classList.remove('active');
+                });
+                
+                trdType.classList.add('active');
+                thisApp.crnt_page = 1;
+                this.FilterJournal();
+                // this.FilterTradeTable(trdType.getAttribute('data_type'), trdType);
             });
         });
 
         this.conditionalLogic();
 
         document.getElementById('custom_symbol_popup').addEventListener('submit', this.createCustomSymbol);
+
+
+        const next_journal_page = document.querySelector('.next_journal_page');
+        if(next_journal_page){
+            next_journal_page.addEventListener('click', function(){
+                const this_btn = this;
+                const total_pages = Number(this_btn.getAttribute('data_total_pages'));
+                if(thisApp.crnt_page < total_pages){
+                    thisApp.crnt_page++;
+                    document.querySelector('.prev_journal_page').removeAttribute('disabled');
+                }
+                
+                if(thisApp.crnt_page >= total_pages){
+                    this_btn.setAttribute('disabled', true);
+                }
+                thisApp.FilterJournal();
+            });
+        }
+
+        const prev_journal_page = document.querySelector('.prev_journal_page');
+        if(prev_journal_page){
+            prev_journal_page.addEventListener('click', function(){
+                const this_btn = this;
+                const total_pages = Number(this_btn.getAttribute('data_total_pages'));
+                if(thisApp.crnt_page >= 2){
+                    thisApp.crnt_page--;
+                    document.querySelector('.next_journal_page').removeAttribute('disabled');
+                }
+                
+                if(thisApp.crnt_page <= 1){
+                    this_btn.setAttribute('disabled', true);
+                }
+                thisApp.FilterJournal();
+            });
+        }
     }
 
     createCustomSymbol = (e) => {
@@ -183,7 +244,6 @@ export default class TradeForm {
             })
     }
 
-
     openSuggestions(event) {
         const inp = this;
         document.querySelector('.form_fields .form_field .field_drop_down_wrap').classList.add('active');
@@ -227,7 +287,7 @@ export default class TradeForm {
         const this_data = JSON.parse(atob(inp.getAttribute('data_json')));
         document.getElementById('symbol').value = `${this_data.trading_symbol} ${this_data.short_name ? `(${this_data.short_name})` : ''}`;
         document.getElementById('symbol_key').value = this_data.instrument_key;
-        // console.log(this_data);
+        console.log(this_data);
 
         const changeEvnt = new Event('change');
         const this_segment = this_data.segment;
@@ -240,9 +300,11 @@ export default class TradeForm {
 
         this_form.querySelector('[name="trd_qty_size"]').value = this_data.lot_size;
         this_form.querySelector('[name="trd_qty_size"]').dispatchEvent(new Event('input'));
+
+        this_form.querySelector('[name="trd_qty_multiplier"]').value = this_data.qty_multiplier;
+        this_form.querySelector('[name="trd_qty_multiplier"]').dispatchEvent(new Event('input'));
         
     }
-
 
     countTrades() {
         document.querySelector('.main_trades_table').style.display = '';
@@ -251,7 +313,7 @@ export default class TradeForm {
         let total_trades = 0;
         let total_long_trades = 0;
         let total_short_trades = 0;
-        document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr').forEach((itm) => {
+        document.querySelectorAll('table.trades_journal_table tbody tr').forEach((itm) => {
             if (itm.checkVisibility()) {
                 total_trades++;
                 has_trade = true;
@@ -273,9 +335,62 @@ export default class TradeForm {
             document.querySelector('.no_trades_wrapper').style.display = 'none';
         }
 
-        document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="all"] .count').innerHTML = total_trades;
-        document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="long"] .count').innerHTML = total_long_trades;
-        document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="short"] .count').innerHTML = total_short_trades;
+        document.querySelector('.trades_table_filter_btm .filter-tab[data_type="all"] .count').innerHTML = total_trades;
+        document.querySelector('.trades_table_filter_btm .filter-tab[data_type="long"] .count').innerHTML = total_long_trades;
+        document.querySelector('.trades_table_filter_btm .filter-tab[data_type="short"] .count').innerHTML = total_short_trades;
+    }
+
+
+    FilterJournal(){
+        const thisApp = this;
+        const tradeAction = document.querySelector('.trades_table_filter_btm .filter-tab.active').getAttribute('data_type');
+        const trade_search = document.getElementById('trade_search').value;
+        const trade_date_from = document.getElementById('trade_date_from').value;
+        const trade_date_to = document.getElementById('trade_date_to').value;
+        const trades_per_page = document.getElementById('trades_per_page').value;
+        const page = thisApp.crnt_page;
+
+        fetch('/filter-journal-items', {
+            method: "POST",
+            body: JSON.stringify({
+                trd_action: tradeAction != 'all' ? tradeAction : '',
+                trd_search: trade_search,
+                trd_dateFrom: trade_date_from,
+                trd_dateTo: trade_date_to,
+                trd_perPage: trades_per_page,
+                trd_page: page
+            }),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-type': 'application/json',
+                'X-CSRF-TOKEN': thisApp.token
+            }
+        }).then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                console.log(data.html);
+                if(data.html == ''){
+                    document.querySelector('.trades_journal_table').parentElement.style.display = 'none';
+                    document.querySelector('.no_trades_wrapper').style.display = '';
+                }else{
+                    document.querySelector('.trades_journal_table').parentElement.style.display = '';
+                    document.querySelector('.no_trades_wrapper').style.display = 'none';
+                }
+
+                document.querySelector('table.trades_journal_table tbody').innerHTML = data.html;
+                document.querySelector('.pageination_status_wrap').innerHTML = `Page ${data.current_page} of ${data.total_pages}`;
+                if(data.total_pages <= 1){
+                    document.querySelector('.prev_journal_page').setAttribute('disabled', true);
+                    document.querySelector('.next_journal_page').setAttribute('disabled', true);
+                }else{
+                    document.querySelector('.next_journal_page').removeAttribute('disabled', true);
+                }
+                if(data.current_page >= data.total_pages){
+                    document.querySelector('.next_journal_page').setAttribute('disabled', true);
+                }
+            }).catch((err) => {
+                console.log(err);
+            });        
     }
 
 
@@ -288,24 +403,24 @@ export default class TradeForm {
         // console.log(filterType);
         switch (filterType) {
             case 'long':
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.long').forEach((itm) => {
+                document.querySelectorAll('table.trades_journal_table tbody tr.long').forEach((itm) => {
                     itm.style.display = '';
                 });
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.short').forEach((itm) => {
+                document.querySelectorAll('table.trades_journal_table tbody tr.short').forEach((itm) => {
                     itm.style.display = 'none';
                 });
                 break;
             case 'short':
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.short').forEach((itm) => {
+                document.querySelectorAll('table.trades_journal_table tbody tr.short').forEach((itm) => {
                     itm.style.display = '';
                 });
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr.long').forEach((itm) => {
+                document.querySelectorAll('table.trades_journal_table tbody tr.long').forEach((itm) => {
                     itm.style.display = 'none';
                 });
                 break;
 
             default:
-                document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr').forEach((itm) => {
+                document.querySelectorAll('table.trades_journal_table tbody tr').forEach((itm) => {
                     itm.style.display = '';
                 });
                 break;
@@ -318,13 +433,13 @@ export default class TradeForm {
 
     SearchTrades(event) {
         if (event) {
-            const tabFilter = document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li.active').getAttribute('data_type');
+            const tabFilter = document.querySelector('.trades_table_filter_btm .filter-tab.active').getAttribute('data_type');
             const searchText = (event.target.value).toLowerCase();
             let has_trade = false;
             let total_trades = 0;
             let total_long_trades = 0;
             let total_short_trades = 0;
-            document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr').forEach((itm) => {
+            document.querySelectorAll('table.trades_journal_table tbody tr').forEach((itm) => {
                 const this_text = itm.querySelector('.trade_b_symbol').textContent;
                 if ((this_text.toLowerCase()).includes(searchText)) {
                     itm.style.display = '';
@@ -355,16 +470,16 @@ export default class TradeForm {
             console.log(has_trade);
 
             if (!has_trade) {
-                document.querySelector('.main_trades_table').style.display = 'none';
+                document.querySelector('.trades_journal_table').style.display = 'none';
                 document.querySelector('.no_trades_wrapper').style.display = '';
             } else {
-                document.querySelector('.main_trades_table').style.display = '';
+                document.querySelector('.trades_journal_table').style.display = '';
                 document.querySelector('.no_trades_wrapper').style.display = 'none';
             }
 
-            document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="all"] .count').innerHTML = total_trades;
-            document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="long"] .count').innerHTML = total_long_trades;
-            document.querySelector('.trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul li[data_type="short"] .count').innerHTML = total_short_trades;
+            document.querySelector('.trades_table_filter_btm .filter-tab[data_type="all"] .count').innerHTML = total_trades;
+            document.querySelector('.trades_table_filter_btm .filter-tab[data_type="long"] .count').innerHTML = total_long_trades;
+            document.querySelector('.trades_table_filter_btm .filter-tab[data_type="short"] .count').innerHTML = total_short_trades;
         }
     }
 
@@ -375,7 +490,7 @@ export default class TradeForm {
 
 
         if (fromDate != "" && toDate != "") {
-            const all_trades = document.querySelectorAll('.trades_table_wrapper .trades_table_inner table tbody tr');
+            const all_trades = document.querySelectorAll('table.trades_journal_table tbody tr');
             // console.log(all_trades);
             if (all_trades && all_trades.length >= 1) {
                 all_trades.forEach((itm, elm) => {

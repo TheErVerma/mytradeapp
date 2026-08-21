@@ -28,13 +28,21 @@ class TradeController extends Controller
     {
         // $trades = Trade::orderBy('id', 'ASC')->get()->toArray();;
         // $trades = Trade::where('user_id', Auth::id())->orderBy('id', 'ASC')->get()->toArray();
-        $trades = Trade::where('user_id', Auth::id())
+        $perPage = 10;
+        $page = 1;
+        $alltrd_obj = Trade::where('user_id', Auth::id())
             ->with('instrument')
             ->orderBy('id', 'ASC')
-            ->get()
-            ->toArray();
+            ->paginate($perPage, ['*'], 'page', $page);
+            // ->get()
+            // ->toArray();
+        // $all_trades = $alltrd_obj->items();
 
-        return $trades;
+        // $current_page = $alltrd_obj->currentPage();
+        // $total_pages = ceil($alltrd_obj->total() / $perPage);
+        // $has_more = $alltrd_obj->hasMorePages();
+
+        return $alltrd_obj;
     }
 
     public function addTrade(Request $request)
@@ -559,7 +567,7 @@ class TradeController extends Controller
         $user = Auth::user();
         $resp = ['status' => 400, 'message' => 'Invalid Request'];
 
-        $startDate = date('Y-m-d');
+        $startDate = date('Y-m-d', strtotime('today'));
         $endDate = date('Y-m-d', strtotime('+1 day'));
 
         if ($period != 'today') {
@@ -569,30 +577,52 @@ class TradeController extends Controller
         if ($period == 'last_week') {
             $startDate = date('Y-m-d', strtotime('-1 week'));
         }
+
         if ($period == 'last_month') {
-            $startDate = date('Y-m-d', strtotime('-1 month'));
+            $startDate = date('Y-m-d', strtotime('first day of last month'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
         }
+
         if ($period == 'last_3_month') {
-            $startDate = date('Y-m-d', strtotime('-3 month'));
+            $startDate = date('Y-m-d', strtotime('first day of -3 months'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
         }
+
         if ($period == 'last_6_month') {
-            $startDate = date('Y-m-d', strtotime('-6 month'));
+            $startDate = date('Y-m-d', strtotime('first day of -6 months'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
         }
+
         if ($period == 'last_year') {
-            $startDate = date('Y-m-d', strtotime('-1 year'));
+            $startDate = date('Y-m-d', strtotime('first day of -1 year'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
         }
+
         if ($period == 'last_3_year') {
-            $startDate = date('Y-m-d', strtotime('-3 year'));
+            $startDate = date('Y-m-d', strtotime('first day of -3 years'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
         }
+
         if ($period == 'last_5_year') {
-            $startDate = date('Y-m-d', strtotime('-5 year'));
+            $startDate = date('Y-m-d', strtotime('first day of -5 years'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
         }
+
         if ($period == 'last_10_year') {
-            $startDate = date('Y-m-d', strtotime('-10 year'));
+            $startDate = date('Y-m-d', strtotime('first day of -10 years'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
         }
 
 
-        $trades = Trade::where('user_id', Auth::id())->whereBetween('trd_date', [$startDate, $endDate])->get();
+
+        $trades = Trade::where('user_id', Auth::id())
+            ->with('instrument')
+            ->whereBetween('trd_date', [$startDate, $endDate])
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        // Log::debug(print_r([$startDate, $endDate], true));
+        // $trades = Trade::where('user_id', Auth::id())->whereBetween('trd_date', [$startDate, $endDate])->get();
 
         $total_trades = 0;
         $totalPnL = 0;
@@ -601,7 +631,7 @@ class TradeController extends Controller
             $total_trades++;
 
             if ($trade->trd_type == "F&O") {
-                $qty = (float) ($trade->trd_lot);
+                $qty = (float) ($trade->trd_lot * $trade->instrument['lot_size']);
             }
             if ($trade->trd_type == "Cash") {
                 $qty = (float) ($trade->trd_shares);
@@ -615,9 +645,9 @@ class TradeController extends Controller
             }
 
             if ($trade->trd_action === 'Long') {
-                $pnl = (($exit - $entry) - $trade->trd_charges_amount) * $qty;
+                $pnl = (($exit - $entry) * $qty) - $trade->trd_charges_amount;
             } elseif ($trade->trd_action === 'Short') {
-                $pnl = (($entry - $exit) - $trade->trd_charges_amount) * $qty;
+                $pnl = (($entry - $exit) * $qty) - $trade->trd_charges_amount;
             } else {
                 $pnl = 0;
             }
@@ -628,7 +658,7 @@ class TradeController extends Controller
         $currency = $user->default_country;
         $currency = $currency ? ($currency) : 'USD';
         $totalPnL_ = Number::currency($totalPnL, in: $currency);
-        $resp = ['status' => 200, 'message' => $period, 'date_range' => [$startDate, $endDate], 'total_entries' => $total_trades, 'trade_num' => $totalPnL,'trades' => $totalPnL_];
+        $resp = ['status' => 200, 'message' => $period, 'date_range' => [$startDate, $endDate], 'total_entries' => $total_trades, 'trade_num' => $totalPnL, 'trades' => $totalPnL_];
 
         return response()->json($resp);
     }
@@ -696,5 +726,74 @@ class TradeController extends Controller
         }
 
         return view('pages/liveShare', compact('all_trades', 'user', 'expiry_time'));
+    }
+
+    public function filterJournalItems(Request $request)
+    {
+        $action = $request->input('trd_action');
+        $search = $request->input('trd_search');
+        $dateFrom = $request->input('trd_dateFrom');
+        $dateTo = $request->input('trd_dateTo');
+        $perPage = (int) $request->input('trd_perPage', 20);
+        $page = (int) $request->input('trd_page', 1);
+
+        $query = Trade::query()
+            ->where('user_id', Auth::id())
+            ->with('instrument')
+            ->when($action, function ($query, $action) {
+                $query->where('trd_action', $action);
+            })
+            ->when($search, function ($query, $search) {
+                $search = strtolower($search);
+
+                $query->where(function ($query) use ($search) {
+                    $query->whereRaw(
+                        'LOWER(trd_symbol) LIKE ?',
+                        ["%{$search}%"]
+                    )
+                        ->orWhereHas('instrument', function ($query) use ($search) {
+                            $query->whereRaw(
+                                'LOWER(name) LIKE ?',
+                                ["%{$search}%"]
+                            )
+                                ->orWhereRaw(
+                                    'LOWER(trading_symbol) LIKE ?',
+                                    ["%{$search}%"]
+                                )
+                                ->orWhereRaw(
+                                    'LOWER(short_name) LIKE ?',
+                                    ["%{$search}%"]
+                                );
+                        });
+                });
+            })
+            ->when($dateFrom, function ($query, $dateFrom) {
+                $query->whereDate('trd_date', '>=', $dateFrom);
+            })
+            ->when($dateTo, function ($query, $dateTo) {
+                $query->whereDate('trd_date', '<=', $dateTo);
+            })
+            ->orderBy('id', 'ASC');
+
+        $alltrd_obj = $query
+            ->paginate($perPage, ['*'], 'page', $page);
+        $all_trades = collect($alltrd_obj->items())->toArray();
+
+        $current_page = $alltrd_obj->currentPage();
+        $total_pages = ceil($alltrd_obj->total() / $perPage);
+        $has_more = $alltrd_obj->hasMorePages();
+
+        $user = Auth::user();
+        $currency = $user->default_country;
+        $currency = $currency ? ($currency) : 'INR';
+
+        return response()->json([
+            'status' => 200,
+            'html' => view('components.journalRows', ['all_trades' => $all_trades, 'currency' => $currency])->render(),
+            'trades' => $all_trades,
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'has_more' => $has_more,
+        ]);
     }
 }

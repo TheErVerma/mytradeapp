@@ -35,7 +35,7 @@
         class="flex h-full w-full max-w-full flex-col justify-between overflow-auto bg-primary pt-4 lg:w-(--width) lg:pt-5 border-secondary md:border-r scrollbar-thin"
         style="--width: 280px;">
 
-        <div class="flex flex-col gap-5 px-4 lg:px-5 justify-center items-center border-b border-gray-200 pb-5">
+        <div class="flex flex-col gap-5 px-4 lg:px-5 justify-center items-center border-b border-secondary pb-5">
 
             <div class="flex w-max items-center justify-start overflow-visible h-6">
                 <!-- ********** Logo ********** -->
@@ -60,9 +60,9 @@
                     <p class="text-xs font-semibold text-quaternary uppercase">Primary</p>
                 </div>
 
-                <ul class="px-4 pb-5 border-b border-gray-200">
+                <ul class="px-4 pb-5 border-b border-secondary">
 
-                    <li class="py-0.25">
+                    <li class="py-px">
                         <a class="sidebar-menu @if(request()->is('/')) active @endif" href="/" target="_self" rel="noopener noreferrer"
                             tabindex="0">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -77,7 +77,7 @@
                         </a>
                     </li>
 
-                    <li class="py-0.25">
+                    <li class="py-px">
                         <a class="sidebar-menu @if(request()->is('journal')) active @endif" href="/journal" target="_self" rel="noopener noreferrer"
                             tabindex="0">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -93,7 +93,7 @@
                         </a>
                     </li>
 
-                    <li class="py-0.25">
+                    <li class="py-px">
                         <a class="sidebar-menu @if(request()->is('analytics')) active @endif" disabled href="/analytics" target="_self" rel="noopener noreferrer"
                             tabindex="0">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -109,7 +109,7 @@
                         </a>
                     </li>
 
-                    <li class="py-0.25">
+                    <li class="py-px">
                         <a class="sidebar-menu @if(request()->is('stocks')) active @endif" disabled href="/stocks" target="_self" rel="noopener noreferrer"
                             tabindex="0">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -132,9 +132,9 @@
                     <p class="text-xs font-semibold text-quaternary uppercase">Secondary</p>
                 </div>
 
-                <ul class="px-4 pb-5 border-b border-gray-200">
+                <ul class="px-4 pb-5 border-b border-secondary">
 
-                    <li class="py-0.25">
+                    <li class="py-px">
                         <a class="sidebar-menu @if(request()->is('profile')) active @endif" href="/profile" target="_self" rel="noopener noreferrer"
                             tabindex="0">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -148,7 +148,7 @@
                         </a>
                     </li>
 
-                    <li class="py-0.25">
+                    <li class="py-px">
                         <a class="sidebar-menu @if(request()->is('settings')) active @endif" href="/settings" target="_self" rel="noopener noreferrer"
                             tabindex="0">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -177,7 +177,7 @@
                 </div>
 
                 <div class="px-5">
-                    <select class="form-select text-sm!">
+                    <select class="form-select text-sm! summary-card-filter" id="summary-card-filter">
                         <option value="today">Today</option>
                         <option value="last_week">Last Week</option>
                         <option value="last_month">Last Month</option>
@@ -210,7 +210,7 @@
 
         <div class="mt-auto flex flex-col gap-3 px-4 py-4 lg:py-5">
             <ul class="flex flex-col">
-                <li class="py-0.25">
+                <li class="py-px">
                     <a class="sidebar-menu" href="/help" target="_self" rel="noopener noreferrer"
                         tabindex="0">
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"

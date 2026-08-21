@@ -17,6 +17,7 @@
             <form action="" id="add_trade_popup" enctype="multipart/form-data" autocomplete="off">
                 @csrf
                 <input type="hidden" name="trd_qty_size" value="1">
+                <input type="hidden" name="trd_qty_multiplier" value="1">
                 <div class="form_fields">
                     <div class="form_field_group">
                         <div class="form_field icon">

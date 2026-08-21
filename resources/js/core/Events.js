@@ -118,7 +118,7 @@ export default class EventManager {
 
             const dataUrl = await modernScreenshot.domToPng(element, {
                 scale: 2,
-                backgroundColor: rgbToHex(window.getComputedStyle(document.body).backgroundColor)
+                backgroundColor: 'white'//rgbToHex(window.getComputedStyle(document.body).backgroundColor)
             });
 
             const link = document.createElement('a');
@@ -132,20 +132,20 @@ export default class EventManager {
         if (screenshot_btn) {
             screenshot_btn.addEventListener('click', function () {
 
-                if (document.querySelector('.main_trades_table').checkVisibility()) {
-                    document.querySelector('.main_trades_table').classList.add('capturing');
+                if (document.querySelector('.trades_journal_table').checkVisibility()) {
+                    document.querySelector('.trades_journal_table').classList.add('capturing');
 
 
-                    downloadDivAsImage('.main_trades_table', 'trade-insights.png');
+                    downloadDivAsImage('.trades_journal_table', 'trade-insights.png');
 
 
-                    document.querySelector('.main_trades_table').classList.add('snap_takken');
+                    document.querySelector('.trades_journal_table').classList.add('snap_takken');
                     if (MainApp) {
                         MainApp.Audio.play('/storage/audio/click.mp3');
                     }
                     setTimeout(() => {
-                        document.querySelector('.main_trades_table').classList.remove('capturing');
-                        document.querySelector('.main_trades_table').classList.remove('snap_takken');
+                        document.querySelector('.trades_journal_table').classList.remove('capturing');
+                        document.querySelector('.trades_journal_table').classList.remove('snap_takken');
                     }, 350);
                 } else {
                     if (MainApp) {
