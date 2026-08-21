@@ -22,6 +22,9 @@
     --paper-overlay: #ffffff57;
 }
 
+body {
+    background: var(--background-color-primary);
+}
 div#rcaptcha {
     margin-bottom: 20px;
 }

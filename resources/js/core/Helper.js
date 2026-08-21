@@ -23,18 +23,12 @@ export default class HelpManager {
 
         const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
         const isDarkMode = themeQuery.matches;
-        // this.toggleTheme(isDarkMode ? 'dark' : 'light');
-
-        const theme = localStorage.getItem('theme');
-        if (theme == null) {
-            themeQuery.addEventListener("change", (event) => {
-                const newTheme = event.matches ? "dark" : "light";
-                this.toggleTheme(newTheme);
-            });
-            // this.toggleTheme(isDarkMode ? 'dark' : 'light');
-        } else {
-            // this.toggleTheme(theme);
+        if(document.querySelector('html').classList.contains('dark-mode') == false){
+            this.toggleTheme(isDarkMode);
         }
+        themeQuery.addEventListener("change", (event) => {
+            this.toggleTheme(event.matches, true);
+        });
 
 
         document.querySelectorAll('.qtynumamnt').forEach(input => {
@@ -78,20 +72,18 @@ export default class HelpManager {
         if (!target.classList.contains('theme_toggler')) {
             return;
         }
-
-        const theme = (document.querySelector('html').classList).contains('dark-mode');
-        const new_theme = !theme ? 'dark-mode' : '';
-
-        localStorage.setItem('theme', new_theme);
-        this.toggleTheme(new_theme);
+        const theme = !(document.querySelector('html').classList).contains('dark-mode');
+        this.toggleTheme(theme, true);
     }
 
-    toggleTheme(theme) {
+    toggleTheme(theme, force = false) {
         const ThisApp = this;
         const user_id = document.querySelector('html[data_user_id]').getAttribute('data_user_id');
-        document.documentElement.classList.remove('dark-mode');
+        if(force){
+            document.documentElement.classList.remove('dark-mode');
+            theme ? document.querySelector('html').classList.add('dark-mode') : false;
+        }
 
-        theme != "" ? document.querySelector('html').classList.add(theme) : false;
         fetch(`/user/${user_id}/save-theme`, {
             method: 'POST',
             headers: {
