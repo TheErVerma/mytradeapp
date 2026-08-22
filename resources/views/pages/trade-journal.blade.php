@@ -191,8 +191,7 @@
 
                     </div>                        
 
-                    <div class="no_trades_wrapper flex items-center justify-center overflow-hidden px-8 py-20" @if(is_array($all_trades) && count($all_trades) >= 1)) style="display:none;"
-                @endif>
+                    <div class="no_trades_wrapper flex items-center justify-center overflow-hidden px-8 py-20" @if(is_array($all_trades) && count($all_trades) >= 1)) style="display:none;" @endif >
                         <div class="mx-auto flex w-full max-w-lg flex-col items-center justify-center">
 
                             <header class="relative mb-4">
@@ -235,7 +234,7 @@
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto" @if(is_array($all_trades) && count($all_trades) <= 0)) style="display:none;" @endif>
                         <table class="global-table trades_journal_table">
                             <thead>
                                 <tr>

@@ -25,7 +25,7 @@ $all_trades_arr = collect($trades->items())->toArray();
                     </div>
 
                     <div class="flex flex-wrap gap-3">
-                        <button type="button" class="btn btn-md btn-primary">
+                        <button type="button" class="btn btn-md btn-primary" data-popup-target="add-trade-pop">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"></path>
@@ -33,7 +33,7 @@ $all_trades_arr = collect($trades->items())->toArray();
                             Add Trade
                         </button>
 
-                        <button type="button" class="btn btn-md btn-secondary">
+                        <button type="button" class="btn btn-md btn-secondary" disabled>
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M21 15V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V15M17 8L12 3M12 3L7 8M12 3V15"
@@ -76,7 +76,7 @@ $all_trades_arr = collect($trades->items())->toArray();
                     <div class="flex flex-col gap-3">
                         <p class="flex-1 text-display-sm font-semibold text-primary">
                             {{ Number::currency(floatval($portfolioSummry['net_pnl']), in: $currency) }}</p>
-                        @if(!isset($portfolioSummry['net_pnl']) || isset($portfolioSummry['net_pnl']) && $portfolioSummry['net_pnl'] == "")
+                        @if(!isset($portfolioSummry['net_pnl']) || isset($portfolioSummry['net_pnl']) && $portfolioSummry['net_pnl'] <= 0)
                             <span class="text-sm font-medium text-tertiary">No trades recorded</span>
                         @endif
                     </div>
@@ -102,7 +102,7 @@ $all_trades_arr = collect($trades->items())->toArray();
 
                     <div class="flex flex-col gap-3">
                         <p class="flex-1 text-display-sm font-semibold text-primary">{{ isset($portfolioSummry['winning_trades']) ? $portfolioSummry['winning_trades'] : '--' }}</p>
-                        @if (!isset($portfolioSummry['winning_trades']) || isset($portfolioSummry['winning_trades']) && $portfolioSummry['winning_trades'] == "")
+                        @if (!isset($portfolioSummry['winning_trades']) || isset($portfolioSummry['winning_trades']) && $portfolioSummry['winning_trades'] <= 0)
                             <span class="text-sm font-medium text-tertiary">No data yet</span>
                         @endif
                     </div>
@@ -128,7 +128,7 @@ $all_trades_arr = collect($trades->items())->toArray();
 
                     <div class="flex flex-col gap-3">
                         <p class="flex-1 text-display-sm font-semibold text-primary">{{ isset($portfolioSummry['losing_trades']) ? $portfolioSummry['losing_trades'] : '--' }}</p>
-                        @if (!isset($portfolioSummry['losing_trades']) || isset($portfolioSummry['losing_trades']) && $portfolioSummry['losing_trades'] == "")
+                        @if (!isset($portfolioSummry['losing_trades']) || isset($portfolioSummry['losing_trades']) && $portfolioSummry['losing_trades'] <= 0)
                             <span class="text-sm font-medium text-tertiary">No data yet</span>
                         @endif
                     </div>
@@ -154,7 +154,7 @@ $all_trades_arr = collect($trades->items())->toArray();
 
                     <div class="flex flex-col gap-3">
                         <p class="flex-1 text-display-sm font-semibold text-primary">{{ isset($portfolioSummry['breakeven_trades']) ? $portfolioSummry['breakeven_trades'] : '--' }}</p>
-                        @if (!isset($portfolioSummry['breakeven_trades']) || isset($portfolioSummry['breakeven_trades']) && $portfolioSummry['breakeven_trades'] == "")
+                        @if (!isset($portfolioSummry['breakeven_trades']) || isset($portfolioSummry['breakeven_trades']) && $portfolioSummry['breakeven_trades'] <= 0)
                             <span class="text-sm font-medium text-tertiary">No data yet</span>
                         @endif
                     </div>
@@ -180,7 +180,7 @@ $all_trades_arr = collect($trades->items())->toArray();
 
                     <div class="flex flex-col gap-3">
                         <p class="flex-1 text-display-sm font-semibold text-primary">{{ isset($portfolioSummry['total_trades']) ? $portfolioSummry['total_trades'] : '--' }}</p>
-                        @if (!isset($portfolioSummry['total_trades']) || isset($portfolioSummry['total_trades']) && $portfolioSummry['total_trades'] == "")
+                        @if (!isset($portfolioSummry['total_trades']) || isset($portfolioSummry['total_trades']) && $portfolioSummry['total_trades'] <= 0)
                             <span class="text-sm font-medium text-tertiary">No data yet</span>
                         @endif
                     </div>
