@@ -30,12 +30,20 @@ class TradeController extends Controller
         // $trades = Trade::where('user_id', Auth::id())->orderBy('id', 'ASC')->get()->toArray();
         $perPage = 10;
         $page = 1;
+
         $alltrd_obj = Trade::where('user_id', Auth::id())
             ->with('instrument')
-            ->orderBy('id', 'ASC')
+            ->orderBy('id', 'DESC')
             ->paginate($perPage, ['*'], 'page', $page);
-            // ->get()
-            // ->toArray();
+
+        $counter = $alltrd_obj->total() - (($page - 1) * $perPage);
+
+        $alltrd_obj->through(function ($trade) use (&$counter) {
+            $trade->counter = $counter--;
+            return $trade;
+        });
+        // ->get()
+        // ->toArray();
         // $all_trades = $alltrd_obj->items();
 
         // $current_page = $alltrd_obj->currentPage();
@@ -773,10 +781,18 @@ class TradeController extends Controller
             ->when($dateTo, function ($query, $dateTo) {
                 $query->whereDate('trd_date', '<=', $dateTo);
             })
-            ->orderBy('id', 'ASC');
+            ->orderBy('id', 'DESC');
 
         $alltrd_obj = $query
             ->paginate($perPage, ['*'], 'page', $page);
+
+        $counter = $alltrd_obj->total() - (($page - 1) * $perPage);
+
+        $alltrd_obj->through(function ($trade) use (&$counter) {
+            $trade->counter = $counter--;
+            return $trade;
+        });
+
         $all_trades = collect($alltrd_obj->items())->toArray();
 
         $current_page = $alltrd_obj->currentPage();

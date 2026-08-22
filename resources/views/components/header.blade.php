@@ -30,7 +30,7 @@
 <!-- ********** Mobile Header ********** -->
 
 <!-- ********** Desktop Sidebar ********** -->
-<div class="mobile-sibebar fixed inset-y-0 left-0 flex">
+<div class="mobile-sibebar fixed inset-y-0 left-0 flex z-10">
     <aside
         class="flex h-full w-full max-w-full flex-col justify-between overflow-auto bg-primary pt-4 lg:w-(--width) lg:pt-5 border-secondary md:border-r scrollbar-thin"
         style="--width: 280px;">
@@ -39,7 +39,7 @@
 
             <div class="flex w-max items-center justify-start overflow-visible h-6">
                 <!-- ********** Logo ********** -->
-                <div class="aspect-[0.3] font-semibold h-full text-xl uppercase">TradeApp</div>
+                <div class="aspect-[0.3] font-semibold h-full text-xl uppercase text-secondary">TradeApp</div>
                 <!-- ********** Logo ********** -->
             </div>
 

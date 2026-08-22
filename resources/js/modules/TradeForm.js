@@ -350,6 +350,7 @@ export default class TradeForm {
         const trades_per_page = document.getElementById('trades_per_page').value;
         const page = thisApp.crnt_page;
 
+        document.querySelector('.trades_journal_table').classList.add('processing');
         fetch('/filter-journal-items', {
             method: "POST",
             body: JSON.stringify({
@@ -366,9 +367,7 @@ export default class TradeForm {
                 'X-CSRF-TOKEN': thisApp.token
             }
         }).then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                console.log(data.html);
+            .then((data) => {                
                 if(data.html == ''){
                     document.querySelector('.trades_journal_table').parentElement.style.display = 'none';
                     document.querySelector('.no_trades_wrapper').style.display = '';
@@ -388,6 +387,8 @@ export default class TradeForm {
                 if(data.current_page >= data.total_pages){
                     document.querySelector('.next_journal_page').setAttribute('disabled', true);
                 }
+                document.querySelector('.trades_journal_table').classList.remove('processing');
+                document.dispatchEvent(new Event('journal-loaded'));
             }).catch((err) => {
                 console.log(err);
             });        

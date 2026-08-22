@@ -63,6 +63,13 @@ export default class EventManager {
             })
         }
 
+        document.addEventListener('click', function(e){
+            const this_trg = e.target;
+            if(!this_trg.closest('.author-open__popup') && !this_trg.closest('.author-popup')){
+                document.querySelector('.author-popup').classList.remove('active');
+            }
+        });
+
         const cs_trd_type_elm = document.querySelector('#cs_trd_type');
         if(cs_trd_type_elm){
             cs_trd_type_elm.addEventListener('change', function(){

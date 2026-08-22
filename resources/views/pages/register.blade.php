@@ -336,7 +336,7 @@
 
 
             <div class="g-recaptcha" id="rcaptcha" data-theme="light"
-              data-sitekey="6LctLHUtAAAAAHqVUBvi3nP8abT6QBLoRivwi-oB">
+              data-sitekey="{{ env('RECAPTCHA_SITE_KEY') }}">
             </div>
 
             <div class="flex flex-col gap-4">

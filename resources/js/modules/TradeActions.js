@@ -7,36 +7,41 @@ export default class TradeActions {
     }
 
     init() {
-        this.actionBtns = document.querySelectorAll(
-            '.trades_table_inner table tbody tr td .trade_action_wrap button'
-        );
-
-        if (!this.actionBtns) {
-            console.error('Trash button not found');
-            return;
-        }
-
-        this.actionBtns.forEach(act_btn => {
-
-            // Delete Action
-            if (act_btn.classList.contains('trash')) {
-                act_btn.addEventListener('click', () => {
-                    const this_id = act_btn.getAttribute('data_id');
-
-                    MainApp.ConfirmPop.confirm('Are you sure? you want to remove the trade item.', () => {
-                        console.log(`Deleted! ${this_id}`);
-                        this.delete(this_id);
-                    });
-                });
-            } else if (act_btn.classList.contains('edit')) {
-                act_btn.addEventListener('click', async () => {
-                    const this_id = act_btn.getAttribute('data_id');
-                    await this.edit(this_id);
-                });
+        const thisApp = this;
+        document.addEventListener('journal-loaded', function(){
+            console.log('Journal Loaded!');
+            thisApp.actionBtns = document.querySelectorAll(
+                'table.trades_journal_table tbody tr td.trade_b_actions button'
+            );
+            if (!thisApp.actionBtns) {
+                console.error('Trash button not found');
+                return;
             }
-
-
+    
+            thisApp.actionBtns.forEach(act_btn => {
+    
+                // Delete Action
+                if (act_btn.classList.contains('trash')) {
+                    act_btn.addEventListener('click', () => {
+                        const this_id = act_btn.getAttribute('data_id');
+    
+                        MainApp.ConfirmPop.confirm('Are you sure? you want to remove the trade item.', () => {
+                            console.log(`Deleted! ${this_id}`);
+                            thisApp.delete(this_id);
+                        });
+                    });
+                } else if (act_btn.classList.contains('edit')) {
+                    act_btn.addEventListener('click', async () => {
+                        const this_id = act_btn.getAttribute('data_id');
+                        await thisApp.edit(this_id);
+                    });
+                }
+    
+    
+            });
         });
+        document.dispatchEvent(new Event('journal-loaded'));
+
 
         document.addEventListener(
             'submit',
@@ -79,8 +84,8 @@ export default class TradeActions {
             const is_short = form.querySelector('[name="trd_action"]').checked;
             const lot_size = Number(form.querySelector('[name="trd_lot"]').value);
             const shr_size = Number(form.querySelector('[name="trd_shares"]').value);
-            const qty_multiplier = Number(form.querySelector('[name="trd_qty_multiplier"]').value);
-            const qty_size = (Number(form.querySelector('[name="trd_qty_size"]').value) * (lot_size || shr_size)) * qty_multiplier;
+            const qty_multiplier = Number(form.querySelector('[name="trd_qty_multiplier"]')?.value);
+            const qty_size = (Number(form.querySelector('[name="trd_qty_size"]')?.value) * (lot_size || shr_size)) * qty_multiplier;
             const entry_price = (form.querySelector('[name="trd_price"]').value).replaceAll(',', '');
             const exit_price = (form.querySelector('[name="trd_exit_price"]').value).replaceAll(',', '');
             const charges_price = (form.querySelector('[name="trd_charges_amount"]').value).replaceAll(',', '');
@@ -206,7 +211,7 @@ export default class TradeActions {
                                     ddpinp._flatpickr.setDate(data[clm]);
                                 }
                                 if(inp.classList.contains('price')){
-                                    console.log(inp);
+                                    // console.log(inp);
                                     inp.dispatchEvent(inputEvent);
                                 }
                             }

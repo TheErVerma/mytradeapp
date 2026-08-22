@@ -10,6 +10,8 @@
             }
 
             $trd_type = isset($trade_item['trd_type']) ? $trade_item['trd_type'] : 'Cash';
+            $row_id = $trade_item['id'];
+            $row_counter = $trade_item['counter'];
             $instrument = $trade_item['instrument'];
             $inst_type = $instrument && isset($instrument['underlying_type']) ? $instrument['underlying_type'] : $instrument['instrument_type'];
             $shares = $trade_item['trd_shares'];
@@ -38,11 +40,11 @@
         @endphp
         <tr class="@php echo implode(' ', $tred_classes); @endphp ">
             <td class="trade_b_check w-15 pr-0!" tabindex="-1">
-                <label class="hb-checkbox size-lg" for="rememberMe">
-                    <span><input type="checkbox" id="rememberMe"></span>
+                <label class="hb-checkbox size-lg" for="rememberMe{{ $row_id }}">
+                    <span><input type="checkbox" id="rememberMe{{ $row_id }}"></span>
                 </label>
             </td>
-            <td class="trade_b_id">{{ $td_cnt }}</td>
+            <td class="trade_b_id">{{ $row_counter }}</td>
             <td class="trade_b_symbol">{{ $trade_item['trd_symbol'] }}</td>
             <td class="trade_b_action">
                 <span class="table-tag">
@@ -89,7 +91,7 @@
             <td class="trade_b_actions">
                 <div class="flex justify-end gap-0.5">
 
-                    <button class="action-icons icon_btn edit" data_id="{{ $trade_item['id'] }}">
+                    <button class="action-icons icon_btn trash" data_id="{{ $trade_item['id'] }}">
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="true">
                             <path
@@ -98,7 +100,7 @@
                         </svg>
                     </button>
 
-                    <button class="action-icons icon_btn trash" data_id="{{ $trade_item['id'] }}">
+                    <button class="action-icons icon_btn edit" data_id="{{ $trade_item['id'] }}">
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="true">
                             <path

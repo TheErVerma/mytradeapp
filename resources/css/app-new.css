@@ -188,7 +188,7 @@ select.mini-selector {
 }
 
 .flatpickr-day.selected {
-    background: var(--accent) !important;
+    background: var(--background-color-brand-primary) !important;
     border-radius: 4px;
     border: 0px !important;
     color: var(--accent-text) !important;
@@ -1558,33 +1558,6 @@ div#live_link_qr_zone svg path {
     color: var(--green);
 }
 
-.no_trades_wrapper {
-    border: 1px solid var(--border);
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 240px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.no_trades_wrapper .no_trades_wrapper_inner h4 {
-    font-size: var(--text-xl);
-    font-weight: 400;
-    color: var(--muted2);
-}
-
-.no_trades_wrapper .no_trades_wrapper_inner p {
-    font-size: var(--text-md);
-    color: var(--muted);
-    margin: 6px 0px;
-}
-
-.no_trades_wrapper .no_trades_wrapper_inner button {
-    margin-top: 20px;
-}
-
 .trade_action_wrap {
     display: flex;
     gap: 10px;
@@ -1643,8 +1616,8 @@ form#profile_settings_form,
 
 .prf_set_card_wrapper .prf_set_card,
 .main_settings_wrap .main_settings_inner .main_set_card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
+    background: var(--background-color-secondary);
+    border: 1px solid var(--border-color-primary);
     border-radius: 10px;
     padding: 20px 20px;
     max-width: 800px;
@@ -1657,7 +1630,7 @@ form#profile_settings_form,
 }
 
 .prf_set_card.profile_head .p_h_banner {
-    background: var(--bg4);
+    background: var(--background-color-tertiary);
     padding: 10px;
     width: 100%;
     position: absolute;
@@ -1714,7 +1687,7 @@ form#profile_settings_form,
 .main_settings_wrap .main_settings_inner .main_set_card h4 {
     font-size: 22px;
     font-weight: 400;
-    color: var(--muted2);
+    color: var(--text-color-primary);
     margin-bottom: 10px;
 }
 
@@ -1737,7 +1710,7 @@ form#profile_settings_form,
 .prf_set_card h3 {
     font-size: var(--text-lg);
     font-weight: 400;
-    color: var(--muted);
+    color: var(--text-color-secondary);
     margin-bottom: 20px;
 }
 
@@ -1774,7 +1747,7 @@ form#profile_settings_form,
 .prf_set_card.profile_personal_info .prf_set_fields .prf_set_field_group .prf_set_field label,
 .main_settings_wrap .main_settings_inner .main_set_card .main_set_fields .main_set_field label {
     font-size: var(--text-md);
-    color: var(--muted);
+    color: var(--text-color-secondary);
 }
 
 .prf_set_card.profile_personal_info .prf_set_fields .prf_set_field_group .prf_set_field input,
@@ -1782,10 +1755,10 @@ form#profile_settings_form,
 .main_settings_wrap .main_settings_inner .main_set_card .main_set_fields .main_set_field select {
     padding: 10px;
     font-size: var(--text-md);
-    background: var(--bg4);
-    border: 1px solid var(--border2);
+    background: var(--background-color-primary);
+    border: 1px solid var(--border-color-primary);
     border-radius: 6px;
-    color: var(--muted2);
+    color: var(--text-color-primary);
     outline: none;
 }
 
@@ -1807,8 +1780,8 @@ form#profile_settings_form,
 
 .prf_set_card.profile_security .prf_row_settings .prf_row_set,
 .main_settings_wrap .main_settings_inner .main_set_card .main_sub_set {
-    background: var(--bg1);
-    border: 1px solid var(--border);
+    background: var(--background-color-primary);
+    border: 1px solid var(--border-color-primary);
     padding: 20px;
     border-radius: 10px;
     display: flex;
@@ -1832,7 +1805,7 @@ form#profile_settings_form,
 
 .prf_set_card.profile_security .prf_row_settings .prf_row_set span.title {
     font-size: var(--text-md);
-    color: var(--muted2);
+    color: var(--text-color-secondary);
 }
 
 .prf_set_card.profile_security .prf_row_settings .prf_row_set span.description {
@@ -2368,10 +2341,10 @@ div#tfa_disable_form .main_set_field label {
 /* Header */
 
 .help-header {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: var(--accent-text);
+    background: var(--color-bg-brand-solid);
+    color: #fff;
     padding: 40px;
-    border-radius: var(--radius);
+    border-radius: var(--radius-xl);
     margin-bottom: 30px;
     box-shadow: var(--shadow-md);
 }
@@ -2399,7 +2372,7 @@ div#tfa_disable_form .main_set_field label {
     margin: 0 0 20px;
     font-size: var(--text-xl);
     font-weight: 700;
-    color: var(--text);
+    color: var(--text-color-secondary);
     position: relative;
     padding-left: 14px;
 }
@@ -2412,15 +2385,15 @@ div#tfa_disable_form .main_set_field label {
     bottom: 4px;
     width: 4px;
     border-radius: 10px;
-    background: var(--accent);
+    background: var(--background-color-brand-primary);
 }
 
 /* Cards */
 
 .help-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+    background: var(--background-color-secondary);
+    border: 1px solid var(--border-color-primary);
+    border-radius: var(--radius-xl);
     padding: 24px;
     margin-bottom: 16px;
     box-shadow: var(--shadow-sm);
@@ -2435,12 +2408,12 @@ div#tfa_disable_form .main_set_field label {
     margin: 0 0 12px;
     font-size: var(--text-lg);
     font-weight: 600;
-    color: var(--text);
+    color: var(--text-color-secondary);
 }
 
 .help-card p {
     margin: 0;
-    color: var(--muted2);
+    color: var(--text-color-secondary);
     line-height: 1.7;
     font-size: var(--text-md);
 }
@@ -2454,7 +2427,7 @@ div#tfa_disable_form .main_set_field label {
 
 .help-list li {
     margin-bottom: 10px;
-    color: var(--muted2);
+    color: var(--text-color-tertiary);
     line-height: 1.7;
     font-size: var(--text-md);
 }
@@ -2466,9 +2439,9 @@ div#tfa_disable_form .main_set_field label {
 /* FAQ */
 
 .faq-item {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+    background: var(--background-color-secondary);
+    border: 1px solid var(--border-color-primary);
+    border-radius: var(--radius-xl);
     padding: 24px;
     margin-bottom: 16px;
     box-shadow: var(--shadow-sm);
@@ -2478,12 +2451,12 @@ div#tfa_disable_form .main_set_field label {
     margin: 0 0 10px;
     font-size: var(--text-lg);
     font-weight: 600;
-    color: var(--text);
+    color: var(--text-color-secondary);
 }
 
 .faq-answer {
     margin: 0;
-    color: var(--muted2);
+    color: var(--text-color-tertiary);
     line-height: 1.7;
     font-size: var(--text-md);
 }
@@ -2492,8 +2465,8 @@ div#tfa_disable_form .main_set_field label {
 
 .help-section:last-of-type .help-card {
     background: linear-gradient(to bottom,
-            var(--bg2),
-            var(--bg3));
+            var(--background-color-primary),
+            var(--background-color-secondary))
 }
 
 
