@@ -1295,6 +1295,20 @@ div#live_link_qr_zone svg path {
 
 
 /** Trade Table Start **/
+table.trades_journal_table.capturing tbody td.trade_b_actions, table.trades_journal_table.capturing thead th.trade_h_actions {
+    display: none;
+}
+table.trades_journal_table tbody td.trade_b_action.long svg circle {
+    fill: var(--color-bg-success-solid);
+    stroke: var(--color-bg-success-solid);
+}
+table.trades_journal_table tbody td.trade_b_action.short svg circle {
+    fill: var(--color-bg-error-solid);
+    stroke: var(--color-bg-error-solid);
+}
+table.trades_journal_table tbody td.trade_b_pnl.loss span {
+    color: var(--color-bg-error-solid) !important;
+}
 .trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul {
     display: inline-flex;
     justify-content: flex-start;

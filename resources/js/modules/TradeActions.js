@@ -9,7 +9,7 @@ export default class TradeActions {
     init() {
         const thisApp = this;
         document.addEventListener('journal-loaded', function(){
-            console.log('Journal Loaded!');
+            // console.log('Journal Loaded!');
             thisApp.actionBtns = document.querySelectorAll(
                 'table.trades_journal_table tbody tr td.trade_b_actions button'
             );
@@ -56,9 +56,6 @@ export default class TradeActions {
                 if (!form) return;
 
                 let trade_id = form.querySelector("[name='id']")?.value || '';
-
-                console.log('Trade ID:', trade_id);
-
                 this.previewImages(e, trade_id);
             });
         });
@@ -81,7 +78,7 @@ export default class TradeActions {
         const checkPNL = (elm) => {
         
             const form = elm.closest('form');
-            const is_short = form.querySelector('[name="trd_action"]').checked;
+            const is_short = form.querySelector('[name="trd_action"]:checked').value;
             const lot_size = Number(form.querySelector('[name="trd_lot"]').value);
             const shr_size = Number(form.querySelector('[name="trd_shares"]').value);
             const qty_multiplier = Number(form.querySelector('[name="trd_qty_multiplier"]')?.value);
@@ -91,24 +88,28 @@ export default class TradeActions {
             const charges_price = (form.querySelector('[name="trd_charges_amount"]').value).replaceAll(',', '');
             
             let sum = ((exit_price - entry_price) * qty_size) - charges_price;
-            if(is_short){
+            if(is_short == 'Short'){
                 sum = ((entry_price - exit_price) * qty_size) - charges_price;
             }
             
-            // console.log(sum);
+            // console.log(is_short);
+            // console.log(sum, {is_short,lot_size,shr_size,qty_multiplier,qty_size,entry_price,exit_price,charges_price,});
             const pnl_wrap = form.querySelector('.form_text_field.p_n_l');
-            const symbol = pnl_wrap.getAttribute('data_currency_symbol');
-            const formatted = (sum < 0 ? '-' : '') + symbol + formatePrice(Math.abs(sum));
+            // console.log(pnl_wrap);
+            if(pnl_wrap){
+                const symbol = pnl_wrap.getAttribute('data_currency_symbol');
+                const formatted = (sum < 0 ? '-' : '') + symbol + formatePrice(Math.abs(sum));
 
-            if(sum < 0){
-                pnl_wrap.innerHTML = `<div class="pnl_text loss"><strong>Total P&L: </strong><span>${formatted}</span></div>`;
-            }else{
-                pnl_wrap.innerHTML = `<div class="pnl_text profit"><strong>Total P&L: </strong><span>${formatted}</span></div>`;
-            }
-            if(entry_price != "" && exit_price != ""){
-                pnl_wrap.style.display = '';
-            }else{
-                pnl_wrap.style.display = 'none';
+                if(sum < 0){
+                    pnl_wrap.innerHTML = `<div class="pnl_text loss"><strong>Total P&L: </strong><span>${formatted}</span></div>`;
+                }else{
+                    pnl_wrap.innerHTML = `<div class="pnl_text profit"><strong>Total P&L: </strong><span>${formatted}</span></div>`;
+                }
+                if(entry_price != "" && exit_price != ""){
+                    pnl_wrap.style.display = '';
+                }else{
+                    pnl_wrap.style.display = 'none';
+                }
             }
             // console.log(entry_price, exit_price, sum);
         }
@@ -143,6 +144,7 @@ export default class TradeActions {
 
     async edit(trade_id) {
         MainApp.popupManager.open('edit-trade-pop');
+        // console.log(trade_id);
 
         await fetch(`/trade/${trade_id}`, {
             method: 'GET',
@@ -153,13 +155,13 @@ export default class TradeActions {
             .then((data) => {
                 const changeEvent = new Event('change');
                 const inputEvent = new Event('input');
-                // console.log(data);
+                console.log(data);
                 if(typeof data == 'object' && Object.keys(data).length >= 1){
                     Object.keys(data).forEach((clm, ind) => {
                         const inp = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
                         const inp_arr = document.querySelectorAll('#edit_trade_popup [name="'+clm+'"]');
                         const trd_notes = document.querySelector('#edit_trade_popup [name="trd_notes"]');
-                        if( clm == 'notes' ) {
+                        if( trd_notes && clm == 'notes' ) {
                             trd_notes.value = data[clm];
                         }
                         if (clm == 'trd_screenshots') {
@@ -173,39 +175,29 @@ export default class TradeActions {
                         }
                         
                         if(inp && inp.getAttribute('type') == 'radio'){
-                            const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"][value="'+data[clm]+'"]');
+                            const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"][value="'+(data[clm])+'"]');
                             if(radio_){
                                 radio_.setAttribute('checked', 'true');//.dispatchEvent(changeEvent);
                                 radio_.dispatchEvent(changeEvent);
-                            }else{
-                                console.log('#edit_trade_popup [name="'+clm+'"][value="'+data[clm]+'"]');
                             }
-                        }else if(inp && inp.getAttribute('type') == 'checkbox'){
-                            if(clm == 'trd_type'){
-                                const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
-                                if(data[clm] == "F&O"){
-                                    radio_.setAttribute('checked', 'true');
-                                    radio_.dispatchEvent(changeEvent);
-                                }else{
-                                    radio_.removeAttribute('checked');
-                                    radio_.dispatchEvent(changeEvent);
-                                }
-                            }
-
-                            if(clm == 'trd_action'){
-                                const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
-                                if(data[clm] == "Short"){
-                                    radio_.setAttribute('checked', 'true');
-                                    radio_.dispatchEvent(changeEvent);
-                                }else{
-                                    radio_.removeAttribute('checked');
-                                    radio_.dispatchEvent(changeEvent);
-                                }
-                            }
+                            // console.log('#edit_trade_popup [name="'+clm+'"][value="'+(data[clm])+'"]');
                         }else{
                             if(inp){
                                 inp.value = data[clm];
 
+                                
+                                if(clm == 'trd_type'){
+                                    const type_val = data[clm];
+                                    // console.log(type_val);
+                                    if(type_val == 'F&O'){
+                                        document.querySelector('#edit_trade_popup .shares_amount_val').classList.add('hidden');
+                                        document.querySelector('#edit_trade_popup .lot_amount_val').classList.remove('hidden');
+                                    }else{
+                                        document.querySelector('#edit_trade_popup .shares_amount_val').classList.remove('hidden');
+                                        document.querySelector('#edit_trade_popup .lot_amount_val').classList.add('hidden');
+                                    }
+                                    inp.dispatchEvent(inputEvent);
+                                }
                                 if(clm == 'trd_date'){
                                     const ddpinp = document.querySelector('#edit_trade_popup [name='+clm+']');
                                     ddpinp._flatpickr.setDate(data[clm]);
@@ -213,6 +205,18 @@ export default class TradeActions {
                                 if(inp.classList.contains('price')){
                                     // console.log(inp);
                                     inp.dispatchEvent(inputEvent);
+                                }
+                            }else{
+                                if(clm == 'instrument'){
+                                    const lot_size_hinp = document.querySelector('#edit_trade_popup [name="trd_qty_size"]');
+                                    const qty_mult_hinp = document.querySelector('#edit_trade_popup [name="trd_qty_multiplier"]');
+                                    
+                                    const this_instrument = data[clm];
+                                    lot_size_hinp.value = this_instrument.lot_size;
+                                    qty_mult_hinp.value = this_instrument.qty_multiplier;
+                                    
+                                    lot_size_hinp.dispatchEvent(inputEvent);
+                                    qty_mult_hinp.dispatchEvent(inputEvent);
                                 }
                             }
                         }
@@ -265,17 +269,17 @@ export default class TradeActions {
         let form = event.target.closest('form');
         if (!form) return;
 
-        let wrapper = form.querySelector('.screenshot-gallery');
-        if (!wrapper) return;
+        let imageGallery = form.querySelector('.screenshot-gallery');
+        if (!imageGallery) return;
 
-        let imageGallery = wrapper.querySelector('.image_gallery');
+        // let imageGallery = wrapper.querySelector('.image_gallery');
 
         // Create gallery if not exists
-        if (!imageGallery) {
-            imageGallery = document.createElement('div');
-            imageGallery.className = 'image_gallery';
-            wrapper.appendChild(imageGallery);
-        }
+        // if (!imageGallery) {
+        //     imageGallery = document.createElement('div');
+        //     imageGallery.className = 'image_gallery';
+        //     wrapper.appendChild(imageGallery);
+        // }
 
         document.addEventListener('click', (e) => {
             if (e.target.closest('.screenshot-delete')) {
@@ -291,18 +295,21 @@ export default class TradeActions {
 
             reader.onload = (e) => {
                 const imgThumb = document.createElement('div');
-                imgThumb.classList.add('screenshot-thumb');
+                imgThumb.classList.add('w-[24%]', 'rounded-sm', 'overflow-hidden', 'relative', 'screenshot-thumb');
                 imgThumb.innerHTML = `
-                    <img src="${e.target.result}" data-tid="" />
+                    <button class="author-open__popup screenshot-delete" type="button" tabindex="0"
+                        data-pressed="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="size-4 shrink-0 stroke-[2.25px]">
+                            <path
+                                d="M16 6V5.2C16 4.0799 16 3.51984 15.782 3.09202C15.5903 2.71569 15.2843 2.40973 14.908 2.21799C14.4802 2 13.9201 2 12.8 2H11.2C10.0799 2 9.51984 2 9.09202 2.21799C8.71569 2.40973 8.40973 2.71569 8.21799 3.09202C8 3.51984 8 4.0799 8 5.2V6M10 11.5V16.5M14 11.5V16.5M3 6H21M19 6V17.2C19 18.8802 19 19.7202 18.673 20.362C18.3854 20.9265 17.9265 21.3854 17.362 21.673C16.7202 22 15.8802 22 14.2 22H9.8C8.11984 22 7.27976 22 6.63803 21.673C6.07354 21.3854 5.6146 20.9265 5.32698 20.362C5 19.7202 5 18.8802 5 17.2V6"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
 
-                    <div class="screenshot-actions">
-                        <button type="button" class="screenshot-view" data-fancybox="gallery" data-src="${e.target.result}">
-                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 83.78" style="enable-background:new 0 0 122.88 83.78" xml:space="preserve"><g><path d="M95.73,10.81c10.53,7.09,19.6,17.37,26.48,29.86l0.67,1.22l-0.67,1.21c-6.88,12.49-15.96,22.77-26.48,29.86 C85.46,79.88,73.8,83.78,61.44,83.78c-12.36,0-24.02-3.9-34.28-10.81C16.62,65.87,7.55,55.59,0.67,43.1L0,41.89l0.67-1.22 c6.88-12.49,15.95-22.77,26.48-29.86C37.42,3.9,49.08,0,61.44,0C73.8,0,85.45,3.9,95.73,10.81L95.73,10.81z M60.79,22.17l4.08,0.39 c-1.45,2.18-2.31,4.82-2.31,7.67c0,7.48,5.86,13.54,13.1,13.54c2.32,0,4.5-0.62,6.39-1.72c0.03,0.47,0.05,0.94,0.05,1.42 c0,11.77-9.54,21.31-21.31,21.31c-11.77,0-21.31-9.54-21.31-21.31C39.48,31.71,49.02,22.17,60.79,22.17L60.79,22.17L60.79,22.17z M109,41.89c-5.5-9.66-12.61-17.6-20.79-23.11c-8.05-5.42-17.15-8.48-26.77-8.48c-9.61,0-18.71,3.06-26.76,8.48 c-8.18,5.51-15.29,13.45-20.8,23.11c5.5,9.66,12.62,17.6,20.8,23.1c8.05,5.42,17.15,8.48,26.76,8.48c9.62,0,18.71-3.06,26.77-8.48 C96.39,59.49,103.5,51.55,109,41.89L109,41.89z"/></g></svg>
-                        </button>
-                        <button type="button" class="screenshot-delete">
-                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="109.484px" height="122.88px" viewBox="0 0 109.484 122.88" enable-background="new 0 0 109.484 122.88" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M2.347,9.633h38.297V3.76c0-2.068,1.689-3.76,3.76-3.76h21.144 c2.07,0,3.76,1.691,3.76,3.76v5.874h37.83c1.293,0,2.347,1.057,2.347,2.349v11.514H0V11.982C0,10.69,1.055,9.633,2.347,9.633 L2.347,9.633z M8.69,29.605h92.921c1.937,0,3.696,1.599,3.521,3.524l-7.864,86.229c-0.174,1.926-1.59,3.521-3.523,3.521h-77.3 c-1.934,0-3.352-1.592-3.524-3.521L5.166,33.129C4.994,31.197,6.751,29.605,8.69,29.605L8.69,29.605z M69.077,42.998h9.866v65.314 h-9.866V42.998L69.077,42.998z M30.072,42.998h9.867v65.314h-9.867V42.998L30.072,42.998z M49.572,42.998h9.869v65.314h-9.869 V42.998L49.572,42.998z"/></g></svg>
-                        </button>
-                    </div>
+                    </button>
+                    <img src="${e.target.result}" data-tid="" class="h-auto w-full"/>
                 `;
 
                 // Optional styling

@@ -29,15 +29,15 @@ export default class PopupManager {
         }
         
         // Close popup
-        if (event.target.closest('.close')) {
-            const cls_btn = event.target.closest('.close');
-            const popWrap = cls_btn.closest('.main_popup');
+        if (event.target.closest('.global-popup__close')) {
+            const cls_btn = event.target.closest('.global-popup__close');
+            const popWrap = cls_btn.closest('.global-popup');
             const popupId = popWrap.getAttribute('data_identity');
             this.close(popupId)
         }
 
-        if(event.target.closest('.main_popup_overlay') || (event.target.closest('.main_popup_inner') == null && event.target.closest('.btn') == null)) {
-            event.target.closest('.main_popup') ? event.target.closest('.main_popup').classList.remove('active') : false;
+        if(event.target.closest('.global-popup__overlay') || (event.target.closest('.global-popup__inner') == null && event.target.closest('.btn') == null)) {
+            event.target.closest('.global-popup') ? event.target.closest('.global-popup').classList.remove('active') : false;
         }
     }
 
@@ -47,7 +47,7 @@ export default class PopupManager {
             thisApp.activePops.push(id);
         }
         const popup = document.querySelector(
-            `.main_popup[data_identity="${id}"]`
+            `.global-popup[data_identity="${id}"]`
         );
 
         if (popup) {
@@ -58,7 +58,7 @@ export default class PopupManager {
     close(id) {
         const thisApp = this;
         const popup = document.querySelector(
-            `.main_popup[data_identity="${id}"]`
+            `.global-popup[data_identity="${id}"]`
         );
 
         if (popup) {
@@ -70,7 +70,7 @@ export default class PopupManager {
     closeAll() {
         const thisApp = this;
         thisApp.activePops = [];
-        document.querySelectorAll('.main_popup').forEach((popup) => {
+        document.querySelectorAll('.global-popup').forEach((popup) => {
             popup.classList.remove('active');
         });
     }

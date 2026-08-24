@@ -290,7 +290,7 @@
 
                                     <th>
                                         <div class="title" role="group">
-                                            Price
+                                            Entry Price
                                         </div>
                                     </th>
 

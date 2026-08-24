@@ -13,7 +13,7 @@
             $row_id = $trade_item['id'];
             $row_counter = $trade_item['counter'];
             $instrument = $trade_item['instrument'];
-            $inst_type = $instrument && isset($instrument['underlying_type']) ? $instrument['underlying_type'] : $instrument['instrument_type'];
+            $inst_type = $instrument && isset($instrument['underlying_type']) ? (in_array($instrument['underlying_type'], ['EQUITY']) ? $instrument['instrument_type'] : $instrument['underlying_type']) : $instrument['instrument_type'];
             $shares = $trade_item['trd_shares'];
             $lot_size = $trade_item['trd_lot'];
 
@@ -46,7 +46,7 @@
             </td>
             <td class="trade_b_id">{{ $row_counter }}</td>
             <td class="trade_b_symbol">{{ $trade_item['trd_symbol'] }}</td>
-            <td class="trade_b_action">
+            <td class="trade_b_action {{ ($trade_item['trd_action'])[0] == "L" ? 'long' : 'short' }}">
                 <span class="table-tag">
                     <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
                         <circle cx="4" cy="4" r="2.5" fill="currentColor" stroke="currentColor">
@@ -61,7 +61,7 @@
             <td class="trade_b_type">{{ $inst_type }}</td>
             <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in: $currency) }}</td>
             <td class="trade_b_exit_price">{{ Number::currency(floatval($trade_item['trd_exit_price']), in: $currency) }}</td>
-            <td class="trade_b_pnl">
+            <td class="trade_b_pnl {{ floatval($pnl_val) < 0 ? 'loss' : 'profit' }}">
                 <div class="flex gap-1.5 items-center">
 
                     <span class="text-success-primary font-medium">
@@ -90,7 +90,6 @@
 
             <td class="trade_b_actions">
                 <div class="flex justify-end gap-0.5">
-
                     <button class="action-icons icon_btn trash" data_id="{{ $trade_item['id'] }}">
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="true">
@@ -108,7 +107,7 @@
                             </path>
                         </svg>
                     </button>
-
+                    
                 </div>
             </td>
         </tr>

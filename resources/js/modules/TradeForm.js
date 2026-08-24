@@ -1,3 +1,4 @@
+
 export default class TradeForm {
 
     crnt_page = 1;
@@ -10,14 +11,18 @@ export default class TradeForm {
     init() {
         const thisApp = this;
         document.addEventListener('submit', this.handleSubmit.bind(this));
-        if (document.querySelectorAll('#symbol').length >= 1) {
-            document.querySelector('#symbol').addEventListener('focus', this.openSuggestions.bind(this));
+        if (document.querySelectorAll('[name="trd_symbol"]').length >= 1) {
+            document.querySelectorAll('[name="trd_symbol"]').forEach(inp_bar => {
+                inp_bar.addEventListener('focus', this.openSuggestions.bind(this));
+                inp_bar.addEventListener('input', this.searchSuggestions.bind(this));
+                inp_bar.addEventListener('blur', this.closeSuggestions.bind(this));
+            });
         }
-        if (document.querySelectorAll('#symbol').length >= 1) {
-            document.querySelector('#symbol').addEventListener('input', this.searchSuggestions.bind(this));
+        if (document.querySelectorAll('#trd_symbol').length >= 1) {
+            document.querySelector('#trd_symbol').addEventListener('input', this.searchSuggestions.bind(this));
         }
-        if (document.querySelectorAll('#symbol').length >= 1) {
-            document.querySelector('#symbol').addEventListener('blur', this.closeSuggestions.bind(this));
+        if (document.querySelectorAll('#trd_symbol').length >= 1) {
+            document.querySelector('#trd_symbol').addEventListener('blur', this.closeSuggestions.bind(this));
         }
         if (document.querySelectorAll('#trades_per_page').length >= 1) {
             document.querySelector('#trades_per_page').addEventListener('change', function(){
@@ -46,11 +51,8 @@ export default class TradeForm {
                 });
             });
         }
-        document.querySelectorAll('.form_fields .form_field .field_drop_down li').forEach((drop_itm) => {
-            drop_itm.addEventListener(
-                'click',
-                this.selectSuggestion.bind(this)
-            );
+        document.querySelectorAll('.symbol_search_list .dropdown-list__item').forEach((drop_itm) => {
+            drop_itm.addEventListener('click', this.selectSuggestion.bind(this));
         })
 
         this.trdTypeFilters.forEach((trdType) => {
@@ -191,26 +193,29 @@ export default class TradeForm {
             trd_type.addEventListener('change', function () {
                 const this_itm = this;
                 const this_wrapper = this_itm.closest('.form_fields');
-                const this_checked_obj = this_wrapper.querySelector('[name="trd_type"]:checked');
+                const this_checked_obj = document.querySelector('[name="trd_type"]');
                 const this_checked = this_checked_obj ? this_checked_obj.value : false;
-                const shr_inp = this_wrapper.querySelector('[name="trd_shares"]');
-                const lot_inp = this_wrapper.querySelector('[name="trd_lot"]');
-                if (!this_checked) {
-                    shr_inp.value = 1;
-                    shr_inp.setAttribute('required', true)
-                    shr_inp.closest('.form_field').style.display = 'flex';
+                const shr_inp = document.querySelector('.shares_amount_val input');
+                const lot_inp = document.querySelector('.lot_amount_val input');
+                if(shr_inp && lot_inp){
+                    
+                    if (this_checked == 'Cash') {
+                        shr_inp.value = 1;
+                        shr_inp.setAttribute('required', true)
+                        shr_inp.closest('.fld_Wrapper').classList.remove('hidden');
 
-                    lot_inp.value = null;
-                    lot_inp.removeAttribute('required');
-                    lot_inp.closest('.form_field').style.display = 'none';
-                } else {
-                    shr_inp.value = null;
-                    shr_inp.removeAttribute('required', true)
-                    shr_inp.closest('.form_field').style.display = 'none';
+                        lot_inp.value = null;
+                        lot_inp.removeAttribute('required');
+                        lot_inp.closest('.fld_Wrapper').classList.add('hidden');
+                    } else {
+                        shr_inp.value = null;
+                        shr_inp.removeAttribute('required', true)
+                        shr_inp.closest('.fld_Wrapper').classList.add('hidden');
 
-                    lot_inp.value = 1;
-                    lot_inp.setAttribute('required', true);
-                    lot_inp.closest('.form_field').style.display = 'flex';
+                        lot_inp.value = 1;
+                        lot_inp.setAttribute('required', true);
+                        lot_inp.closest('.fld_Wrapper').classList.remove('hidden');
+                    }
                 }
             });
         })
@@ -245,14 +250,15 @@ export default class TradeForm {
     }
 
     openSuggestions(event) {
-        const inp = this;
-        document.querySelector('.form_fields .form_field .field_drop_down_wrap').classList.add('active');
+        const inp = event.target;
+        console.log(inp);
+        inp.closest('.symbol_search_list_wrap').querySelector('.symbol_search_list').classList.remove('hidden');
     }
 
     closeSuggestions(event) {
-        const inp = this;
+        const inp = event.target;
         setTimeout(() => {
-            document.querySelector('.form_fields .form_field .field_drop_down_wrap').classList.remove('active');
+            inp.closest('.symbol_search_list_wrap').querySelector('.symbol_search_list').classList.add('hidden');
         }, 100);
     }
 
@@ -283,18 +289,23 @@ export default class TradeForm {
 
     selectSuggestion(event) {
         const inp = event.target;
+        // const srch_wrapp = inp.closest('.symbol_search_list_wrap');
         const this_form = inp.closest('form');
-        const this_data = JSON.parse(atob(inp.getAttribute('data_json')));
-        document.getElementById('symbol').value = `${this_data.trading_symbol} ${this_data.short_name ? `(${this_data.short_name})` : ''}`;
-        document.getElementById('symbol_key').value = this_data.instrument_key;
-        console.log(this_data);
+        const hash_raw = inp.getAttribute('data_json');
+
+        const this_data = hash_raw ? JSON.parse(atob(inp.getAttribute('data_json'))) : [];
+        // console.log(this_data);
+        this_form.querySelector('#trd_symbol').value = `${this_data.trading_symbol} ${this_data.short_name ? `(${this_data.short_name})` : ''}`;
+        this_form.querySelector('#trd_symbol_key').value = this_data.instrument_key;
+
+        // console.log(this_data);
 
         const changeEvnt = new Event('change');
-        const this_segment = this_data.segment;
-        if (this_segment.includes('_FO')) {
-            this_form.querySelector('[name="trd_type"]').checked = true;
+        const this_segment = this_data?.segment;
+        if (this_segment && this_segment.includes('_FO')) {
+            this_form.querySelector('[name="trd_type"]').value = 'F&O';
         } else {
-            this_form.querySelector('[name="trd_type"]').checked = false;
+            this_form.querySelector('[name="trd_type"]').value = 'Cash';
         }
         this_form.querySelector('[name="trd_type"]').dispatchEvent(changeEvnt);
 

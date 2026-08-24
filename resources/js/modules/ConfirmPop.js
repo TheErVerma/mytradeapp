@@ -13,7 +13,7 @@ export default class ConfirmPop {
     init() {
         const App = this;
         this.popup = document.querySelector(
-            '.main_popup[data_identity="confirm-pop"]'
+            '.global-popup[data_identity="confirm-pop"]'
         );
 
         if (!this.popup) {
