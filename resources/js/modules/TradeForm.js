@@ -305,8 +305,8 @@ export default class TradeForm {
         // console.log(this_data);
 
         const changeEvnt = new Event('change');
-        const this_segment = this_data?.segment;
-        if (this_segment && this_segment.includes('_FO')) {
+        const this_segment = this_data?.instrument_type ? this_data?.instrument_type : this_data?.segment;
+        if (this_segment && (this_segment.includes('_FO') || this_segment.includes('FUT'))) {
             this_form.querySelector('[name="trd_type"]').value = 'F&O';
         } else {
             this_form.querySelector('[name="trd_type"]').value = 'Cash';

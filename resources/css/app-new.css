@@ -138,7 +138,7 @@ select.mini-selector {
     padding: 10px;
 }
 
-.flatpickr-months>span {
+body:not(.popup-active) .flatpickr-months>span {
     top: 44px !important;
 }
 

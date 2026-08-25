@@ -52,6 +52,7 @@ export default class PopupManager {
 
         if (popup) {
             popup.classList.add('active');
+            document.querySelector('body').classList.add('popup-active');
         }
     }
 
@@ -64,6 +65,7 @@ export default class PopupManager {
         if (popup) {
             popup.classList.remove('active');
             thisApp.activePops = (thisApp.activePops).filter(item => item !== id); 
+            document.querySelector('body').classList.remove('popup-active');
         }
     }
 
@@ -72,6 +74,7 @@ export default class PopupManager {
         thisApp.activePops = [];
         document.querySelectorAll('.global-popup').forEach((popup) => {
             popup.classList.remove('active');
+            document.querySelector('body').classList.remove('popup-active');
         });
     }
 }

@@ -114,6 +114,7 @@ class AppServiceProvider extends ServiceProvider
                 ->values()
                 ->toArray();
 
+            $all_trades_count = Trade::where('user_id', Auth::id())->count();
             if ($user) {
                 $total_trades = TradeController::getAll();
                 $portfolioSummry = TradeController::summary();
@@ -122,6 +123,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('trades', $total_trades);
                 $view->with('total_trades', count($total_trades));
                 $view->with('portfolioSummry', $portfolioSummry);
+                $view->with('all_trades_count', $all_trades_count);
                 $view->with('currency', $currency);
                 $view->with('upstox', $upstox_data);
                 $view->with('headMapData', $dailyPnl);

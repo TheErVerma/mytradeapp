@@ -216,8 +216,8 @@ class TradeController extends Controller
         }
 
         $trd_entr_price = (float) str_replace(',', '', ($validated['trd_price'] ?? 0));
-        $trd_ext_price = (float) $request->input('trd_exit_price');//str_replace(',', '', ($validated['trd_exit_price'] ?? 0));
-        $trd_chrgs_amount = (float) $request->input('trd_charges_amount');//(float) str_replace(',', '', ($validated['trd_charges_amount'] ?? 0));
+        $trd_ext_price = (float) str_replace(',', '', ($request->input('trd_exit_price') ?? 0));
+        $trd_chrgs_amount = (float) str_replace(',', '', ($request->input('trd_charges_amount') ?? 0));
         $trd_old_screenshots = $request->input('trd_old_screenshots');
         $trd_old_screenshots_arr = json_decode(base64_decode($trd_old_screenshots), true);
         if(!$trd_old_screenshots_arr){

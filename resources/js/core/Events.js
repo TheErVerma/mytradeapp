@@ -10,7 +10,7 @@ export default class EventManager {
     constructor() {
         this.init();
     }
-    
+
     init() {
         const ThisApp = this;
 
@@ -47,7 +47,7 @@ export default class EventManager {
             altFormat: "F j, Y",
             allowInput: true,
             showMonths: 2,
-            onOpen: function(selectedDates, dateStr, instance) {
+            onOpen: function (selectedDates, dateStr, instance) {
                 // Don't add buttons multiple times
                 if (instance.calendarContainer.querySelector('.flatpickr-shortcuts')) {
                     return;
@@ -57,18 +57,16 @@ export default class EventManager {
                 shortcuts.className = 'flatpickr-shortcuts';
 
                 shortcuts.innerHTML = `
-                    <button type="button" data-range="today">Today</button>
-                    <button type="button" data-range="yesterday">Yesterday</button>
-                    <button type="button" data-range="7">Last 7 Days</button>
-                    <button type="button" data-range="30">Last 30 Days</button>
-                    <button type="button" data-range="this_month">This Month</button>
-                    <button type="button" data-range="last_month">Last Month</button>
+                    <button type="button" data-range="last_7">Last 7 Days</button>
+                    <button type="button" data-range="last_30">Last 30 Days</button>
+                    <button type="button" data-range="crnt_fy">Current FY</button>
+                    <button type="button" data-range="prev_fy">Previous FY</button>
                     <button type="button" data-range="clear">Clear</button>
                 `;
 
                 instance.calendarContainer.prepend(shortcuts);
 
-                shortcuts.addEventListener('click', function(e) {
+                shortcuts.addEventListener('click', function (e) {
                     const button = e.target.closest('button');
 
                     if (!button) return;
@@ -79,58 +77,31 @@ export default class EventManager {
                     let start;
                     let end;
 
-                    if (range === 'today') {
-                        start = new Date(today);
-                        end = new Date(today);
-                    }
-
-                    if (range === 'yesterday') {
-                        start = new Date(today);
-                        start.setDate(start.getDate() - 1);
-
-                        end = new Date(start);
-                    }
-
-                    if (range === '7') {
-                        end = new Date(today);
-
+                    if (range === 'last_7') {
                         start = new Date(today);
                         start.setDate(start.getDate() - 6);
-                    }
 
-                    if (range === '30') {
                         end = new Date(today);
-
+                    }
+                    if (range === 'last_30') {
                         start = new Date(today);
                         start.setDate(start.getDate() - 29);
+
+                        end = new Date(today);
                     }
+                    if (range === 'prev_fy') {
+                        const year = today.getFullYear();
+                        const fyStartYear = today.getMonth() >= 3 ? year - 1 : year - 2;
 
-                    if (range === 'this_month') {
-                        start = new Date(
-                            today.getFullYear(),
-                            today.getMonth(),
-                            1
-                        );
-
-                        end = new Date(
-                            today.getFullYear(),
-                            today.getMonth() + 1,
-                            0
-                        );
+                        start = new Date(fyStartYear, 3, 1);
+                        end = new Date(fyStartYear + 1, 2, 31);
                     }
+                    if (range === 'crnt_fy') {
+                        const year = today.getFullYear();
+                        const fyStartYear = today.getMonth() >= 3 ? year : year - 1;
 
-                    if (range === 'last_month') {
-                        start = new Date(
-                            today.getFullYear(),
-                            today.getMonth() - 1,
-                            1
-                        );
-
-                        end = new Date(
-                            today.getFullYear(),
-                            today.getMonth(),
-                            0
-                        );
+                        start = new Date(fyStartYear, 3, 1);
+                        end = new Date(fyStartYear + 1, 2, 31);
                     }
 
                     if (range === 'clear') {
@@ -152,15 +123,15 @@ export default class EventManager {
         });
 
         const passwordVisibility = document.querySelector('.toggle-password-visibility');
-        if(passwordVisibility){
-            passwordVisibility.addEventListener('click', function(){
+        if (passwordVisibility) {
+            passwordVisibility.addEventListener('click', function () {
                 const parent = this.parentElement;
                 const thisInp = parent.querySelector('input');
-                
-                if(this.classList.contains('active')){
+
+                if (this.classList.contains('active')) {
                     this.classList.remove('active')
                     thisInp.setAttribute('type', 'text');
-                }else{
+                } else {
                     this.classList.add('active')
                     thisInp.setAttribute('type', 'password');
                 }
@@ -168,33 +139,33 @@ export default class EventManager {
         }
 
         const sideauthpop = document.querySelector('.author-open__popup');
-        if(sideauthpop){
-            sideauthpop.addEventListener('click', function(){
+        if (sideauthpop) {
+            sideauthpop.addEventListener('click', function () {
                 const sidepop = document.querySelector('.author-popup');
-                if(sidepop){
-                    if(sidepop.classList.contains('active')){
+                if (sidepop) {
+                    if (sidepop.classList.contains('active')) {
                         sidepop.classList.remove('active');
-                    }else{
+                    } else {
                         sidepop.classList.add('active');
                     }
                 }
             })
         }
 
-        document.addEventListener('click', function(e){
+        document.addEventListener('click', function (e) {
             const this_trg = e.target;
-            if(!this_trg.closest('.author-open__popup') && !this_trg.closest('.author-popup')){
+            if (!this_trg.closest('.author-open__popup') && !this_trg.closest('.author-popup')) {
                 document.querySelector('.author-popup').classList.remove('active');
             }
         });
 
         const cs_trd_type_elm = document.querySelector('#cs_trd_type');
-        if(cs_trd_type_elm){
-            cs_trd_type_elm.addEventListener('change', function(){
-                if(this.checked){
+        if (cs_trd_type_elm) {
+            cs_trd_type_elm.addEventListener('change', function () {
+                if (this.checked) {
                     console.log('Checked');
                     document.querySelector('#add_trade_popup #trd_type').checked = true;
-                }else{
+                } else {
                     console.log('Not Checked');
                     document.querySelector('#add_trade_popup #trd_type').checked = false;
                 }
@@ -209,7 +180,7 @@ export default class EventManager {
             priceInputs.forEach((priceInput) => {
                 priceInput.addEventListener('input', function (e) {
                     let value = e.target.value.replace(/[^\d.]/g, '');
-                    if(value != ""){
+                    if (value != "") {
                         const parts = value.split('.');
                         if (parts.length > 2) {
                             value = parts[0] + '.' + parts.slice(1).join('');
@@ -284,15 +255,15 @@ export default class EventManager {
 
 
         const toggle_mobile_sidebar = document.querySelector('.toggle_mobile_sidebar');
-        if(toggle_mobile_sidebar){
-            toggle_mobile_sidebar.addEventListener('click', function(){
+        if (toggle_mobile_sidebar) {
+            toggle_mobile_sidebar.addEventListener('click', function () {
                 document.querySelector('.mobile-sibebar').classList.add('active');
             });
         }
 
         const toggle_sidebar_close = document.querySelector('.toggle_sidebar_close');
-        if(toggle_sidebar_close){
-            toggle_sidebar_close.addEventListener('click', function(){
+        if (toggle_sidebar_close) {
+            toggle_sidebar_close.addEventListener('click', function () {
                 document.querySelector('.mobile-sibebar').classList.remove('active');
             });
         }
@@ -351,7 +322,7 @@ export default class EventManager {
                 if (target_text && target_text.value) {
                     MainApp.Toast.dive('Copied', 'success');
                     copyText(target_text.value);
-                }else{
+                } else {
                     MainApp.Toast.dive('Generate Link First', 'error');
                 }
             });
@@ -448,28 +419,28 @@ export default class EventManager {
 
 
         const OtpDigInp = document.querySelectorAll('#otp_dg1,#otp_dg2,#otp_dg3,#otp_dg4');
-        if(OtpDigInp){
+        if (OtpDigInp) {
 
-            OtpDigInp.forEach(function(dgInp, indx){
-                dgInp.addEventListener('keyup', function(e){
+            OtpDigInp.forEach(function (dgInp, indx) {
+                dgInp.addEventListener('keyup', function (e) {
                     dgInp.blur();
                     const key = e.key;
-                    if(key == 'Backspace'){
-                        const prevInp = OtpDigInp[indx-1];
-                        if(prevInp){
+                    if (key == 'Backspace') {
+                        const prevInp = OtpDigInp[indx - 1];
+                        if (prevInp) {
                             prevInp.focus();
                         }
-                    }else{
-                        const nextInp = OtpDigInp[indx+1];
-                        if(nextInp){
+                    } else {
+                        const nextInp = OtpDigInp[indx + 1];
+                        if (nextInp) {
                             nextInp.focus();
                         }
                     }
                     let finalOtp = [];
-                    OtpDigInp.forEach(function(dgInpV, indxS){
+                    OtpDigInp.forEach(function (dgInpV, indxS) {
                         finalOtp.push(dgInpV.value);
                     });
-                    
+
                     document.querySelector('#otp').value = finalOtp.join('');
                 });
             })
