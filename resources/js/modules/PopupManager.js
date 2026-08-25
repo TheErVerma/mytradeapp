@@ -36,7 +36,7 @@ export default class PopupManager {
             this.close(popupId)
         }
 
-        if(event.target.closest('.global-popup__overlay') || (event.target.closest('.global-popup__inner') == null && event.target.closest('.btn') == null)) {
+        if(event.target.closest('.global-popup__overlay') || (event.target.closest('.global-popup__inner') == null && event.target.closest('.btn') == null || event.target.closest('.cancel_action') != null)) {
             event.target.closest('.global-popup') ? event.target.closest('.global-popup').classList.remove('active') : false;
         }
     }

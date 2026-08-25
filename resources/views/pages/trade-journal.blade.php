@@ -65,7 +65,7 @@
 
                             </button>
 
-                            <button class="btn btn-sm btn-icon-only btn-secondary">
+                            <button class="btn btn-sm btn-icon-only btn-secondary" id="live_share_trade_journal" data-popup-target="share-trade-pop">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -120,12 +120,15 @@
 
 
                                     <input aria-label="Search" type="text" placeholder="From" tabindex="0"
-                                        id="trade_date_from" class="m-0 w-full datepicker bg-transparent text-primary ring-0 outline-hidden placeholder:text-placeholder autofill:rounded-lg autofill:text-primary disabled:cursor-not-allowed px-3 py-2 text-sm pl-9"
+                                        id="trade_date_range" class="m-0 w-full datepicker_range bg-transparent text-primary ring-0 outline-hidden placeholder:text-placeholder autofill:rounded-lg autofill:text-primary disabled:cursor-not-allowed px-3 py-2 text-sm pl-9"
                                         value="" title="">
 
                                 </div>
 
                             </div>
+                            @php
+                            /*
+                            
                             <div
                                 class="group flex h-max w-full flex-col items-start justify-start gap-1.5 min-w-0 max-md:w-[35%] max-md:grow md:w-40">
 
@@ -148,6 +151,8 @@
                                 </div>
 
                             </div>
+                            */
+                            @endphp
                             <div
                                 class="group flex h-max w-full flex-col items-start justify-start gap-1.5 min-w-0  md:w-70">
 
@@ -238,7 +243,7 @@
                         <table class="global-table trades_journal_table">
                             <thead>
                                 <tr>
-                                    <th class="w-min pr-0!">
+                                    <th class="trade_h_check w-min pr-0!">
                                         <label class="hb-checkbox size-lg" for="rememberMe">
                                             <span>
                                                 <input type="checkbox" id="rememberMe">
@@ -247,66 +252,66 @@
                                         </label>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_id" >
                                         <div class="title" role="group">
-                                            ID
+                                            S.No.
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_symbol" >
                                         <div class="title" role="group">
                                             Symbol
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_action" >
                                         <div class="title" role="group">
                                             Action
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_date" >
                                         <div class="title" role="group">
                                             Date
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_shares" >
                                         <div class="title" role="group">
                                             Shares
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_lot" >
                                         <div class="title" role="group">
                                             Lot
                                         </div>
                                     </th>
-                                    <th>
+                                    <th class="trade_h_type" >
                                         <div class="title" role="group">
                                             Type
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_price" >
                                         <div class="title" role="group">
                                             Entry Price
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_exit_price" >
                                         <div class="title" role="group">
                                             Exit Price
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_pnl" >
                                         <div class="title" role="group">
                                             P&L
                                         </div>
                                     </th>
 
-                                    <th>
+                                    <th class="trade_h_actions" >
 
                                     </th>
 

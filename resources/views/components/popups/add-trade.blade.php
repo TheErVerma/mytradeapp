@@ -199,7 +199,11 @@
                         <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
                             <label class="form-label" data-label="true">Date</label>
                             <input type="text" required="" placeholder="Enter your name" tabindex="0"
-                                class="form-input datepicker" name="trd_date" value="August 21, 2026" title="">
+                                class="form-input datepicker" name="trd_date" value="
+                                @php 
+                                    echo date('Y-m-d');
+                                @endphp
+                            " title="">
                         </div>
 
                         <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">

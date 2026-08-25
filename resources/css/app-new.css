@@ -25,11 +25,13 @@
 body {
     background: var(--background-color-primary);
 }
+
 div#rcaptcha {
     margin-bottom: 20px;
 }
 
-.hidden_field{
+.hidden_field,
+.hide {
     display: none !important;
 }
 
@@ -129,6 +131,24 @@ select.mini-selector {
 }
 
 /** DatePicker Start **/
+.flatpickr-shortcuts {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+}
+.flatpickr-months > span {
+    top: 44px !important;
+}
+.flatpickr-shortcuts button {
+    padding: 4px 8px;
+    line-height: 1;
+    font-size: 12px;
+    color: var(--text-color-primary);
+    border-radius: 4px;
+    border: 1px solid;
+    cursor: pointer;
+}
 .flatpickr-calendar {
     background: var(--bg2) !important;
     box-shadow: none !important;
@@ -194,7 +214,17 @@ select.mini-selector {
     border: 0px !important;
     color: var(--accent-text) !important;
 }
-
+span.flatpickr-day.selected.startRange, span.flatpickr-day.selected.endRange {
+    background: var(--color-bg-brand-solid) !important;
+}
+.flatpickr-day:hover {
+    background: var(--background-color-primary_hover) !important;
+}
+.flatpickr-current-month span {
+    font-size: var(--text-md);
+    font-weight: 400 !important;
+    color: var(--text-color-primary) !important;
+}
 /** DatePicker End **/
 
 
@@ -299,6 +329,7 @@ header.main_header .header_inner .head_btn_wrap {
 .theme_toggler>* {
     pointer-events: none;
 }
+
 button.icon_btn.theme_toggler>div {
     display: block;
     width: 20px;
@@ -459,7 +490,8 @@ aside.main_sidebar .aside_inner .aside_menu_items ul {
     margin-bottom: 16px;
 }
 
-aside.main_sidebar .aside_inner .aside_menu_items ul li:has(a[disabled]), a[disabled] {
+aside.main_sidebar .aside_inner .aside_menu_items ul li:has(a[disabled]),
+a[disabled] {
     pointer-events: none;
     opacity: 0.6;
 }
@@ -1296,20 +1328,27 @@ div#live_link_qr_zone svg path {
 
 
 /** Trade Table Start **/
-table.trades_journal_table.capturing tbody td.trade_b_actions, table.trades_journal_table.capturing thead th.trade_h_actions {
+table.trades_journal_table.capturing tbody td.trade_b_check,
+table.trades_journal_table.capturing thead th.trade_h_check,
+table.trades_journal_table.capturing tbody td.trade_b_actions,
+table.trades_journal_table.capturing thead th.trade_h_actions {
     display: none;
 }
+
 table.trades_journal_table tbody td.trade_b_action.long svg circle {
     fill: var(--color-bg-success-solid);
     stroke: var(--color-bg-success-solid);
 }
+
 table.trades_journal_table tbody td.trade_b_action.short svg circle {
     fill: var(--color-bg-error-solid);
     stroke: var(--color-bg-error-solid);
 }
+
 table.trades_journal_table tbody td.trade_b_pnl.loss span {
     color: var(--color-bg-error-solid) !important;
 }
+
 .trades_table_wrapper .trades_table_inner .trades_table_filter_btm ul {
     display: inline-flex;
     justify-content: flex-start;
@@ -1443,7 +1482,7 @@ table.trades_journal_table tbody td.trade_b_pnl.loss span {
 }
 
 .trades_table_wrapper .trades_table_inner table.main_trades_table.capturing .trade_h_actions,
-.trades_table_wrapper .trades_table_inner table.main_trades_table.capturing .trade_b_actions{
+.trades_table_wrapper .trades_table_inner table.main_trades_table.capturing .trade_b_actions {
     display: none;
 }
 
@@ -2543,3 +2582,5 @@ div#tfa_disable_form .main_set_field label {
 }
 
 /** Stocks Page End **/
+
+

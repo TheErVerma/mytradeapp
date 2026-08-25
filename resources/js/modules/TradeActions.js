@@ -232,7 +232,8 @@ export default class TradeActions {
                                     const qty_mult_hinp = document.querySelector('#edit_trade_popup [name="trd_qty_multiplier"]');
                                     
                                     const this_instrument = data[clm];
-                                    lot_size_hinp.value = this_instrument.lot_size;
+
+                                    lot_size_hinp.value = this_instrument.qty_multiplier <= 1 ? this_instrument.lot_size : 1;
                                     qty_mult_hinp.value = this_instrument.qty_multiplier;
                                     
                                     lot_size_hinp.dispatchEvent(inputEvent);

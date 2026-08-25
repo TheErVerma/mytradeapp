@@ -36,10 +36,11 @@ class TradeController extends Controller
             ->orderBy('id', 'DESC')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        $counter = $alltrd_obj->total() - (($page - 1) * $perPage);
+        // $counter = $alltrd_obj->total() - (($page - 1) * $perPage);
+        $counter = 1 + (($page - 1) * $perPage);
 
         $alltrd_obj->through(function ($trade) use (&$counter) {
-            $trade->counter = $counter--;
+            $trade->counter = $counter++;
             return $trade;
         });
         // ->get()
@@ -75,11 +76,11 @@ class TradeController extends Controller
 
         $screenshots = [];
         $screenshots_log = [];
-        // Log::debug(print_r($request, true));
+        
         if ($request->hasFile('trade_screenshots')) {
             $trade_screenshots = $request->file('trade_screenshots');
             if (!empty($trade_screenshots)) {
-                Log::debug(print_r($trade_screenshots, true));
+
                 foreach ($trade_screenshots as $file) {
                     if (!$file->isValid()) {
                         continue;
@@ -91,7 +92,6 @@ class TradeController extends Controller
 
                     $screenshots[] = $url;
                     $screenshots_log[] = $url;
-                    // Log::debug(print_r($url, true));
                 }
             }
         }
@@ -266,12 +266,13 @@ class TradeController extends Controller
         foreach ($trades as $trade) {
 
             if ($trade->trd_type == "F&O") {
-                $qty = (float) ($trade->trd_lot) * $trade->instrument['lot_size'];
+                $qty = (float) ($trade->trd_lot) * ($trade->instrument['qty_multiplier'] <= 1 ? $trade->instrument['lot_size'] : 1);
             }
             if ($trade->trd_type == "Cash") {
                 $qty = (float) ($trade->trd_shares);
             }
-
+                
+            $qty *= $trade->instrument['qty_multiplier'];
             $entry = (float) $trade->trd_price;
             $exit = (float) $trade->trd_exit_price;
 
@@ -642,8 +643,7 @@ class TradeController extends Controller
             ->whereBetween('trd_date', [$startDate, $endDate])
             ->orderBy('id', 'ASC')
             ->get();
-
-        // Log::debug(print_r([$startDate, $endDate], true));
+            
         // $trades = Trade::where('user_id', Auth::id())->whereBetween('trd_date', [$startDate, $endDate])->get();
 
         $total_trades = 0;
@@ -653,12 +653,13 @@ class TradeController extends Controller
             $total_trades++;
 
             if ($trade->trd_type == "F&O") {
-                $qty = (float) ($trade->trd_lot * $trade->instrument['lot_size']);
+                $qty = (float) ($trade->trd_lot) * ($trade->instrument['qty_multiplier'] <= 1 ? $trade->instrument['lot_size'] : 1);
             }
             if ($trade->trd_type == "Cash") {
                 $qty = (float) ($trade->trd_shares);
             }
 
+            $qty *= $trade->instrument['qty_multiplier'];
             $entry = (float) $trade->trd_price;
             $exit = (float) $trade->trd_exit_price;
 
@@ -800,10 +801,11 @@ class TradeController extends Controller
         $alltrd_obj = $query
             ->paginate($perPage, ['*'], 'page', $page);
 
-        $counter = $alltrd_obj->total() - (($page - 1) * $perPage);
+        // $counter = $alltrd_obj->total() - (($page - 1) * $perPage);
+        $counter = 1 + (($page - 1) * $perPage);
 
         $alltrd_obj->through(function ($trade) use (&$counter) {
-            $trade->counter = $counter--;
+            $trade->counter = $counter++;
             return $trade;
         });
 

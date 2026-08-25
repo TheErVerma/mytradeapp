@@ -26,7 +26,7 @@
 
             $lot_size_val = isset($trade_item['trd_shares']) ? $trade_item['trd_shares'] : 1;
             if ($trd_type != 'Cash') {
-                $lot_size_val = ((isset($instrument['lot_size']) ? $instrument['lot_size'] : 1) * $lot_size);
+                $lot_size_val = ((isset($instrument['lot_size']) && $qty_multiplier <= 1 ? $instrument['lot_size'] : 1) * $lot_size);
             }
 
             $lot_size_val *= $qty_multiplier;
@@ -69,7 +69,7 @@
                         {{ Number::currency(floatval($pnl_val), in: $currency) }}
                     </span>
 
-                    <div class="tooltip-wrap">
+                    <div class="tooltip-wrap {{ $charges_prc <= 0 ? 'hide' : '' }}">
 
                         <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-3.5">

@@ -3,6 +3,7 @@ import "flatpickr/dist/flatpickr.css";
 import QRCode from 'qrcode';
 
 
+
 export default class EventManager {
 
     token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -26,11 +27,128 @@ export default class EventManager {
                 }
             });
         }
-        const rep = flatpickr(".datepicker", {
+        flatpickr(".datepicker", {
             dateFormat: "Y-m-d",
             altInput: true,
             altFormat: "F j, Y",
-            allowInput: true
+            allowInput: true,
+        });
+
+        // flatpickr(".datepicker_range", {
+        //     dateFormat: "Y-m-d",
+        //     altInput: true,
+        //     altFormat: "F j, Y",
+        //     allowInput: true,
+        //     mode: "range"
+        // });
+        flatpickr('.datepicker_range', {
+            mode: 'range',
+            dateFormat: 'Y-m-d',
+            altFormat: "F j, Y",
+            allowInput: true,
+            showMonths: 2,
+            onOpen: function(selectedDates, dateStr, instance) {
+                // Don't add buttons multiple times
+                if (instance.calendarContainer.querySelector('.flatpickr-shortcuts')) {
+                    return;
+                }
+
+                const shortcuts = document.createElement('div');
+                shortcuts.className = 'flatpickr-shortcuts';
+
+                shortcuts.innerHTML = `
+                    <button type="button" data-range="today">Today</button>
+                    <button type="button" data-range="yesterday">Yesterday</button>
+                    <button type="button" data-range="7">Last 7 Days</button>
+                    <button type="button" data-range="30">Last 30 Days</button>
+                    <button type="button" data-range="this_month">This Month</button>
+                    <button type="button" data-range="last_month">Last Month</button>
+                    <button type="button" data-range="clear">Clear</button>
+                `;
+
+                instance.calendarContainer.prepend(shortcuts);
+
+                shortcuts.addEventListener('click', function(e) {
+                    const button = e.target.closest('button');
+
+                    if (!button) return;
+
+                    const range = button.dataset.range;
+                    const today = new Date();
+
+                    let start;
+                    let end;
+
+                    if (range === 'today') {
+                        start = new Date(today);
+                        end = new Date(today);
+                    }
+
+                    if (range === 'yesterday') {
+                        start = new Date(today);
+                        start.setDate(start.getDate() - 1);
+
+                        end = new Date(start);
+                    }
+
+                    if (range === '7') {
+                        end = new Date(today);
+
+                        start = new Date(today);
+                        start.setDate(start.getDate() - 6);
+                    }
+
+                    if (range === '30') {
+                        end = new Date(today);
+
+                        start = new Date(today);
+                        start.setDate(start.getDate() - 29);
+                    }
+
+                    if (range === 'this_month') {
+                        start = new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            1
+                        );
+
+                        end = new Date(
+                            today.getFullYear(),
+                            today.getMonth() + 1,
+                            0
+                        );
+                    }
+
+                    if (range === 'last_month') {
+                        start = new Date(
+                            today.getFullYear(),
+                            today.getMonth() - 1,
+                            1
+                        );
+
+                        end = new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            0
+                        );
+                    }
+
+                    if (range === 'clear') {
+                        instance.clear();
+                        return;
+                    }
+
+                    if (start && end) {
+                        instance.setDate([start, end], true);
+                        // instance.close();
+                    }
+                });
+            }
+
+            // defaultDate: [
+            //     new Date().fp_incr(-30),
+            //     new Date()
+            // ]
         });
 
         const passwordVisibility = document.querySelector('.toggle-password-visibility');
@@ -241,14 +359,15 @@ export default class EventManager {
             const live_link_inp = document.getElementById('live_share_link');
             if (live_link_inp) {
                 const sharedLink = document.getElementById('live_share_link').value;
-                sharedLink != "" ? document.querySelector('.live_link_qr_zone_wrap').style.display = '' : '';
-                document.getElementById('live_share_link').closest('.form_field').classList.remove('disabled');
+                // sharedLink != "" ? document.querySelector('.qrcode_live_link_wrap').style.display = '' : '';
+                // const this_prnt_field = document.getElementById('live_share_link').closest('.form_field');
+                // this_prnt_field ? this_prnt_field.classList.remove('disabled') : false;
 
-                const qrCodeLandingZone = document.getElementById('live_link_qr_zone');
+                const qrCodeLandingZone = document.querySelector('.qrcode_live_link_wrap .live_share_qr_code');
                 if (qrCodeLandingZone && sharedLink != "") {
                     QRCode.toString(sharedLink, {
                         type: 'svg',
-                        width: 300,
+                        width: 180,
                         margin: 2,
                         errorCorrectionLevel: 'H'
                     }, function (error, svg) {
@@ -282,6 +401,8 @@ export default class EventManager {
                     .then((data) => {
                         console.log(data);
                         if (data.live_link) {
+                            document.querySelector('.copy_live_link_wrap').classList.remove('hide');
+                            document.querySelector('.qrcode_live_link_wrap').classList.remove('hide');
                             document.getElementById('live_share_link').value = data.live_link;
                             generateQrInZone();
                         }

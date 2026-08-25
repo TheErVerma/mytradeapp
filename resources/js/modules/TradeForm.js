@@ -43,8 +43,8 @@ export default class TradeForm {
         if (document.querySelectorAll('.export_all_trades').length >= 1) {
             document.querySelector('.export_all_trades').addEventListener('click', this.downloadTradeCsv.bind(this));
         }
-        if (document.querySelectorAll('#trade_date_from, #trade_date_to').length >= 1) {
-            document.querySelectorAll('#trade_date_from, #trade_date_to').forEach((dt_inp, dt_indx) => {
+        if (document.querySelectorAll('#trade_date_range, #trade_date_from, #trade_date_to').length >= 1) {
+            document.querySelectorAll('#trade_date_range, #trade_date_from, #trade_date_to').forEach((dt_inp, dt_indx) => {
                 dt_inp.addEventListener('change', function(){
                     thisApp.crnt_page = 1;
                     thisApp.FilterJournal();
@@ -313,7 +313,7 @@ export default class TradeForm {
         }
         this_form.querySelector('[name="trd_type"]').dispatchEvent(changeEvnt);
 
-        this_form.querySelector('[name="trd_qty_size"]').value = this_data.lot_size;
+        this_form.querySelector('[name="trd_qty_size"]').value = this_data.qty_multiplier <= 1 ? this_data.lot_size : 1;
         this_form.querySelector('[name="trd_qty_size"]').dispatchEvent(new Event('input'));
 
         this_form.querySelector('[name="trd_qty_multiplier"]').value = this_data.qty_multiplier;
@@ -360,10 +360,13 @@ export default class TradeForm {
         const thisApp = this;
         const tradeAction = document.querySelector('.trades_table_filter_btm .filter-tab.active').getAttribute('data_type');
         const trade_search = document.getElementById('trade_search').value;
-        const trade_date_from = document.getElementById('trade_date_from').value;
-        const trade_date_to = document.getElementById('trade_date_to').value;
+        const trade_date_range = document.getElementById('trade_date_range').value;
+        const trade_date_range_arr = trade_date_range.split('to');
+        const trade_date_from = trade_date_range_arr[0];//document.getElementById('trade_date_from').value;
+        const trade_date_to = trade_date_range_arr[1];//document.getElementById('trade_date_to').value;
         const trades_per_page = document.getElementById('trades_per_page').value;
         const page = thisApp.crnt_page;
+        
 
         document.querySelector('.trades_journal_table').classList.add('processing');
         fetch('/filter-journal-items', {
