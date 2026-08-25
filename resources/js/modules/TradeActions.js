@@ -40,6 +40,22 @@ export default class TradeActions {
     
             });
         });
+
+        document.addEventListener('trd_loaded_ssthumbs', function(){
+            console.log('Thumbs Loaded');
+            document.querySelectorAll('.screenshot-delete').forEach(elm => elm.addEventListener('click', function(){
+                const this_btn = this;
+                const this_prnt =  this_btn.parentNode;
+                const this_src =  this_prnt ? this_prnt.querySelector('img').src : false;
+                let new_imgs = [];
+                JSON.parse(atob(document.querySelector('#trd_old_screenshots').value)).forEach(lnk => (lnk != this_src ? new_imgs.push(lnk) : false));
+                console.log(new_imgs);
+                document.querySelector('#trd_old_screenshots').value = btoa(JSON.stringify(new_imgs));
+                this_prnt.remove();
+            }));
+        });
+
+
         document.dispatchEvent(new Event('journal-loaded'));
 
 
@@ -155,18 +171,22 @@ export default class TradeActions {
             .then((data) => {
                 const changeEvent = new Event('change');
                 const inputEvent = new Event('input');
-                console.log(data);
+                // console.log(data);
                 if(typeof data == 'object' && Object.keys(data).length >= 1){
                     Object.keys(data).forEach((clm, ind) => {
                         const inp = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
                         const inp_arr = document.querySelectorAll('#edit_trade_popup [name="'+clm+'"]');
                         const trd_notes = document.querySelector('#edit_trade_popup [name="trd_notes"]');
+                        const trd_old_screenshots = document.querySelector('#edit_trade_popup [name="trd_old_screenshots"]');
                         if( trd_notes && clm == 'notes' ) {
                             trd_notes.value = data[clm];
                         }
                         if (clm == 'trd_screenshots') {
-
-                            MainApp.Gallery.renderGallery('#edit_trade_popup .screenshot-gallery .image_gallery', data[clm], trade_id);
+                            if(trd_old_screenshots){
+                                trd_old_screenshots.value = btoa(JSON.stringify(data[clm]));
+                            }
+                            MainApp.Gallery.renderGallery('#edit_trade_popup .screenshot-gallery', data[clm], trade_id);
+                            document.dispatchEvent(new Event('trd_loaded_ssthumbs'));
                         }
                         if(inp_arr && inp_arr.length >= 1){
                             inp_arr.forEach(inp_itm => {
@@ -255,7 +275,11 @@ export default class TradeActions {
         .then((data) => {
             console.log(data);
             form.classList.remove('processing');
-            window.location.reload();
+            if(data.exception){
+                MainApp.Toast.dive('Something wrong', 'error');
+            }else{
+                window.location.reload();
+            }
         }).catch((err) => {
             form.classList.remove('processing');
         })

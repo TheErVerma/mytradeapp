@@ -16,6 +16,7 @@
             $inst_type = $instrument && isset($instrument['underlying_type']) ? (in_array($instrument['underlying_type'], ['EQUITY']) ? $instrument['instrument_type'] : $instrument['underlying_type']) : $instrument['instrument_type'];
             $shares = $trade_item['trd_shares'];
             $lot_size = $trade_item['trd_lot'];
+            $lot_size = $lot_size <= 0 ? 1 : $lot_size;
 
             $entry_prc = $trade_item['trd_price'];
             $exit_prc = $trade_item['trd_exit_price'];

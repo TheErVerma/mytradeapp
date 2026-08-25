@@ -173,8 +173,6 @@ class TradeController extends Controller
             'trd_lot' => 'nullable|numeric',
             'trd_notes' => 'nullable|string',
             'trd_charges_amount' => 'nullable',
-
-            
             'trd_symbol_key' => 'required|string|max:255',
         
         ]);
@@ -213,6 +211,13 @@ class TradeController extends Controller
         $trd_entr_price = (float) str_replace(',', '', ($validated['trd_price'] ?? 0));
         $trd_ext_price = (float) str_replace(',', '', ($validated['trd_exit_price'] ?? 0));
         $trd_chrgs_amount = (float) str_replace(',', '', ($validated['trd_charges_amount'] ?? 0));
+        $trd_old_screenshots = $request->input('trd_old_screenshots');
+        $trd_old_screenshots_arr = json_decode(base64_decode($trd_old_screenshots), true);
+        if(!$trd_old_screenshots_arr){
+            $trd_old_screenshots_arr = [];
+        }
+        
+        $screenshots = array_merge($trd_old_screenshots_arr, $screenshots);
 
         $update = [
             'trd_symbol' => $validated['trd_symbol'] ?? $trade->trd_symbol,
@@ -227,7 +232,7 @@ class TradeController extends Controller
             'trd_exit_price' => $trd_ext_price,
             'trd_lot' => $validated['trd_lot'] ?? $trade->trd_lot,
             'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : 'Cash',
-            'trd_screenshots' => !empty($screenshots) ? serialize($screenshots) : $trade->trd_screenshots,
+            'trd_screenshots' => serialize($screenshots),
             'notes' => $validated['trd_notes'] ?? $trade->notes,
             'trd_charges_amount' => $trd_chrgs_amount, 
             'trd_symbol_key' => $validated['trd_symbol_key'] ?? '',

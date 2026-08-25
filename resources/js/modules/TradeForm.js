@@ -242,7 +242,11 @@ export default class TradeForm {
         }).then((response) => response.json())
             .then((data) => {
                 console.log(data);
-                window.location.href = '/journal';//reload();
+                if(data.exception){
+                    MainApp.Toast.dive('Something Wrong!', 'error');
+                }else{
+                    window.location.href = '/journal';//reload();
+                }
             }).catch((err) => {
                 console.log(err);
                 form.classList.remove('processing');

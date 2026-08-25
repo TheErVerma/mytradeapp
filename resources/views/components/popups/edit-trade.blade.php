@@ -26,6 +26,7 @@
                     <input type="hidden" name="trd_qty_multiplier" value="1">
                     <input type="hidden" name="trd_type" value="">
                     <input type="hidden" name="trd_symbol_key" id="trd_symbol_key" value="">
+                    <input type="hidden" name="trd_old_screenshots" id="trd_old_screenshots" value="">
 
                     <div class="flex flex-col gap-4 px-4 pt-5 sm:px-6 sm:pt-6">
                         <div
@@ -172,13 +173,13 @@
                                 <div class="form-label" data-label="true">Action</div>
                                 <div class="form-radio__tab">
 
-                                    <label for="long">
-                                        <input type="radio" name="trd_action" value="Long" id="long" checked>
+                                    <label for="edit_long">
+                                        <input type="radio" name="trd_action" value="Long" id="edit_long" checked>
                                         Long
                                     </label>
 
-                                    <label for="short">
-                                        <input type="radio" name="trd_action" value="Short" id="short">
+                                    <label for="edit_short">
+                                        <input type="radio" name="trd_action" value="Short" id="edit_short">
                                         Short
                                     </label>
 

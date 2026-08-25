@@ -127,7 +127,7 @@ export default class Gallery {
 
     deleteScreenshots() {
         const ThisApp = this;
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click_', (e) => {
 
             const deleteBtn = e.target.closest('.screenshot-delete');
             if (!deleteBtn) return;

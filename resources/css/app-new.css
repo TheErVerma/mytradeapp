@@ -90,6 +90,7 @@ span.saparator:after {
     display: inline-block;
     box-shadow: var(--shadow-md);
     transition: all 0.4s cubic-bezier(0, 0.14, 0.42, 1.38);
+    z-index: 999;
 }
 
 .global_toast.success {
