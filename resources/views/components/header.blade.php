@@ -179,7 +179,7 @@
                 <div class="px-5">
                     <select class="form-select text-sm! summary-card-filter" id="summary-card-filter">
                         <option value="today">Today</option>
-                        <option value="last_week">Last Week</option>
+                        <option value="last_week">Last 7 Days</option>
                         <option value="last_month">Last Month</option>
                         <option value="last_3_month">Last 3 Month</option>
                         <option value="last_6_month">Last 6 Month</option>

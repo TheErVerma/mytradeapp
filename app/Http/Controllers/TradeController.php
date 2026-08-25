@@ -770,8 +770,16 @@ class TradeController extends Controller
         $query = Trade::query()
             ->where('user_id', Auth::id())
             ->with('instrument')
+            // ->when($action, function ($query, $action) {
+            //     $query->where('trd_type', $action);
+            // })
             ->when($action, function ($query, $action) {
-                $query->where('trd_action', $action);
+                $query->where(function ($q) use ($action) {
+                    $q->where('trd_type', $action)
+                    ->orWhereHas('instrument', function ($instrumentQuery) use ($action) {
+                        $instrumentQuery->where('underlying_type', $action);
+                    });
+                });
             })
             ->when($search, function ($query, $search) {
                 $search = strtolower($search);
@@ -803,7 +811,7 @@ class TradeController extends Controller
             ->when($dateTo, function ($query, $dateTo) {
                 $query->whereDate('trd_date', '<=', $dateTo);
             })
-            ->orderBy('id', 'ASC');
+            ->orderBy('id', 'DESC');
 
         $alltrd_obj = $query
             ->paginate($perPage, ['*'], 'page', $page);

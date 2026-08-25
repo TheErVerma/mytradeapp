@@ -31,10 +31,10 @@
             <div class="flex flex-col gap-6">
 
                 <div
-                    class="overflow-hidden shadow-xs ring-1 ring-secondary -mx-4 rounded-none bg-secondary lg:mx-0 lg:rounded-xl">
+                    class="trades_journal_table_main_wrap overflow-hidden shadow-xs ring-1 ring-secondary -mx-4 rounded-none bg-secondary lg:mx-0 lg:rounded-xl">
 
                     <div
-                        class="relative flex flex-col items-center gap-4 border-b border-secondary bg-primary px-4 md:flex-row py-5 md:px-6">
+                        class="trade_journal_header relative flex flex-col items-center gap-4 border-b border-secondary bg-primary px-4 md:flex-row py-5 md:px-6">
                         <div class="flex flex-1 flex-col gap-0.5">
                             <div class="flex items-center gap-2">
                                 <h2 class="text-xl font-semibold text-primary">Trades</h2>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap gap-3 border-b border-secondary px-4 py-3 max-md:flex-col lg:px-6">
+                    <div class="trade_journal_filters flex flex-wrap gap-3 border-b border-secondary px-4 py-3 max-md:flex-col lg:px-6">
 
                         <div class="hidden min-w-0 grow flex-wrap gap-3 md:flex">
                             <div class="flex flex-col w-auto">
@@ -89,14 +89,29 @@
                                         <span class="flex items-center gap-1.5 px-0.5">All Trades</span>
                                     </div>
 
+                                    @php
+                                    /*
                                     <div data_type="Long" class="filter-tab">
                                         <span class="flex items-center gap-1.5 px-0.5">Long</span>
                                     </div>
-
                                     <div data_type="Short" class="filter-tab">
                                         <span class="flex items-center gap-1.5 px-0.5">Short</span>
+                                    </div>*/ 
+                                    @endphp
 
+                                    <div data_type="F&O" class="filter-tab">
+                                        <span class="flex items-center gap-1.5 px-0.5">F&O</span>
                                     </div>
+                                    <div data_type="Cash" class="filter-tab">
+                                        <span class="flex items-center gap-1.5 px-0.5">Cash</span>
+                                    </div>
+                                    <div data_type="COM" class="filter-tab">
+                                        <span class="flex items-center gap-1.5 px-0.5">Commodity</span>
+                                    </div>
+                                    <div data_type="CUR" class="filter-tab">
+                                        <span class="flex items-center gap-1.5 px-0.5">Currency</span>
+                                    </div>
+
                                 </div>
 
                             </div>
@@ -119,9 +134,9 @@
                                     </svg>
 
 
-                                    <input aria-label="Search" type="text" placeholder="From" tabindex="0"
+                                    <input aria-label="Search" type="text" placeholder="Date range" tabindex="0"
                                         id="trade_date_range" class="m-0 w-full datepicker_range bg-transparent text-primary ring-0 outline-hidden placeholder:text-placeholder autofill:rounded-lg autofill:text-primary disabled:cursor-not-allowed px-3 py-2 text-sm pl-9"
-                                        value="" title="">
+                                        value="" title="" autocomplete="off">
 
                                 </div>
 
@@ -328,7 +343,7 @@
                     
                     <div class="border-t border-secondary px-4 py-3 md:px-6 md:pt-3 md:pb-4 bg-secondary">
 
-                        <nav aria-label="Pagination" class="flex items-center justify-between md:hidden">
+                        <nav aria-label="Pagination" class="flex items-center justify-between md:hidden hide_for_capture">
                             <button class="btn btn-sm btn-secondary btn-icon-only">
                                 <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
                                     stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"
@@ -354,15 +369,9 @@
                             </button>
                         </nav>
 
-                        <nav aria-label="Pagination" class="hidden items-center gap-3 md:flex">
+                        <nav aria-label="Pagination" class="hidden items-center gap-3 md:flex ">
 
-                            <div class="">
-                                <button disabled class="btn btn-sm btn-secondary prev_journal_page" data_total_pages="{{ $total_pages }}">
-                                    <span data-text="true" class="transition-inherit-all px-0.5">Previous</span>
-                                </button>
-                            </div>
-
-                            <div class="flex items-center gap-3 order-first mr-auto">
+                            <div class="flex items-center gap-3 order-first mr-auto hide_for_capture">
                                 <span class="text-sm font-medium text-fg-secondary pageination_status_wrap">Page 1 of {{ $total_pages }}</span>
 
                                 <div class="flex flex-col gap-1.5">
@@ -375,7 +384,17 @@
                                 </div>
                             </div>
 
-                            <div class="">
+                            <div class="current_page_pnl text-secondary text-sm" style="display: flex;justify-content: flex-end;width: 100%;">
+                                <span class="current_page_pnl_text">Total P&L: </span>
+                                <span class="{{ $portfolioSummry['net_pnl'] < 0 ? 'text-error-primary' : 'text-success-primary' }}">{{  Number::currency(floatval($portfolioSummry['net_pnl']), in: $currency) }}</span>
+                            </div>
+
+                            <div class="hide_for_capture">
+                                <button disabled class="btn btn-sm btn-secondary prev_journal_page" data_total_pages="{{ $total_pages }}">
+                                    <span data-text="true" class="transition-inherit-all px-0.5">Previous</span>
+                                </button>
+                            </div>
+                            <div class="hide_for_capture">
                                 <button {{ $total_pages <= 1 ? 'disabled' : '' }} class="btn btn-sm btn-secondary next_journal_page" data_total_pages="{{ $total_pages }}">
                                     <span data-text="true" class="transition-inherit-all px-0.5">Next</span>
                                 </button>

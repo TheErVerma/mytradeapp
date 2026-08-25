@@ -66,7 +66,7 @@
                 <div class="flex gap-1.5 items-center">
 
                     <span class="text-success-primary font-medium">
-                        {{ Number::currency(floatval($pnl_val), in: $currency) }}
+                        {{ $trade_item['trd_exit_price'] > 0 ? Number::currency(floatval($pnl_val), in: $currency) : '--' }}
                     </span>
 
                     <div class="tooltip-wrap {{ $charges_prc <= 0 ? 'hide' : '' }}">

@@ -1336,11 +1336,19 @@ div#live_link_qr_zone svg path {
 
 
 /** Trade Table Start **/
-table.trades_journal_table.capturing tbody td.trade_b_check,
-table.trades_journal_table.capturing thead th.trade_h_check,
-table.trades_journal_table.capturing tbody td.trade_b_actions,
-table.trades_journal_table.capturing thead th.trade_h_actions {
-    display: none;
+.trades_journal_table_main_wrap.capturing table.global-table.trades_journal_table{
+    overflow: hidden;
+}
+
+.trades_journal_table_main_wrap:not(.capturing) .current_page_pnl,
+.trades_journal_table_main_wrap.capturing .hide_for_capture,
+.trades_journal_table_main_wrap.capturing .trade_journal_header,
+.trades_journal_table_main_wrap.capturing .trade_journal_filters,
+.trades_journal_table_main_wrap.capturing tbody td.trade_b_check,
+.trades_journal_table_main_wrap.capturing thead th.trade_h_check,
+.trades_journal_table_main_wrap.capturing tbody td.trade_b_actions,
+.trades_journal_table_main_wrap.capturing thead th.trade_h_actions {
+    display: none !important;
 }
 
 table.trades_journal_table tbody td.trade_b_action.long svg circle {

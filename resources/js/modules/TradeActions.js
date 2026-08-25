@@ -265,7 +265,7 @@ export default class TradeActions {
         // }
         // console.log(formData);
 
-        form.classList.add('processing');
+        form.querySelector('[type="submit"]').classList.add('loading');
         fetch('/trade', {
             method: "PUT",
             body: formData,
@@ -275,14 +275,14 @@ export default class TradeActions {
         }).then((response) => response.json())
         .then((data) => {
             console.log(data);
-            form.classList.remove('processing');
+            form.querySelector('[type="submit"]').classList.remove('loading');
             if(data.exception){
                 MainApp.Toast.dive('Something wrong', 'error');
             }else{
                 window.location.reload();
             }
         }).catch((err) => {
-            form.classList.remove('processing');
+            form.querySelector('[type="submit"]').classList.remove('loading');
         })
     }
 

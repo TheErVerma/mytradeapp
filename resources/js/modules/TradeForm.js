@@ -232,7 +232,7 @@ export default class TradeForm {
 
         const formData = new FormData(form);
 
-        form.classList.add('processing');
+        form.querySelector('[type="submit"]').classList.add('loading');
         fetch('/trade', {
             method: "POST",
             body: formData,
@@ -242,6 +242,7 @@ export default class TradeForm {
         }).then((response) => response.json())
             .then((data) => {
                 console.log(data);
+                form.querySelector('[type="submit"]').classList.remove('loading');
                 if(data.exception){
                     MainApp.Toast.dive('Something Wrong!', 'error');
                 }else{
@@ -249,7 +250,7 @@ export default class TradeForm {
                 }
             }).catch((err) => {
                 console.log(err);
-                form.classList.remove('processing');
+                form.querySelector('[type="submit"]').classList.remove('loading');
             })
     }
 

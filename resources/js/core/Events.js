@@ -260,19 +260,19 @@ export default class EventManager {
             screenshot_btn.addEventListener('click', function () {
 
                 if (document.querySelector('.trades_journal_table').checkVisibility()) {
-                    document.querySelector('.trades_journal_table').classList.add('capturing');
+                    document.querySelector('.trades_journal_table_main_wrap').classList.add('capturing');
 
 
-                    downloadDivAsImage('.trades_journal_table', 'trade-insights.png');
+                    downloadDivAsImage('.trades_journal_table_main_wrap', 'trade-insights.png');
 
 
-                    document.querySelector('.trades_journal_table').classList.add('snap_takken');
+                    document.querySelector('.trades_journal_table_main_wrap').classList.add('snap_takken');
                     if (MainApp) {
                         MainApp.Audio.play('/storage/audio/click.mp3');
                     }
                     setTimeout(() => {
-                        document.querySelector('.trades_journal_table').classList.remove('capturing');
-                        document.querySelector('.trades_journal_table').classList.remove('snap_takken');
+                        document.querySelector('.trades_journal_table_main_wrap').classList.remove('capturing');
+                        document.querySelector('.trades_journal_table_main_wrap').classList.remove('snap_takken');
                     }, 350);
                 } else {
                     if (MainApp) {
@@ -391,6 +391,7 @@ export default class EventManager {
             liveShareLinkForm.addEventListener('submit', function (e) {
                 e.preventDefault();
                 const this_form = this;
+                this_form.querySelector('[type="submit"]').classList.add('loading');
                 const this_data = new FormData(this_form);
                 console.log(this_data);
                 fetch('/generate-livesharelink', {
@@ -402,6 +403,7 @@ export default class EventManager {
                 }).then((response) => response.json())
                     .then((data) => {
                         console.log(data);
+                        this_form.querySelector('[type="submit"]').classList.remove('loading');
                         if (data.live_link) {
                             document.querySelector('.copy_live_link_wrap').classList.remove('hide');
                             document.querySelector('.qrcode_live_link_wrap').classList.remove('hide');
