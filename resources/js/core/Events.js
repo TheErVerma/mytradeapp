@@ -209,21 +209,23 @@ export default class EventManager {
             priceInputs.forEach((priceInput) => {
                 priceInput.addEventListener('input', function (e) {
                     let value = e.target.value.replace(/[^\d.]/g, '');
-                    const parts = value.split('.');
-                    if (parts.length > 2) {
-                        value = parts[0] + '.' + parts.slice(1).join('');
+                    if(value != ""){
+                        const parts = value.split('.');
+                        if (parts.length > 2) {
+                            value = parts[0] + '.' + parts.slice(1).join('');
+                        }
+                        let [integerPart, decimalPart] = value.split('.');
+                        if (integerPart) {
+                            integerPart = Number(integerPart).toLocaleString('en-IN');
+                        }
+                        if (decimalPart !== undefined) {
+                            decimalPart = decimalPart.substring(0, 2);
+                            value = `${integerPart}.${decimalPart}`;
+                        } else {
+                            value = integerPart;
+                        }
+                        e.target.value = value;
                     }
-                    let [integerPart, decimalPart] = value.split('.');
-                    if (integerPart) {
-                        integerPart = Number(integerPart).toLocaleString('en-IN');
-                    }
-                    if (decimalPart !== undefined) {
-                        decimalPart = decimalPart.substring(0, 2);
-                        value = `${integerPart}.${decimalPart}`;
-                    } else {
-                        value = integerPart;
-                    }
-                    e.target.value = value;
                 });
 
             });

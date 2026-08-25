@@ -148,6 +148,13 @@ class TradeController extends Controller
     public function getTrade(Request $request, $id)
     {
         $trade_obj = Trade::where('id', $id)->with('instrument')->first();
+
+        if ($trade_obj && $trade_obj->trd_exit_price == 0) {
+            $trade_obj->makeHidden('trd_exit_price');
+        }
+        if ($trade_obj && $trade_obj->trd_charges_amount == 0) {
+            $trade_obj->makeHidden('trd_charges_amount');
+        }
         $trade = $trade_obj ? $trade_obj->toArray() : [];
         if (!empty($trade['trd_screenshots']) && $request->is('trade/*')) {
             $trade['trd_screenshots'] = unserialize($trade['trd_screenshots']);
@@ -168,11 +175,11 @@ class TradeController extends Controller
             'trd_shares' => 'nullable|integer',
 
             'trd_price' => 'required',
-            'trd_exit_price' => 'required',
+            // 'trd_exit_price' => 'required',
             'trd_type' => 'nullable|string',
             'trd_lot' => 'nullable|numeric',
-            'trd_notes' => 'nullable|string',
-            'trd_charges_amount' => 'nullable',
+            // 'trd_notes' => 'nullable|string',
+            // 'trd_charges_amount' => 'nullable',
             'trd_symbol_key' => 'required|string|max:255',
         
         ]);
@@ -209,8 +216,8 @@ class TradeController extends Controller
         }
 
         $trd_entr_price = (float) str_replace(',', '', ($validated['trd_price'] ?? 0));
-        $trd_ext_price = (float) str_replace(',', '', ($validated['trd_exit_price'] ?? 0));
-        $trd_chrgs_amount = (float) str_replace(',', '', ($validated['trd_charges_amount'] ?? 0));
+        $trd_ext_price = (float) $request->input('trd_exit_price');//str_replace(',', '', ($validated['trd_exit_price'] ?? 0));
+        $trd_chrgs_amount = (float) $request->input('trd_charges_amount');//(float) str_replace(',', '', ($validated['trd_charges_amount'] ?? 0));
         $trd_old_screenshots = $request->input('trd_old_screenshots');
         $trd_old_screenshots_arr = json_decode(base64_decode($trd_old_screenshots), true);
         if(!$trd_old_screenshots_arr){

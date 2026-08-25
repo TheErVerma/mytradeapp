@@ -316,10 +316,10 @@
     --background-color-tertiary: var(--color-bg-tertiary);
     --background-color-brand-primary: var(--color-bg-brand-primary);
     --background-color-success-primary: var(--color-bg-success-primary);
-    --background-color-secondary_hover: var(--color-bg-secondary_hover);
     --background-color-primary_hover: var(--color-bg-primary_hover);
     --background-color-error-primary: var(--color-bg-error-primary);
     --background-color-secondary: var(--color-bg-secondary);
+    --background-color-quaternary: var(--color-bg-quaternary);
     --background-color-primary_alt: var(--color-bg-primary_alt);
     --background-color-secondary_alt: var(--color-bg-secondary_alt);
     --background-color-primary-solid: var(--color-bg-primary-solid);
@@ -334,6 +334,7 @@
     --text-color-placeholder: var(--color-text-placeholder);
     --text-color-brand-tertiary: var(--color-text-brand-tertiary);
     --text-color-quaternary: var(--color-text-quaternary);
+    --text-color-brand-primary: var(--color-text-brand-primary);
     --text-color-brand-secondary_hover: var(--color-text-brand-secondary_hover);
     --border-color-primary: var(--color-border-primary);
     --border-color-secondary: var(--color-border-secondary);
@@ -559,6 +560,9 @@
   }
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
+  }
+  .mt-6 {
+    margin-top: calc(var(--spacing) * 6);
   }
   .mt-auto {
     margin-top: auto;
@@ -830,6 +834,12 @@
   }
   .gap-x-2 {
     column-gap: calc(var(--spacing) * 2);
+  }
+  .gap-x-8 {
+    column-gap: calc(var(--spacing) * 8);
+  }
+  .gap-y-4 {
+    row-gap: calc(var(--spacing) * 4);
   }
   .self-stretch {
     align-self: stretch;
@@ -1348,6 +1358,11 @@
     }
     .max-md\:flex-col {
       flex-direction: column;
+    }
+  }
+  @media (width < 40rem) {
+    .max-sm\:w-\[35\%\] {
+      width: 35%;
     }
   }
   @media (width >= 40rem) {
@@ -2632,13 +2647,12 @@ input[type='number'] {
 .sidebar-menu {
   position: relative;
   display: flex;
-  max-height: calc(var(--spacing) * 9);
   width: 100%;
   cursor: pointer;
   align-items: center;
   border-radius: var(--radius-md);
   background-color: var(--background-color-primary);
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 2.5);
   outline-color: var(--color-focus-ring);
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
@@ -2699,23 +2713,23 @@ input[type='number'] {
     }
   }
   &.active {
-    background-color: var(--background-color-secondary);
+    background-color: var(--background-color-brand-primary);
     &:hover {
       @media (hover: hover) {
-        background-color: var(--background-color-secondary_hover);
+        background-color: var(--background-color-brand-primary);
       }
     }
     & {
       svg {
-        color: var(--color-fg-quaternary_hover);
+        color: var(--text-color-brand-secondary);
       }
       span {
-        color: var(--text-color-secondary_hover);
+        color: var(--text-color-brand-secondary);
       }
     }
     &:hover {
       span {
-        color: var(--text-color-secondary_hover);
+        color: var(--text-color-brand-secondary);
       }
     }
   }
@@ -3601,6 +3615,47 @@ html:has(body .global-popup.active) {
       color: var(--text-color-secondary);
     }
   }
+}
+#trading-heatmap {
+  width: 100%;
+  max-width: 100%;
+  border: 0;
+  background: transparent;
+  --heat-js-day-size: 16px;
+  --heat-js-border-radius-day: 4px;
+}
+#trading-heatmap .container-contents {
+  padding: 0;
+}
+#trading-heatmap .month-name {
+  text-align: center !important;
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-color-tertiary);
+}
+#trading-heatmap .day {
+  border-style: var(--tw-border-style);
+  border-width: 0px;
+  background-color: var(--background-color-quaternary);
+}
+#trading-heatmap .month {
+  flex: unset;
+}
+#trading-heatmap .map-contents, #trading-heatmap .map {
+  width: 100%;
+}
+#trading-heatmap .no-data-message {
+  font-size: var(--text-md);
+  line-height: var(--tw-leading, var(--text-md--line-height));
+  color: var(--text-color-tertiary);
+}
+#trading-heatmap .container-side-menu, #trading-heatmap .title-bar , #trading-heatmap .days , #trading-heatmap .guide {
+  display: none;
+}
+.legend-square {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
 }
 @property --tw-rotate-x {
   syntax: "*";

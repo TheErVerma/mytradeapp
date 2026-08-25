@@ -12,6 +12,7 @@ import Gallery from '../modules/Gallery';
 import AudioPlayer from '../modules/AudioControl';
 import Toast from '../modules/Toast';
 import UpstoxActions from '../modules/UpstoxActions';
+import HeadMap from '../modules/HeadMap';
 
 
 export default class App {
@@ -34,5 +35,6 @@ export default class App {
         this.Audio = new AudioPlayer();
         this.Toast = new Toast();
         this.UpstoxActions = new UpstoxActions();
+        this.HeadMap = new HeadMap();
     }
 }

@@ -15,6 +15,8 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/modern-screenshot@4.5.0/dist/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/williamtroup/Heat.js@main/dist/heat.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/williamtroup/Heat.js@main/dist/heat.js.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link

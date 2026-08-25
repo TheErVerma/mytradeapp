@@ -12,6 +12,8 @@ $all_trades_arr = collect($trades->items())->toArray();
 @endphp
 
     <div class="relative flex flex-col gap-6">
+
+
         @if(is_array($all_trades_arr) && count($all_trades_arr) == 0)
             <div class="flex flex-1 flex-col gap-4 rounded-xl shadow-xs ring-1 ring-secondary ring-inset p-6">
                 <div class="flex flex-col gap-5">
@@ -53,6 +55,84 @@ $all_trades_arr = collect($trades->items())->toArray();
                 <p class="text-sm text-balance text-tertiary">Returns are shown once deposits are made.</p>
             </div>
         @endif
+
+        <script>
+            const pnl_js_data = JSON.parse(atob(`{{ base64_encode(json_encode($headMapData)) }}`));
+        </script>
+        <div
+            class="custom-heatmap__wrap flex flex-1 flex-col gap-4 rounded-xl shadow-xs ring-1 ring-secondary ring-inset p-6">
+            <div id="trading-heatmap" data-heat-js='{
+                "year": {{ date('Y') }},
+                "views": {
+                    "map": {
+                        "showDayNames": false,
+                        "showMonthNames": true,
+                        "showToolTips": false
+                    }
+                },
+                "colorRanges": [
+                    { "minimum": 1, "cssClassName": "heavy-loss" },
+                    { "minimum": 2, "cssClassName": "medium-loss" },
+                    { "minimum": 3, "cssClassName": "low-loss" },
+                    { "minimum": 4, "cssClassName": "breakeven" },
+                    { "minimum": 5, "cssClassName": "low-profit" },
+                    { "minimum": 6, "cssClassName": "medium-profit" },
+                    { "minimum": 7, "cssClassName": "heavy-profit" }
+                ]
+            }'>
+            </div>
+
+            <div class="flex flex-col items-center mt-6 gap-5 text-sm text-tertiary">
+
+                <div class="flex items-center gap-4">
+
+                    <span>Less</span>
+
+                    <div class="flex gap-2">
+
+                        <span class="legend-square no-trades"></span>
+
+                        <span class="legend-square low-loss"></span>
+                        <span class="legend-square medium-loss"></span>
+                        <span class="legend-square heavy-loss"></span>
+
+                        <span class="legend-square low-profit"></span>
+                        <span class="legend-square medium-profit"></span>
+                        <span class="legend-square heavy-profit"></span>
+
+                    </div>
+
+                    <span>More</span>
+
+                </div>
+
+
+                <div class="flex text-xs items-center gap-y-4 gap-x-8 ``flex-wrap">
+
+                    <div class="flex items-center gap-1.5 max-sm:w-[35%] grow">
+                        <span class="legend-square no-trades"></span>
+                        No trades
+                    </div>
+
+                    <div class="flex items-center gap-1.5 max-sm:w-[35%] grow">
+                        <span class="legend-square breakeven"></span>
+                        Breakeven
+                    </div>
+
+                    <div class="flex items-center gap-1.5 max-sm:w-[35%] grow">
+                        <span class="legend-square medium-profit"></span>
+                        Profit
+                    </div>
+
+                    <div class="flex items-center gap-1.5 max-sm:w-[35%] grow">
+                        <span class="legend-square medium-loss"></span>
+                        Loss
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
 
         <div class="flex w-full flex-col flex-wrap gap-4 md:flex-row lg:gap-5">
 

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Trade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\TradeController;
@@ -39,6 +40,80 @@ class AppServiceProvider extends ServiceProvider
 
 
             $upstox_data = UpstoxController::fetchData('TATA');
+
+
+            $dailyPnl = Trade::where('user_id', Auth::id())
+                ->join('instruments', 'instruments.instrument_key', '=', 'trades.trd_symbol_key')
+                ->whereNotNull('trades.trd_exit_price')
+                ->selectRaw("
+                    DATE(trades.trd_date) AS date,
+
+                    SUM(
+                        CASE
+                            WHEN trades.trd_action = 'Long' THEN
+                                (
+                                    (
+                                        trades.trd_exit_price - trades.trd_price
+                                    )
+                                    *
+                                    (
+                                        CASE
+                                            WHEN trades.trd_type = 'F&O' THEN
+                                                trades.trd_lot *
+                                                CASE
+                                                    WHEN instruments.qty_multiplier <= 1
+                                                        THEN instruments.lot_size
+                                                    ELSE 1
+                                                END
+                                            WHEN trades.trd_type = 'Cash' THEN
+                                                trades.trd_shares
+                                            ELSE 0
+                                        END
+                                        * instruments.qty_multiplier
+                                    )
+                                )
+                                - trades.trd_charges_amount
+
+                            WHEN trades.trd_action = 'Short' THEN
+                                (
+                                    (
+                                        trades.trd_price - trades.trd_exit_price
+                                    )
+                                    *
+                                    (
+                                        CASE
+                                            WHEN trades.trd_type = 'F&O' THEN
+                                                trades.trd_lot *
+                                                CASE
+                                                    WHEN instruments.qty_multiplier <= 1
+                                                        THEN instruments.lot_size
+                                                    ELSE 1
+                                                END
+                                            WHEN trades.trd_type = 'Cash' THEN
+                                                trades.trd_shares
+                                            ELSE 0
+                                        END
+                                        * instruments.qty_multiplier
+                                    )
+                                )
+                                - trades.trd_charges_amount
+
+                            ELSE 0
+                        END
+                    ) AS pnl
+                ")
+                ->groupByRaw('DATE(trades.trd_date)')
+                ->orderBy('date', 'ASC')
+                ->get()
+                ->map(function ($trade) {
+                    return [
+                        'date' => $trade->date,
+                        'pnl'  => (float) $trade->pnl,
+                    ];
+                })
+                ->values()
+                ->toArray();
+
             if ($user) {
                 $total_trades = TradeController::getAll();
                 $portfolioSummry = TradeController::summary();
@@ -49,6 +124,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('portfolioSummry', $portfolioSummry);
                 $view->with('currency', $currency);
                 $view->with('upstox', $upstox_data);
+                $view->with('headMapData', $dailyPnl);
                 // $view->with('theme', $user->);
             }
         });

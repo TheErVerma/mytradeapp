@@ -138,11 +138,13 @@ class UpstoxController extends Controller
             ->orderByRaw("
                 CASE
                     WHEN underlying_type = 'COM' AND instrument_type = 'FUT' THEN 1
-                    WHEN instrument_type = 'COM' THEN 2
-                    WHEN instrument_type = 'INDEX' THEN 3
-                    WHEN instrument_type IN ('EQ', 'A') THEN 4
-                    WHEN instrument_type = 'FUT' THEN 5
-                    WHEN instrument_type IN ('CE', 'PE') THEN 6
+                    WHEN instrument_type = 'A' THEN 2
+                    WHEN instrument_type = 'COM' THEN 3
+                    WHEN instrument_type = 'INDEX' THEN 4
+                    WHEN instrument_type IN ('EQ', 'A') THEN 5
+                    WHEN instrument_type = 'FUT' THEN 6
+                    WHEN instrument_type IN ('CE', 'PE') THEN 7
+                    WHEN instrument_type IN ('F', 'N1', 'N0') THEN 8
 
                     ELSE 4
                 END

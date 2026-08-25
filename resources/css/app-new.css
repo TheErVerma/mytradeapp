@@ -137,9 +137,11 @@ select.mini-selector {
     gap: 10px;
     padding: 10px;
 }
-.flatpickr-months > span {
+
+.flatpickr-months>span {
     top: 44px !important;
 }
+
 .flatpickr-shortcuts button {
     padding: 4px 8px;
     line-height: 1;
@@ -149,6 +151,7 @@ select.mini-selector {
     border: 1px solid;
     cursor: pointer;
 }
+
 .flatpickr-calendar {
     background: var(--bg2) !important;
     box-shadow: none !important;
@@ -214,17 +217,22 @@ select.mini-selector {
     border: 0px !important;
     color: var(--accent-text) !important;
 }
-span.flatpickr-day.selected.startRange, span.flatpickr-day.selected.endRange {
+
+span.flatpickr-day.selected.startRange,
+span.flatpickr-day.selected.endRange {
     background: var(--color-bg-brand-solid) !important;
 }
+
 .flatpickr-day:hover {
     background: var(--background-color-primary_hover) !important;
 }
+
 .flatpickr-current-month span {
     font-size: var(--text-md);
     font-weight: 400 !important;
     color: var(--text-color-primary) !important;
 }
+
 /** DatePicker End **/
 
 
@@ -2584,3 +2592,40 @@ div#tfa_disable_form .main_set_field label {
 /** Stocks Page End **/
 
 
+
+
+/* No trades */
+.no-trades {
+    background: #E5E5E8 !important;
+}
+
+/* Loss */
+.heavy-loss {
+    background: #D92727 !important;
+}
+
+.medium-loss {
+    background: #F04444 !important;
+}
+
+.low-loss {
+    background: #FF8A8A !important;
+}
+
+/* Breakeven */
+.breakeven {
+    background: #B8B8BF !important;
+}
+
+/* Profit */
+.low-profit {
+    background: #A7E9BE !important;
+}
+
+.medium-profit {
+    background: #55D98A !important;
+}
+
+.heavy-profit {
+    background: #16B957 !important;
+}

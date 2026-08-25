@@ -22,7 +22,7 @@ export default class UpstoxActions {
                 const srchWrapper = searchInp.closest('.symbol_search_list_wrap');
                 searchInp.addEventListener('input', function () {
                     clearTimeout(UpstxCntr.debounceSearch);
-    
+
                     srchWrapper.querySelector('.symbol_search_list .loader_wrapper').classList.remove('hidden');
                     srchWrapper.querySelector('.symbol_search_list .dropdown-list').classList.add('hidden');
                     const srchVal = searchInp.value;
@@ -198,9 +198,9 @@ export default class UpstoxActions {
                                 // console.log(data.data);
                                 srchWrapper.querySelector('.symbol_search_list .loader_wrapper').classList.add('hidden');
                                 srchWrapper.querySelector('.symbol_search_list .dropdown-list').classList.remove('hidden');
-                                
+
                                 srchWrapper.querySelector('.symbol_search_list .dropdown-list').innerHTML = '';
-    
+
                                 if ((data.data) !== null) {
                                     UpstxCntr.loading = false;
                                     (data.data).forEach(itemApd => {
@@ -228,6 +228,7 @@ export default class UpstoxActions {
                                             window.MainApp.tradeForm.selectSuggestion(e);
                                         });
                                     });
+                                    srchWrapper.querySelector('.symbol_search_list .dropdown-list').scrollTop = 0
                                 }
                             }).catch((err) => {
                                 console.log(err);

@@ -255,7 +255,6 @@ export default class TradeForm {
 
     openSuggestions(event) {
         const inp = event.target;
-        console.log(inp);
         inp.closest('.symbol_search_list_wrap').querySelector('.symbol_search_list').classList.remove('hidden');
     }
 
