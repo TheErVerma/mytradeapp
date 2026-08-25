@@ -59,8 +59,8 @@ export default class EventManager {
                 shortcuts.innerHTML = `
                     <button type="button" data-range="last_7">Last 7 Days</button>
                     <button type="button" data-range="last_30">Last 30 Days</button>
-                    <button type="button" data-range="crnt_fy">Current FY</button>
                     <button type="button" data-range="prev_fy">Previous FY</button>
+                    <button type="button" data-range="crnt_fy">Current FY</button>
                     <button type="button" data-range="clear">Clear</button>
                 `;
 

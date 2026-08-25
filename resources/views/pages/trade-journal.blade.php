@@ -13,9 +13,7 @@
         $all_trades = $all_trades->items();
         // $all_trades
         // $all_trades = array_reverse($all_trades);
-        // echo "<pre>";
-        // print_r($all_trades);
-        // echo "</pre>";
+        
         $trad_actions = array_column($all_trades, 'trd_action');
         $trdActnCnt = array_count_values($trad_actions);
         $trdLong = isset($trdActnCnt['Long']) ? $trdActnCnt['Long'] : 0;
@@ -384,8 +382,8 @@
                                 </div>
                             </div>
 
-                            <div class="current_page_pnl text-secondary text-sm" style="display: flex;justify-content: flex-end;width: 100%;">
-                                <span class="current_page_pnl_text">Total P&L: </span>
+                            <div class="current_page_pnl text-secondary text-sm">
+                                <span class="current_page_pnl_text">Total P&L:</span>
                                 <span class="{{ $portfolioSummry['net_pnl'] < 0 ? 'text-error-primary' : 'text-success-primary' }}">{{  Number::currency(floatval($portfolioSummry['net_pnl']), in: $currency) }}</span>
                             </div>
 

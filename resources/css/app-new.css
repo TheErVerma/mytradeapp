@@ -1340,7 +1340,14 @@ div#live_link_qr_zone svg path {
     overflow: hidden;
 }
 
-.trades_journal_table_main_wrap:not(.capturing) .current_page_pnl,
+.trades_journal_table_main_wrap:not(.capturing) .current_page_pnl {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    max-width: 280px;
+    gap: 10px;
+}
+
 .trades_journal_table_main_wrap.capturing .hide_for_capture,
 .trades_journal_table_main_wrap.capturing .trade_journal_header,
 .trades_journal_table_main_wrap.capturing .trade_journal_filters,
