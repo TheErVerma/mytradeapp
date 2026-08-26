@@ -34,7 +34,7 @@ export default class HeadMap {
         const PROFIT_LEVELS = {
             LOW: 100,
             MEDIUM: 500
-        };        
+        };
 
         function getTradeStatus(pnl) {
             if (pnl === 0) return TRADE_STATUS.BREAKEVEN;
@@ -52,7 +52,7 @@ export default class HeadMap {
             }
         }
 
-        document.addEventListener('heat_map_load', function(){
+        document.addEventListener('heat_map_load', function () {
             $heat.reset('trading-heatmap');
             const demoTrades_ = typeof pnl_js_data != 'undefined' ? pnl_js_data : [];
             // console.log(demoTrades_);
@@ -72,11 +72,16 @@ export default class HeadMap {
 
             });
             $heat.refresh("trading-heatmap");
-            document.querySelectorAll('div#trading-heatmap .map .month .day').forEach(dy => dy.addEventListener('click', function () {
-                const this_day = this;
-                const this_date = this.getAttribute('data-heat-js-map-date');
-                const date_hash = btoa(this_date);
-                window.location.href = `/journal/${date_hash}`;
+            document.querySelectorAll('div#trading-heatmap .map .month .day').forEach(dy => dy.addEventListener('click', function (e) {
+                const this_day = e.target;
+                const this_classes = Array.from(this_day.classList);
+                const req_classes = Object.values(TRADE_STATUS);
+                const hasCommon = req_classes.some(element => (this_classes).includes(element));
+                if (hasCommon) {
+                    const this_date = this.getAttribute('data-heat-js-map-date');
+                    const date_hash = btoa(this_date);
+                    window.location.href = `/journal/${date_hash}`;
+                }
             }));
         });
 
