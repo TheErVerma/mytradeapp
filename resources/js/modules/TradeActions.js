@@ -8,7 +8,7 @@ export default class TradeActions {
 
     init() {
         const thisApp = this;
-        document.addEventListener('journal-loaded', function(){
+        document.addEventListener('journal-loaded', function () {
             // console.log('Journal Loaded!');
             thisApp.actionBtns = document.querySelectorAll(
                 'table.trades_journal_table tbody tr td.trade_b_actions button'
@@ -17,14 +17,14 @@ export default class TradeActions {
                 console.error('Trash button not found');
                 return;
             }
-    
+
             thisApp.actionBtns.forEach(act_btn => {
-    
+
                 // Delete Action
                 if (act_btn.classList.contains('trash')) {
                     act_btn.addEventListener('click', () => {
                         const this_id = act_btn.getAttribute('data_id');
-    
+
                         MainApp.ConfirmPop.confirm('Are you sure? you want to remove the trade item.', () => {
                             console.log(`Deleted! ${this_id}`);
                             thisApp.delete(this_id);
@@ -36,17 +36,17 @@ export default class TradeActions {
                         await thisApp.edit(this_id);
                     });
                 }
-    
-    
+
+
             });
         });
 
-        document.addEventListener('trd_loaded_ssthumbs', function(){
+        document.addEventListener('trd_loaded_ssthumbs', function () {
             console.log('Thumbs Loaded');
-            document.querySelectorAll('.screenshot-delete').forEach(elm => elm.addEventListener('click', function(){
+            document.querySelectorAll('.screenshot-delete').forEach(elm => elm.addEventListener('click', function () {
                 const this_btn = this;
-                const this_prnt =  this_btn.parentNode;
-                const this_src =  this_prnt ? this_prnt.querySelector('img').src : false;
+                const this_prnt = this_btn.parentNode;
+                const this_src = this_prnt ? this_prnt.querySelector('img').src : false;
                 let new_imgs = [];
                 JSON.parse(atob(document.querySelector('#trd_old_screenshots').value)).forEach(lnk => (lnk != this_src ? new_imgs.push(lnk) : false));
                 console.log(new_imgs);
@@ -92,7 +92,7 @@ export default class TradeActions {
         }
 
         const checkPNL = (elm) => {
-        
+
             const form = elm.closest('form');
             const is_short = form.querySelector('[name="trd_action"]:checked').value;
             const lot_size = Number(form.querySelector('[name="trd_lot"]').value);
@@ -102,43 +102,43 @@ export default class TradeActions {
             const entry_price = (form.querySelector('[name="trd_price"]').value).replaceAll(',', '');
             const exit_price = (form.querySelector('[name="trd_exit_price"]').value).replaceAll(',', '');
             const charges_price = (form.querySelector('[name="trd_charges_amount"]').value).replaceAll(',', '');
-            
+
             let sum = ((exit_price - entry_price) * qty_size) - charges_price;
-            if(is_short == 'Short'){
+            if (is_short == 'Short') {
                 sum = ((entry_price - exit_price) * qty_size) - charges_price;
             }
-            
+
             // console.log(is_short);
             // console.log(sum, {is_short,lot_size,shr_size,qty_multiplier,qty_size,entry_price,exit_price,charges_price,});
             const pnl_wrap = form.querySelector('.form_text_field.p_n_l');
             // console.log(pnl_wrap);
-            if(pnl_wrap){
+            if (pnl_wrap) {
                 const symbol = pnl_wrap.getAttribute('data_currency_symbol');
                 const formatted = (sum < 0 ? '-' : '') + symbol + formatePrice(Math.abs(sum));
 
-                if(sum < 0){
+                if (sum < 0) {
                     pnl_wrap.innerHTML = `<div class="pnl_text loss"><strong>Total P&L: </strong><span>${formatted}</span></div>`;
-                }else{
+                } else {
                     pnl_wrap.innerHTML = `<div class="pnl_text profit"><strong>Total P&L: </strong><span>${formatted}</span></div>`;
                 }
-                if(entry_price != "" && exit_price != ""){
+                if (entry_price != "" && exit_price != "") {
                     pnl_wrap.style.display = '';
-                }else{
+                } else {
                     pnl_wrap.style.display = 'none';
                 }
             }
             // console.log(entry_price, exit_price, sum);
         }
         document.querySelectorAll('[name="trd_shares"], [name="trd_lot"], [name="trd_qty_size"], [name="trd_action"], [name="trd_price"],[name="trd_exit_price"], [name="trd_charges_amount"] ').forEach(input => {
-            input.addEventListener('input', function(){
+            input.addEventListener('input', function () {
                 checkPNL(this);
             });
         });
 
 
         const main_summary__filter = document.querySelector('.main-summary--filter');
-        if(main_summary__filter){
-            main_summary__filter.addEventListener('change', function(){
+        if (main_summary__filter) {
+            main_summary__filter.addEventListener('change', function () {
                 const this_btn = this;
                 const this_val = this_btn.value;
                 fetch(`/mainsummery/${this_val}`, {
@@ -148,24 +148,29 @@ export default class TradeActions {
                         'X-CSRF-TOKEN': thisApp.token
                     }
                 }).then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    const totalPnL = data.summery.totalPnL;
-                    const totalPnLHtml = data.summery.totalPnL_html;
-                    const winningTrades = data.summery.winningTrades;
-                    const losingTrades = data.summery.losingTrades;
-                    const breakevenTrades = data.summery.breakevenTrades;
-                    const totalTradeCount = data.summery.totalTradeCount;
+                    .then((data) => {
+                        // console.log(data);
+                        const totalPnL = data.summery.totalPnL;
+                        const totalPnLHtml = data.summery.totalPnL_html;
+                        const winningTrades = data.summery.winningTrades;
+                        const losingTrades = data.summery.losingTrades;
+                        const breakevenTrades = data.summery.breakevenTrades;
+                        const totalTradeCount = data.summery.totalTradeCount;
 
-                    document.querySelector('.net_pnl_wrap').innerHTML = totalPnLHtml;
-                    document.querySelector('.net_pnl_status_wrap').innerHTML = totalPnL < 0 ? 'Net loss' : 'Net profit';
-                    document.querySelector('.main_pnl_winnings').innerHTML = winningTrades;
-                    document.querySelector('.main_pnl_loosing').innerHTML = losingTrades;
-                    document.querySelector('.main_pnl_breakeven').innerHTML = breakevenTrades;
-                    document.querySelectorAll('.main_pnl_totalTrades').forEach(itm => itm.innerHTML = totalTradeCount);
-                }).catch((err) => {
-                    console.log(err);
-                });
+                        document.querySelector('.net_pnl_wrap').innerHTML = totalPnLHtml;
+                        document.querySelector('.net_pnl_status_wrap').innerHTML = totalPnL < 0 ? 'Net loss' : 'Net profit';
+                        document.querySelector('.main_pnl_winnings').innerHTML = winningTrades;
+                        document.querySelector('.main_pnl_loosing').innerHTML = losingTrades;
+                        document.querySelector('.main_pnl_breakeven').innerHTML = breakevenTrades;
+                        document.querySelectorAll('.main_pnl_totalTrades').forEach(itm => itm.innerHTML = totalTradeCount);
+
+                        if (data.pnl_cal_data) {
+                            pnl_js_data = data.pnl_cal_data;
+                            document.dispatchEvent(new Event('heat_map_load'));
+                        }
+                    }).catch((err) => {
+                        console.log(err);
+                    });
             });
         }
     }
@@ -183,12 +188,12 @@ export default class TradeActions {
                 'X-CSRF-TOKEN': token
             }
         }).then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            window.location.reload();
-        }).catch((err) => {
-            console.log(err);
-        });
+            .then((data) => {
+                console.log(data);
+                window.location.reload();
+            }).catch((err) => {
+                console.log(err);
+            });
     }
 
     async edit(trade_id) {
@@ -206,70 +211,70 @@ export default class TradeActions {
                 const changeEvent = new Event('change');
                 const inputEvent = new Event('input');
                 // console.log(data);
-                if(typeof data == 'object' && Object.keys(data).length >= 1){
+                if (typeof data == 'object' && Object.keys(data).length >= 1) {
                     Object.keys(data).forEach((clm, ind) => {
-                        const inp = document.querySelector('#edit_trade_popup [name="'+clm+'"]');
-                        const inp_arr = document.querySelectorAll('#edit_trade_popup [name="'+clm+'"]');
+                        const inp = document.querySelector('#edit_trade_popup [name="' + clm + '"]');
+                        const inp_arr = document.querySelectorAll('#edit_trade_popup [name="' + clm + '"]');
                         const trd_notes = document.querySelector('#edit_trade_popup [name="trd_notes"]');
                         const trd_old_screenshots = document.querySelector('#edit_trade_popup [name="trd_old_screenshots"]');
-                        if( trd_notes && clm == 'notes' ) {
+                        if (trd_notes && clm == 'notes') {
                             trd_notes.value = data[clm];
                         }
                         if (clm == 'trd_screenshots') {
-                            if(trd_old_screenshots){
+                            if (trd_old_screenshots) {
                                 trd_old_screenshots.value = btoa(JSON.stringify(data[clm]));
                             }
                             MainApp.Gallery.renderGallery('#edit_trade_popup .screenshot-gallery', data[clm], trade_id);
                             document.dispatchEvent(new Event('trd_loaded_ssthumbs'));
                         }
-                        if(inp_arr && inp_arr.length >= 1){
+                        if (inp_arr && inp_arr.length >= 1) {
                             inp_arr.forEach(inp_itm => {
                                 inp_itm.removeAttribute('checked');
                             });
                         }
-                        
-                        if(inp && inp.getAttribute('type') == 'radio'){
-                            const radio_ = document.querySelector('#edit_trade_popup [name="'+clm+'"][value="'+(data[clm])+'"]');
-                            if(radio_){
+
+                        if (inp && inp.getAttribute('type') == 'radio') {
+                            const radio_ = document.querySelector('#edit_trade_popup [name="' + clm + '"][value="' + (data[clm]) + '"]');
+                            if (radio_) {
                                 radio_.setAttribute('checked', 'true');//.dispatchEvent(changeEvent);
                                 radio_.dispatchEvent(changeEvent);
                             }
                             // console.log('#edit_trade_popup [name="'+clm+'"][value="'+(data[clm])+'"]');
-                        }else{
-                            if(inp){
+                        } else {
+                            if (inp) {
                                 inp.value = data[clm];
 
-                                
-                                if(clm == 'trd_type'){
+
+                                if (clm == 'trd_type') {
                                     const type_val = data[clm];
                                     // console.log(type_val);
-                                    if(type_val == 'F&O'){
+                                    if (type_val == 'F&O') {
                                         document.querySelector('#edit_trade_popup .shares_amount_val').classList.add('hidden');
                                         document.querySelector('#edit_trade_popup .lot_amount_val').classList.remove('hidden');
-                                    }else{
+                                    } else {
                                         document.querySelector('#edit_trade_popup .shares_amount_val').classList.remove('hidden');
                                         document.querySelector('#edit_trade_popup .lot_amount_val').classList.add('hidden');
                                     }
                                     inp.dispatchEvent(inputEvent);
                                 }
-                                if(clm == 'trd_date'){
-                                    const ddpinp = document.querySelector('#edit_trade_popup [name='+clm+']');
+                                if (clm == 'trd_date') {
+                                    const ddpinp = document.querySelector('#edit_trade_popup [name=' + clm + ']');
                                     ddpinp._flatpickr.setDate(data[clm]);
                                 }
-                                if(inp.classList.contains('price')){
+                                if (inp.classList.contains('price')) {
                                     // console.log(inp);
                                     inp.dispatchEvent(inputEvent);
                                 }
-                            }else{
-                                if(clm == 'instrument'){
+                            } else {
+                                if (clm == 'instrument') {
                                     const lot_size_hinp = document.querySelector('#edit_trade_popup [name="trd_qty_size"]');
                                     const qty_mult_hinp = document.querySelector('#edit_trade_popup [name="trd_qty_multiplier"]');
-                                    
+
                                     const this_instrument = data[clm];
 
                                     lot_size_hinp.value = this_instrument.qty_multiplier <= 1 ? this_instrument.lot_size : 1;
                                     qty_mult_hinp.value = this_instrument.qty_multiplier;
-                                    
+
                                     lot_size_hinp.dispatchEvent(inputEvent);
                                     qty_mult_hinp.dispatchEvent(inputEvent);
                                 }
@@ -307,17 +312,17 @@ export default class TradeActions {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         }).then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            form.querySelector('[type="submit"]').classList.remove('loading');
-            if(data.exception){
-                MainApp.Toast.dive('Something wrong', 'error');
-            }else{
-                window.location.reload();
-            }
-        }).catch((err) => {
-            form.querySelector('[type="submit"]').classList.remove('loading');
-        })
+            .then((data) => {
+                console.log(data);
+                form.querySelector('[type="submit"]').classList.remove('loading');
+                if (data.exception) {
+                    MainApp.Toast.dive('Something wrong', 'error');
+                } else {
+                    window.location.reload();
+                }
+            }).catch((err) => {
+                form.querySelector('[type="submit"]').classList.remove('loading');
+            })
     }
 
     previewImages(event, trade_id = null) {
@@ -383,5 +388,5 @@ export default class TradeActions {
             reader.readAsDataURL(file);
         });
     }
-    
+
 }

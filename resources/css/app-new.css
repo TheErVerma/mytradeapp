@@ -1368,8 +1368,9 @@ div#trading-heatmap .map .month .day{
 }
 
 
+
+.trades_journal_table_main_wrap .only_for_capture,
 .trades_journal_table_main_wrap.capturing .hide_for_capture,
-.trades_journal_table_main_wrap.capturing .trade_journal_header,
 .trades_journal_table_main_wrap.capturing .trade_journal_filters,
 .trades_journal_table_main_wrap.capturing tbody td.trade_b_check,
 .trades_journal_table_main_wrap.capturing thead th.trade_h_check,
@@ -1377,7 +1378,9 @@ div#trading-heatmap .map .month .day{
 .trades_journal_table_main_wrap.capturing thead th.trade_h_actions {
     display: none !important;
 }
-
+.trades_journal_table_main_wrap.capturing .only_for_capture{
+    display: block !important;
+}
 table.trades_journal_table tbody td.trade_b_action.long svg circle {
     fill: var(--color-bg-success-solid);
     stroke: var(--color-bg-success-solid);

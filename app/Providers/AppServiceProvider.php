@@ -120,6 +120,7 @@ class AppServiceProvider extends ServiceProvider
                 $portfolioSummry = TradeController::summary();
                 $currency = $user->default_country;
                 $currency = $currency ? ($currency) : 'USD';
+                $view->with('user', $user);
                 $view->with('trades', $total_trades);
                 $view->with('total_trades', count($total_trades));
                 $view->with('portfolioSummry', $portfolioSummry);

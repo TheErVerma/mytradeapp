@@ -41,12 +41,13 @@
                     class="trade_journal_header relative flex flex-col items-center gap-4 border-b border-secondary bg-primary px-4 md:flex-row py-5 md:px-6">
                     <div class="flex flex-1 flex-col gap-0.5">
                         <div class="flex items-center gap-2">
-                            <h2 class="text-xl font-semibold text-primary">Trades</h2>
+                            <h2 class="text-xl font-semibold hide_for_capture text-primary">Trades</h2>
+                            <h2 class="text-xl font-semibold text-primary only_for_capture w-full">TradeApp | {{ $user->name }}</h2>
                             <div class="journal_loader"></div>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3 hide_for_capture">
                          <button type="button" class="btn btn-md btn-primary w-full" data-popup-target="add-trade-pop">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"

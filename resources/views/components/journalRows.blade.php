@@ -46,11 +46,13 @@
             $pnl_status = $pnl_val < 0 ? 'loss' : 'profit';
         @endphp
         <tr class="@php echo implode(' ', $tred_classes); @endphp ">
+            @if($has_inline_actions)
             <td class="trade_b_check w-15 pr-0!" tabindex="-1">
                 <label class="hb-checkbox size-lg" for="rememberMe{{ $row_id }}">
                     <span><input type="checkbox" id="rememberMe{{ $row_id }}"></span>
                 </label>
             </td>
+            @endif
             <td class="trade_b_id">{{ $row_counter }}</td>
             <td class="trade_b_symbol">{{ $trade_item['trd_symbol'] }}</td>
             <td class="trade_b_action {{ ($trade_item['trd_action'])[0] == "L" ? 'long' : 'short' }}">

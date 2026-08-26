@@ -157,6 +157,8 @@
                             <table class="global-table trades_journal_table">
                                 <thead>
                                     <tr>
+                                        @php
+                                        /*
                                         <th class="trade_h_check w-min pr-0!">
                                             <label class="hb-checkbox size-lg" for="rememberMe">
                                                 <span>
@@ -164,7 +166,8 @@
                                                 </span>
 
                                             </label>
-                                        </th>
+                                        </th>*/
+                                        @endphp
 
                                         <th class="trade_h_id">
                                             <div class="title" role="group">

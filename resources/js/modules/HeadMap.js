@@ -4,10 +4,6 @@ export default class HeadMap {
     }
 
     init() {
-        /* =========================================================
-            TRADE TYPES
-        ========================================================= */
-
         const TRADE_STATUS = {
             NO_TRADES: "no-trades",
             HEAVY_LOSS: "heavy-loss",
@@ -30,11 +26,6 @@ export default class HeadMap {
             [TRADE_STATUS.HEAVY_PROFIT]: 7
         };
 
-
-        /* =========================================================
-           P&L THRESHOLDS
-        ========================================================= */
-
         const LOSS_LEVELS = {
             LOW: -100,
             MEDIUM: -500
@@ -43,12 +34,7 @@ export default class HeadMap {
         const PROFIT_LEVELS = {
             LOW: 100,
             MEDIUM: 500
-        };
-
-
-        /* =========================================================
-           GET TRADE STATUS
-        ========================================================= */
+        };        
 
         function getTradeStatus(pnl) {
             if (pnl === 0) return TRADE_STATUS.BREAKEVEN;
@@ -66,194 +52,29 @@ export default class HeadMap {
             }
         }
 
+        document.addEventListener('heat_map_load', function(){
+            $heat.reset('trading-heatmap');
+            const demoTrades_ = typeof pnl_js_data != 'undefined' ? pnl_js_data : [];
+            // console.log(demoTrades_);
+            demoTrades_.forEach(trade => {
 
-        /* =========================================================
-           DEMO DATA
-        ========================================================= */
+                const status = getTradeStatus(trade.pnl);
+                const count = STATUS_COUNT[status];
 
-        const demoTrades = [
-            // Randomly generated extra data points
-            ...Array.from({ length: 100 }, () => {
-                const month = Math.floor(Math.random() * 12) + 1;
-                const day = Math.floor(Math.random() * 28) + 1;
-                const pnl = Math.floor(Math.random() * 2000) - 1000;
-                return {
-                    date: `2026-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`,
-                    pnl
-                };
-            }),
-            /*
-             * =========================
-             * JANUARY
-             * =========================
-             */
-            { date: "2026-01-02", pnl: 50 },
-            { date: "2026-01-03", pnl: 300 },
-            { date: "2026-01-04", pnl: 1000 },
-            { date: "2026-01-05", pnl: -50 },
-            { date: "2026-01-06", pnl: -300 },
-            { date: "2026-01-07", pnl: -1000 },
-            { date: "2026-01-08", pnl: 0 },
+                for (let i = 0; i < count; i++) {
+                    $heat.addDate(
+                        "trading-heatmap",
+                        new Date(trade.date),
+                        "Trade",
+                        false
+                    );
+                }
 
-            /*
-             * =========================
-             * FEBRUARY
-             * =========================
-             */
-            { date: "2026-02-02", pnl: 25 },
-            { date: "2026-02-03", pnl: 450 },
-            { date: "2026-02-04", pnl: 800 },
-            { date: "2026-02-05", pnl: -75 },
-            { date: "2026-02-06", pnl: -250 },
-            { date: "2026-02-07", pnl: -700 },
-
-            /*
-             * =========================
-             * MARCH
-             * =========================
-             */
-            { date: "2026-03-02", pnl: 80 },
-            { date: "2026-03-03", pnl: 250 },
-            { date: "2026-03-04", pnl: 1500 },
-            { date: "2026-03-05", pnl: -25 },
-            { date: "2026-03-06", pnl: -400 },
-            { date: "2026-03-07", pnl: -900 },
-
-            /*
-             * =========================
-             * APRIL
-             * =========================
-             */
-            { date: "2026-04-01", pnl: 200 },
-            { date: "2026-04-02", pnl: 100 },
-            { date: "2026-04-03", pnl: 500 },
-            { date: "2026-04-04", pnl: -100 },
-            { date: "2026-04-05", pnl: -500 },
-            { date: "2026-04-06", pnl: -1200 },
-
-            /*
-             * =========================
-             * MAY
-             * =========================
-             */
-            { date: "2026-05-01", pnl: 40 },
-            { date: "2026-05-02", pnl: 350 },
-            { date: "2026-05-03", pnl: 900 },
-            { date: "2026-05-04", pnl: -60 },
-
-            /*
-             * =========================
-             * JUNE
-             * =========================
-             */
-            { date: "2026-06-01", pnl: 70 },
-            { date: "2026-06-02", pnl: 400 },
-            { date: "2026-06-03", pnl: 1200 },
-            { date: "2026-06-04", pnl: -80 },
-            { date: "2026-06-05", pnl: -350 },
-
-            /*
-             * =========================
-             * JULY
-             * =========================
-             */
-            { date: "2026-07-01", pnl: 0 },
-            { date: "2026-07-02", pnl: 30 },
-            { date: "2026-07-03", pnl: 200 },
-            { date: "2026-07-04", pnl: 700 },
-            { date: "2026-07-05", pnl: -40 },
-            { date: "2026-07-06", pnl: -300 },
-
-            /*
-             * =========================
-             * AUGUST
-             * =========================
-             */
-            { date: "2026-08-01", pnl: 90 },
-            { date: "2026-08-02", pnl: 450 },
-            { date: "2026-08-03", pnl: 900 },
-            { date: "2026-08-04", pnl: -90 },
-            { date: "2026-08-05", pnl: -450 },
-            { date: "2026-08-06", pnl: -800 },
-
-            /*
-             * =========================
-             * SEPTEMBER
-             * =========================
-             */
-            { date: "2026-09-01", pnl: 0 },
-            { date: "2026-09-02", pnl: 60 },
-            { date: "2026-09-03", pnl: 300 },
-            { date: "2026-09-04", pnl: 800 },
-
-            /*
-             * =========================
-             * OCTOBER
-             * =========================
-             */
-            { date: "2026-10-01", pnl: -30 },
-            { date: "2026-10-02", pnl: -250 },
-            { date: "2026-10-03", pnl: -1000 },
-            { date: "2026-10-04", pnl: 100 },
-
-            /*
-             * =========================
-             * NOVEMBER
-             * =========================
-             */
-            { date: "2026-11-01", pnl: 20 },
-            { date: "2026-11-02", pnl: 300 },
-            { date: "2026-11-03", pnl: 1000 },
-            { date: "2026-11-04", pnl: -200 },
-
-            /*
-             * =========================
-             * DECEMBER
-             * =========================
-             */
-            { date: "2026-12-01", pnl: 0 },
-            { date: "2026-12-02", pnl: 75 },
-            { date: "2026-12-03", pnl: 400 },
-            { date: "2026-12-04", pnl: 1500 },
-            { date: "2026-12-05", pnl: -100 },
-            { date: "2026-12-06", pnl: -600 }
-        ];
-
-
-        /* =========================================================
-           ADD DEMO DATA TO HEAT.JS
-        ========================================================= */
-
-        const demoTrades_ = typeof pnl_js_data != 'undefined' ? pnl_js_data : [];
-        demoTrades_.forEach(trade => {
-
-            const status = getTradeStatus(trade.pnl);
-            const count = STATUS_COUNT[status];
-
-            // console.log(
-            //     trade.date,
-            //     trade.pnl,
-            //     status
-            // );
-
-            // Add the date multiple times so Heat.js maps it to the correct color range minimum
-            for (let i = 0; i < count; i++) {
-                $heat.addDate(
-                    "trading-heatmap",
-                    new Date(trade.date),
-                    "Trade",
-                    false
-                );
-            }
-
+            });
+            $heat.refresh("trading-heatmap");
         });
 
-        /*
-         * Refresh after all demo entries are added.
-         */
-        $heat.refresh("trading-heatmap");
-
-
+        document.dispatchEvent(new Event('heat_map_load'));
 
         document.querySelectorAll('div#trading-heatmap .map .month .day').forEach(dy => dy.addEventListener('click', function () {
             const this_day = this;
