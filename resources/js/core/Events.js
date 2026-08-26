@@ -403,6 +403,7 @@ export default class EventManager {
                 if (remaining <= 0) {
                     liveShareCountdown.textContent = 'Expired';
                     clearInterval(countdownInterval);
+                    window.location.reload();
                     return;
                 }
 

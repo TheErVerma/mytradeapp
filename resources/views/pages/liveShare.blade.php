@@ -146,29 +146,8 @@
 
                                 <main class="z-10 mb-6 flex w-full max-w-88 flex-col items-center justify-center gap-1">
                                     <h1 class="text-xl font-semibold text-primary">No trades match your criteria</h1>
-                                    <p class="text-center text-sm text-tertiary">Try adjusting your search or filters to see
-                                        more
-                                        results or create add a new trade into the journal </p>
+                                    <p class="text-center text-sm text-tertiary">Try adjusting your search or filters to get results.</p>
                                 </main>
-
-                                <footer class="z-10 flex gap-3">
-                                    @php /*
-                                           <button type="button" class="btn btn-secondary btn-sm">
-                                               <span class="transition-inherit-all px-0.5">Clear search</span>
-                                           </button> */
-                                    @endphp
-                                    <button type="button" class="btn btn-primary btn-sm" data-popup-target="add-trade-pop">
-                                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
-                                            fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-                                            data-icon="leading"
-                                            class="pointer-events-none size-5 shrink-0 transition-inherit-all">
-                                            <path d="M12 5v14m-7-7h14">
-
-                                            </path>
-                                        </svg>
-                                        <span data-text="true" class="transition-inherit-all px-0.5">Add Trade</span>
-                                    </button>
-                                </footer>
                             </div>
                         </div>
 

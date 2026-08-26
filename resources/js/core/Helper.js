@@ -24,12 +24,12 @@ export default class HelpManager {
         const savedDark = document.querySelector('html').classList.contains('dark-mode') ? 'dark' : 'dark';
         const themeQuery = window.matchMedia("(prefers-color-scheme: " + savedDark + ")");
         const isDarkMode = themeQuery.matches;
-        if (document.querySelector('html').classList.contains('dark-mode') == false) {
-            this.toggleTheme(isDarkMode);
-        }
-        themeQuery.addEventListener("change", (event) => {
-            this.toggleTheme(event.matches, true);
-        });
+        // if (document.querySelector('html').classList.contains('dark-mode') == false) {
+        //     this.toggleTheme(isDarkMode);
+        // }
+        // themeQuery.addEventListener("change", (event) => {
+        //     this.toggleTheme(event.matches, true);
+        // });
 
 
         document.querySelectorAll('.qtynumamnt').forEach(input => {
