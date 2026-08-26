@@ -3,7 +3,7 @@
 @section('content')
     <div class="full_width_wrap">
 
-        <div class="live_share_head" data_usr_id="{{ $user ? $user->id  : ''}}">
+        <div class="live_share_head" data_usr_id="{{ $user ? $user->id : ''}}">
             <h1>Shared Journal</h1>
             <p>You’re viewing {{ $user ? $user->name : 'Unknown' }}’s live trading journal. This is a read-only view that
                 displays the latest shared trade information in real time. Access to this page is temporary and will expire
@@ -146,7 +146,8 @@
 
                                 <main class="z-10 mb-6 flex w-full max-w-88 flex-col items-center justify-center gap-1">
                                     <h1 class="text-xl font-semibold text-primary">No trades match your criteria</h1>
-                                    <p class="text-center text-sm text-tertiary">Try adjusting your search or filters to get results.</p>
+                                    <p class="text-center text-sm text-tertiary">Try adjusting your search or filters to get
+                                        results.</p>
                                 </main>
                             </div>
                         </div>
@@ -237,7 +238,8 @@
                         <div class="border-t border-secondary px-4 py-3 md:px-6 md:pt-3 md:pb-4 bg-secondary">
 
                             <nav aria-label="Pagination" class="flex items-center justify-between md:hidden hide_for_capture">
-                                <button class="btn btn-sm btn-secondary btn-icon-only">
+                                <button disabled class="btn btn-sm btn-secondary btn-icon-only prev_journal_page"
+                                    data_total_pages="{{ $total_pages }}">
                                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
                                         fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
                                         data-icon="leading" class="pointer-events-none size-5 shrink-0 transition-inherit-all">
@@ -246,10 +248,13 @@
                                         </path>
                                     </svg>
                                 </button>
-                                <span class="text-sm text-fg-secondary">Page <span class="font-medium">1</span> of <span
-                                        class="font-medium">10</span>
+                                <span class="text-sm text-fg-secondary">Page <span
+                                        class="pagination_crnt_page font-medium">1</span> of <span
+                                        class="font-medium">{{ $total_pages }}</span>
                                 </span>
-                                <button class="btn btn-sm btn-secondary btn-icon-only">
+                                <button {{ $total_pages <= 1 ? 'disabled' : '' }}
+                                    class="btn btn-sm btn-secondary btn-icon-only next_journal_page"
+                                    data_total_pages="{{ $total_pages }}">
                                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
                                         fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
                                         data-icon="leading" class="pointer-events-none size-5 shrink-0 transition-inherit-all">
@@ -263,7 +268,8 @@
                             <nav aria-label="Pagination" class="hidden items-center gap-3 md:flex ">
 
                                 <div class="flex items-center gap-3 order-first mr-auto hide_for_capture">
-                                    <span class="text-sm font-medium text-fg-secondary pageination_status_wrap">Page 1 of
+                                    <span class="text-sm font-medium text-fg-secondary pageination_status_wrap">Page <span
+                                            clas="pagination_crnt_page"></span> of
                                         {{ $total_pages }}</span>
 
                                     <div class="flex flex-col gap-1.5">
@@ -274,12 +280,6 @@
                                             <option value="100">100</option>
                                         </select>
                                     </div>
-                                </div>
-
-                                <div class="current_page_pnl text-secondary text-sm">
-                                    <!-- <span class="current_page_pnl_text">Total P&L:</span> -->
-                                    <span
-                                        class="{{ isset($portfolioSummry['net_pnl']) && $portfolioSummry['net_pnl'] < 0 ? 'text-error-primary' : 'text-success-primary' }}">{{  isset($portfolioSummry['net_pnl']) ? Number::currency(floatval($portfolioSummry['net_pnl']), in: $currency) : '' }}</span>
                                 </div>
 
                                 <div class="hide_for_capture">

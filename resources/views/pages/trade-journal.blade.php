@@ -354,7 +354,7 @@
                 <div class="border-t border-secondary px-4 py-3 md:px-6 md:pt-3 md:pb-4 bg-secondary">
 
                     <nav aria-label="Pagination" class="flex items-center justify-between md:hidden hide_for_capture">
-                        <button class="btn btn-sm btn-secondary btn-icon-only">
+                        <button disabled class="btn btn-sm btn-secondary btn-icon-only prev_journal_page" data_total_pages="{{ $total_pages }}">
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
                                 fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
                                 data-icon="leading" class="pointer-events-none size-5 shrink-0 transition-inherit-all">
@@ -363,10 +363,10 @@
                                 </path>
                             </svg>
                         </button>
-                        <span class="text-sm text-fg-secondary">Page <span class="font-medium">1</span> of <span
-                                class="font-medium">10</span>
+                        <span class="text-sm text-fg-secondary">Page <span class="pagination_crnt_page font-medium">1</span> of <span
+                                class="font-medium">{{ $total_pages }}</span>
                         </span>
-                        <button class="btn btn-sm btn-secondary btn-icon-only">
+                        <button {{ $total_pages <= 1 ? 'disabled' : '' }} class="btn btn-sm btn-secondary btn-icon-only next_journal_page" data_total_pages="{{ $total_pages }}">
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
                                 fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
                                 data-icon="leading" class="pointer-events-none size-5 shrink-0 transition-inherit-all">
@@ -380,7 +380,7 @@
                     <nav aria-label="Pagination" class="hidden items-center gap-3 md:flex ">
 
                         <div class="flex items-center gap-3 order-first mr-auto hide_for_capture">
-                            <span class="text-sm font-medium text-fg-secondary pageination_status_wrap">Page 1 of
+                            <span class="text-sm font-medium text-fg-secondary pageination_status_wrap">Page <span clas="pagination_crnt_page"></span> of
                                 {{ $total_pages }}</span>
 
                             <div class="flex flex-col gap-1.5">
