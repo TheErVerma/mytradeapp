@@ -76,7 +76,7 @@ class TradeController extends Controller
 
         $screenshots = [];
         $screenshots_log = [];
-        
+
         if ($request->hasFile('trade_screenshots')) {
             $trade_screenshots = $request->file('trade_screenshots');
             if (!empty($trade_screenshots)) {
@@ -181,7 +181,7 @@ class TradeController extends Controller
             // 'trd_notes' => 'nullable|string',
             // 'trd_charges_amount' => 'nullable',
             'trd_symbol_key' => 'required|string|max:255',
-        
+
         ]);
 
         $trade = Trade::where('id', '=', $validated['id'], false)->first();
@@ -220,10 +220,10 @@ class TradeController extends Controller
         $trd_chrgs_amount = (float) str_replace(',', '', ($request->input('trd_charges_amount') ?? 0));
         $trd_old_screenshots = $request->input('trd_old_screenshots');
         $trd_old_screenshots_arr = json_decode(base64_decode($trd_old_screenshots), true);
-        if(!$trd_old_screenshots_arr){
+        if (!$trd_old_screenshots_arr) {
             $trd_old_screenshots_arr = [];
         }
-        
+
         $screenshots = array_merge($trd_old_screenshots_arr, $screenshots);
 
         $update = [
@@ -241,7 +241,7 @@ class TradeController extends Controller
             'trd_type' => !empty($validated['trd_type']) ? $validated['trd_type'] : 'Cash',
             'trd_screenshots' => serialize($screenshots),
             'notes' => $validated['trd_notes'] ?? $trade->notes,
-            'trd_charges_amount' => $trd_chrgs_amount, 
+            'trd_charges_amount' => $trd_chrgs_amount,
             'trd_symbol_key' => $validated['trd_symbol_key'] ?? '',
             'user_id' => Auth::id(),
         ];
@@ -278,7 +278,7 @@ class TradeController extends Controller
             if ($trade->trd_type == "Cash") {
                 $qty = (float) ($trade->trd_shares);
             }
-                
+
             $qty *= $trade->instrument['qty_multiplier'];
             $entry = (float) $trade->trd_price;
             $exit = (float) $trade->trd_exit_price;
@@ -608,6 +608,10 @@ class TradeController extends Controller
             $startDate = date('Y-m-d', strtotime('-1 week'));
         }
 
+        if ($period == 'current_month') {
+            $startDate = date('Y-m-01');
+            $endDate   = date('Y-m-d');
+        }
         if ($period == 'last_month') {
             $startDate = date('Y-m-d', strtotime('first day of last month'));
             $endDate = date('Y-m-d', strtotime('first day of this month'));
@@ -650,7 +654,7 @@ class TradeController extends Controller
             ->whereBetween('trd_date', [$startDate, $endDate])
             ->orderBy('id', 'ASC')
             ->get();
-            
+
         // $trades = Trade::where('user_id', Auth::id())->whereBetween('trd_date', [$startDate, $endDate])->get();
 
         $total_trades = 0;
@@ -748,14 +752,91 @@ class TradeController extends Controller
             if (isset($sharing_arr['timeperiod'])) {
                 $expiry_time = $sharing_arr['timeperiod'];
                 if ($sharing_arr['timeperiod'] > time()) {
-                    $all_trades = Trade::where('user_id', $user->id)->get()->toArray();
+                    // $all_trades = Trade::where('user_id', $user->id)->get()->toArray();
+
+                    $perPage = 10;
+                    $page = 1;
+
+                    $all_trades = Trade::where('user_id', $user->id)
+                        ->with('instrument')
+                        ->orderBy('id', 'DESC')
+                        ->paginate($perPage, ['*'], 'page', $page);
+
+                    // $counter = $all_trades->total() - (($page - 1) * $perPage);
+                    $counter = 1 + (($page - 1) * $perPage);
+
+                    $all_trades->through(function ($trade) use (&$counter) {
+                        $trade->counter = $counter++;
+                        return $trade;
+                    });
+
                 } else {
                     $user = null;
                 }
             }
         }
+        $portfolioSummry = TradeController::summary();
 
-        return view('pages/liveShare', compact('all_trades', 'user', 'expiry_time'));
+        return view('pages/liveShare', compact('portfolioSummry', 'all_trades', 'user', 'expiry_time'));
+    }
+
+
+    static public function getPNLSummery($all_trades)
+    {
+        // PNL CALCULATE START
+        $totalPnL = 0;
+        $winningTrades = 0;
+        $losingTrades = 0;
+        $breakevenTrades = 0;
+
+        foreach ($all_trades as $trade) {
+
+            if ($trade['trd_type'] == "F&O") {
+                $qty = (float) ($trade['trd_lot']) * ($trade['instrument']['qty_multiplier'] <= 1 ? $trade['instrument']['lot_size'] : 1);
+            }
+            if ($trade['trd_type'] == "Cash") {
+                $qty = (float) ($trade['trd_shares']);
+            }
+
+            $qty *= $trade['instrument']['qty_multiplier'];
+            $entry = (float) $trade['trd_price'];
+            $exit = (float) $trade['trd_exit_price'];
+
+            // Skip if trade is still open
+            if (!$exit) {
+                continue;
+            }
+
+            if ($trade['trd_action'] === 'Long') {
+
+                $pnl = ((($exit - $entry) * $qty) - $trade['trd_charges_amount']);
+
+            } elseif ($trade['trd_action'] === 'Short') {
+
+                $pnl = ((($entry - $exit) * $qty) - $trade['trd_charges_amount']);
+
+            } else {
+
+                $pnl = 0;
+            }
+
+            $totalPnL += $pnl;
+
+            if ($pnl > 0) {
+                $winningTrades++;
+            } elseif ($pnl < 0) {
+                $losingTrades++;
+            } else {
+                $breakevenTrades++;
+            }
+        }
+        // PNL CALCULATE END
+        return [
+            'totalPnL' => $totalPnL,
+            'winningTrades' => $winningTrades,
+            'losingTrades' => $losingTrades,
+            'breakevenTrades' => $breakevenTrades,
+        ];
     }
 
     public function filterJournalItems(Request $request)
@@ -776,9 +857,9 @@ class TradeController extends Controller
             ->when($action, function ($query, $action) {
                 $query->where(function ($q) use ($action) {
                     $q->where('trd_type', $action)
-                    ->orWhereHas('instrument', function ($instrumentQuery) use ($action) {
-                        $instrumentQuery->where('underlying_type', $action);
-                    });
+                        ->orWhereHas('instrument', function ($instrumentQuery) use ($action) {
+                            $instrumentQuery->where('underlying_type', $action);
+                        });
                 });
             })
             ->when($search, function ($query, $search) {
@@ -834,6 +915,8 @@ class TradeController extends Controller
         $currency = $user->default_country;
         $currency = $currency ? ($currency) : 'INR';
 
+        $this_filr_smry = $this::getPNLSummery($all_trades);
+        $net_pnl_val = isset($this_filr_smry['totalPnL']) ? $this_filr_smry['totalPnL'] : '--';
         return response()->json([
             'status' => 200,
             'html' => view('components.journalRows', ['all_trades' => $all_trades, 'currency' => $currency])->render(),
@@ -841,6 +924,97 @@ class TradeController extends Controller
             'current_page' => $current_page,
             'total_pages' => $total_pages,
             'has_more' => $has_more,
+            'pnl_html' => Number::currency(floatval($net_pnl_val), in: $currency)
+        ]);
+    }
+
+    public function filterJournalItemsPublic(Request $request)
+    {
+        $action = $request->input('trd_action');
+        $search = $request->input('trd_search');
+        $dateFrom = $request->input('trd_dateFrom');
+        $dateTo = $request->input('trd_dateTo');
+        $perPage = (int) $request->input('trd_perPage', 20);
+        $page = (int) $request->input('trd_page', 1);
+
+        $usr_id = $request->input('usr_id');
+        $query = Trade::query()
+            ->where('user_id', $usr_id)
+            ->with('instrument')
+            // ->when($action, function ($query, $action) {
+            //     $query->where('trd_type', $action);
+            // })
+            ->when($action, function ($query, $action) {
+                $query->where(function ($q) use ($action) {
+                    $q->where('trd_type', $action)
+                        ->orWhereHas('instrument', function ($instrumentQuery) use ($action) {
+                            $instrumentQuery->where('underlying_type', $action);
+                        });
+                });
+            })
+            ->when($search, function ($query, $search) {
+                $search = strtolower($search);
+
+                $query->where(function ($query) use ($search) {
+                    $query->whereRaw(
+                        'LOWER(trd_symbol) LIKE ?',
+                        ["%{$search}%"]
+                    )
+                        ->orWhereHas('instrument', function ($query) use ($search) {
+                            $query->whereRaw(
+                                'LOWER(name) LIKE ?',
+                                ["%{$search}%"]
+                            )
+                                ->orWhereRaw(
+                                    'LOWER(trading_symbol) LIKE ?',
+                                    ["%{$search}%"]
+                                )
+                                ->orWhereRaw(
+                                    'LOWER(short_name) LIKE ?',
+                                    ["%{$search}%"]
+                                );
+                        });
+                });
+            })
+            ->when($dateFrom, function ($query, $dateFrom) {
+                $query->whereDate('trd_date', '>=', $dateFrom);
+            })
+            ->when($dateTo, function ($query, $dateTo) {
+                $query->whereDate('trd_date', '<=', $dateTo);
+            })
+            ->orderBy('id', 'DESC');
+
+        $alltrd_obj = $query
+            ->paginate($perPage, ['*'], 'page', $page);
+
+        // $counter = $alltrd_obj->total() - (($page - 1) * $perPage);
+        $counter = 1 + (($page - 1) * $perPage);
+
+        $alltrd_obj->through(function ($trade) use (&$counter) {
+            $trade->counter = $counter++;
+            return $trade;
+        });
+
+        $all_trades = collect($alltrd_obj->items())->toArray();
+
+        $current_page = $alltrd_obj->currentPage();
+        $total_pages = ceil($alltrd_obj->total() / $perPage);
+        $has_more = $alltrd_obj->hasMorePages();
+
+        $user = User::where('id', $usr_id)->first();
+        $currency = $user->default_country;
+        $currency = $currency ? ($currency) : 'INR';
+
+        $this_filr_smry = $this::getPNLSummery($all_trades);
+        $net_pnl_val = isset($this_filr_smry['totalPnL']) ? $this_filr_smry['totalPnL'] : '--';
+        return response()->json([
+            'status' => 200,
+            'html' => view('components.journalRows', ['all_trades' => $all_trades, 'currency' => $currency])->render(),
+            'trades' => $all_trades,
+            'current_page' => $current_page,
+            'total_pages' => $total_pages,
+            'has_more' => $has_more,
+            // 'pnl_html' => Number::currency(floatval($net_pnl_val), in: $currency)
         ]);
     }
 }

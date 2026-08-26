@@ -3197,6 +3197,9 @@ input[type='number'] {
         background-color: var(--background-color-secondary);
       }
     }
+    tr.open {
+      background-color: var(--background-color-success-primary);
+    }
     td {
       position: relative;
       padding-inline: calc(var(--spacing) * 6);
@@ -3409,7 +3412,8 @@ html:has(body .global-popup.active) {
 .global-popup__inner {
   display: table;
   min-height: 100%;
-  width: 100%;
+  width: auto;
+  margin: 0 auto;
 }
 .global-popup__main {
   display: table-cell;

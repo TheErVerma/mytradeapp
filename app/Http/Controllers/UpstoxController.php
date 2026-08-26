@@ -120,6 +120,7 @@ class UpstoxController extends Controller
                 }
 
             })
+            ->whereNot('exchange', ['GLOBAL'])
         //     ->orderByRaw(
         //         DB::connection()->getDriverName() === 'pgsql'
         //         ? "CASE

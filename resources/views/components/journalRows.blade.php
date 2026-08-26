@@ -1,5 +1,6 @@
 @if(is_array($all_trades) && count($all_trades) >= 1)
     @php
+        $has_inline_actions = isset($no_actions) ? !$no_actions : true;
         $td_cnt = 1;
     @endphp
     @foreach ($all_trades as $trade_item)
@@ -7,6 +8,11 @@
             $tred_classes = [];
             if (isset($trade_item['trd_action'])) {
                 $tred_classes[] = strtolower($trade_item['trd_action']);
+            }
+            if($trade_item['trd_exit_price'] == 0){
+                $tred_classes[] = 'open';
+            }else{
+                $tred_classes[] = 'closed';
             }
 
             $trd_type = isset($trade_item['trd_type']) ? $trade_item['trd_type'] : 'Cash';
@@ -89,28 +95,30 @@
                 </div>
             </td>
 
-            <td class="trade_b_actions">
-                <div class="flex justify-end gap-0.5">
-                    <button class="action-icons icon_btn trash" data_id="{{ $trade_item['id'] }}">
-                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="true">
-                            <path
-                                d="M16 6v-.8c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874C14.48 2 13.92 2 12.8 2h-1.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C8 3.52 8 4.08 8 5.2V6m2 5.5v5m4-5v5M3 6h18m-2 0v11.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C16.72 22 15.88 22 14.2 22H9.8c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C5 19.72 5 18.88 5 17.2V6">
-                            </path>
-                        </svg>
-                    </button>
+            @if($has_inline_actions)
+                <td class="trade_b_actions">
+                    <div class="flex justify-end gap-0.5">
+                        <button class="action-icons icon_btn trash" data_id="{{ $trade_item['id'] }}">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="true">
+                                <path
+                                    d="M16 6v-.8c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874C14.48 2 13.92 2 12.8 2h-1.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C8 3.52 8 4.08 8 5.2V6m2 5.5v5m4-5v5M3 6h18m-2 0v11.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C16.72 22 15.88 22 14.2 22H9.8c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C5 19.72 5 18.88 5 17.2V6">
+                                </path>
+                            </svg>
+                        </button>
 
-                    <button class="action-icons icon_btn edit" data_id="{{ $trade_item['id'] }}">
-                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="true">
-                            <path
-                                d="M2.876 18.116c.046-.414.069-.62.131-.814a2 2 0 0 1 .234-.485c.111-.17.259-.317.553-.61L17 3a2.828 2.828 0 1 1 4 4L7.794 20.206c-.294.294-.442.442-.611.553a2 2 0 0 1-.485.233c-.193.063-.4.086-.814.132L2.5 21.5l.376-3.384Z">
-                            </path>
-                        </svg>
-                    </button>
-                    
-                </div>
-            </td>
+                        <button class="action-icons icon_btn edit" data_id="{{ $trade_item['id'] }}">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-icon="true">
+                                <path
+                                    d="M2.876 18.116c.046-.414.069-.62.131-.814a2 2 0 0 1 .234-.485c.111-.17.259-.317.553-.61L17 3a2.828 2.828 0 1 1 4 4L7.794 20.206c-.294.294-.442.442-.611.553a2 2 0 0 1-.485.233c-.193.063-.4.086-.814.132L2.5 21.5l.376-3.384Z">
+                                </path>
+                            </svg>
+                        </button>
+
+                    </div>
+                </td>
+            @endif
         </tr>
         @php
             $td_cnt++;

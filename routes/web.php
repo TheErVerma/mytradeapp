@@ -41,6 +41,11 @@ Route::group(['middleware' => ['auth']], function () {
         return view('pages/trade-journal', compact('all_trades'));
     })->name('journal');
 
+    Route::get('/journal/{hash}', function ($hash) {
+        $all_trades = TradeController::getAll();
+        return view('pages/trade-journal', compact('all_trades', 'hash'));
+    })->name('journal');
+
     Route::get('/analytics', function () {
         return view('pages/analytics');
     })->name('journal');
@@ -128,6 +133,7 @@ Route::get('/help', function () {
 Route::get('/liveshare/{id}', [TradeController::class, 'liveShare']);
 
 Route::middleware('guest')->group(function () {
+    Route::post('/filter-journal-items-public', [TradeController::class, 'filterJournalItemsPublic']);
     Route::get('/login', function () {
         return view('pages/login');
     })->name('login');

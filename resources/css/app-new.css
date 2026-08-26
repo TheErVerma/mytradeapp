@@ -1336,7 +1336,23 @@ div#live_link_qr_zone svg path {
 
 
 /** Trade Table Start **/
-.trades_journal_table_main_wrap.capturing table.global-table.trades_journal_table{
+.journal_loader.active::before {
+    content: '';
+    width: 1.4em;
+    height: 1.4em;
+    display: block;
+    mask-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWxvYWRlci1jaXJjbGUtaWNvbiBsdWNpZGUtbG9hZGVyLWNpcmNsZSI+PHBhdGggZD0iTTIxIDEyYTkgOSAwIDEgMS02LjIxOS04LjU2Ii8+PC9zdmc+');
+    mask-size: 100% 100%;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    background-color: currentColor;
+    animation: spin 1s linear infinite;
+    flex-shrink: 0;
+}
+div#trading-heatmap .map .month .day{
+    cursor: pointer;
+}
+.trades_journal_table_main_wrap.capturing table.global-table.trades_journal_table {
     overflow: hidden;
 }
 
@@ -1346,6 +1362,7 @@ div#live_link_qr_zone svg path {
     justify-content: flex-end;
     gap: 10px;
 }
+
 .trades_journal_table_main_wrap:not(.capturing) .current_page_pnl {
     max-width: 280px;
 }

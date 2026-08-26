@@ -22,9 +22,9 @@ export default class HelpManager {
         );
 
         const savedDark = document.querySelector('html').classList.contains('dark-mode') ? 'dark' : 'dark';
-        const themeQuery = window.matchMedia("(prefers-color-scheme: "+savedDark+")");
+        const themeQuery = window.matchMedia("(prefers-color-scheme: " + savedDark + ")");
         const isDarkMode = themeQuery.matches;
-        if(document.querySelector('html').classList.contains('dark-mode') == false){
+        if (document.querySelector('html').classList.contains('dark-mode') == false) {
             this.toggleTheme(isDarkMode);
         }
         themeQuery.addEventListener("change", (event) => {
@@ -80,25 +80,27 @@ export default class HelpManager {
     toggleTheme(theme, force = false) {
         const ThisApp = this;
         const user_id = document.querySelector('html[data_user_id]').getAttribute('data_user_id');
-        if(force){
-            document.documentElement.classList.remove('dark-mode');
-            theme ? document.querySelector('html').classList.add('dark-mode') : false;
-        }
+        if (user_id) {
+            if (force) {
+                document.documentElement.classList.remove('dark-mode');
+                theme ? document.querySelector('html').classList.add('dark-mode') : false;
+            }
 
-        fetch(`/user/${user_id}/save-theme`, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': ThisApp.token
-            },
-            body: JSON.stringify({ theme })
-        }).then((response) => response.json())
-            .then((data) => {
-                // console.log(data);
-            }).catch((err) => {
-                console.log(err);
-            })
+            fetch(`/user/${user_id}/save-theme`, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': ThisApp.token
+                },
+                body: JSON.stringify({ theme })
+            }).then((response) => response.json())
+                .then((data) => {
+                    // console.log(data);
+                }).catch((err) => {
+                    console.log(err);
+                })
+        }
 
     }
 

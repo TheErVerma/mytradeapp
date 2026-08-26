@@ -155,7 +155,9 @@ export default class EventManager {
         document.addEventListener('click', function (e) {
             const this_trg = e.target;
             if (!this_trg.closest('.author-open__popup') && !this_trg.closest('.author-popup')) {
-                document.querySelector('.author-popup').classList.remove('active');
+                if(document.querySelector('.author-popup')){
+                    document.querySelector('.author-popup').classList.remove('active');
+                }
             }
         });
 
@@ -285,7 +287,7 @@ export default class EventManager {
                     },
                 }).then((response) => response.json())
                     .then((data) => {
-                        // console.log(data);
+                        console.log(data);
                         if (data.trades) {
                             const is_p_l = data.trade_num < 0 ? 'loss' : 'profit';
                             document.querySelector('.summary_total_npl').classList.remove('profit');
@@ -294,6 +296,7 @@ export default class EventManager {
                             document.querySelector('.summary_total_npl').classList.add(is_p_l);
                             document.querySelector('.summary_total_entries').innerHTML = data.total_entries;
                         }
+                        
                     }).catch((err) => {
                         console.log(err);
                     })

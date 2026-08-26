@@ -252,5 +252,14 @@ export default class HeadMap {
          * Refresh after all demo entries are added.
          */
         $heat.refresh("trading-heatmap");
+
+
+
+        document.querySelectorAll('div#trading-heatmap .map .month .day').forEach(dy => dy.addEventListener('click', function () {
+            const this_day = this;
+            const this_date = this.getAttribute('data-heat-js-map-date');
+            const date_hash = btoa(this_date);
+            window.location.href = `/journal/${date_hash}`;
+        }));
     }
 }

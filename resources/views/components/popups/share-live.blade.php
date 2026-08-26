@@ -1,6 +1,10 @@
 @php
     $formatter = new NumberFormatter('en_US@currency=' . $currency, NumberFormatter::CURRENCY);
     $money_symbol = $formatter->getSymbol(NumberFormatter::CURRENCY_SYMBOL);
+    $live_key = json_decode($user->live_sharing, true);
+    $live_timeperiod = isset($live_key['timeperiod']) ? $live_key['timeperiod'] : 0;
+    $selected_period = isset($live_key['period']) && $live_timeperiod > time() ? $live_key['period'] : '';
+    $live_share_link = $live_key && $live_timeperiod > time() ? $live_key['hash'] : '';
 @endphp
 
 
@@ -47,32 +51,50 @@
                                 <label class="form-label" data-label="true">Link expires after</label>
 
                                 <select name="share_time_period" id="share_time_period" class="form-select text-sm!">
-                                    <optgroup label="Minutes">
-                                        <option value="1 minute">1 minute</option>
-                                        <option value="5 minutes">5 minutes</option>
-                                        <option value="10 minutes">10 minutes</option>
-                                        <option value="30 minutes" selected="">30 minutes</option>
-                                    </optgroup>
-                                    <optgroup label="Hours">
-                                        <option value="1 hour">1 hour</option>
-                                        <option value="2 hours">2 hours</option>
-                                        <option value="12 hours">12 hours</option>
-                                    </optgroup>
-                                    <optgroup label="Days">
-                                        <option value="1 day">1 day</option>
-                                        <option value="2 days">2 days</option>
-                                    </optgroup>
-                                    <optgroup label="Weeks">
-                                        <option value="1 week">1 week</option>
-                                        <option value="2 weeks">2 weeks</option>
-                                    </optgroup>
-                                    <optgroup label="Months">
-                                        <option value="1 month">1 month</option>
-                                        <option value="6 months">6 months</option>
-                                    </optgroup>
-                                    <optgroup label="Year">
-                                        <option value="1 year">1 year</option>
-                                    </optgroup>
+                                    @php
+                                    $periods = [
+                                        'Minutes' => [
+                                            '1 minute',
+                                            '5 minutes',
+                                            '10 minutes',
+                                            '30 minutes',
+                                        ],
+                                        'Hours' => [
+                                            '1 hour',
+                                            '2 hours',
+                                            '12 hours',
+                                        ],
+                                        'Days' => [
+                                            '1 day',
+                                            '2 days',
+                                        ],
+                                        'Weeks' => [
+                                            '1 week',
+                                            '2 weeks',
+                                        ],
+                                        'Months' => [
+                                            '1 month',
+                                            '6 months',
+                                        ],
+                                        'Year' => [
+                                            '1 year',
+                                        ],
+                                    ];
+
+                                    foreach ($periods as $group => $options) {
+                                        echo '<optgroup label="' . ($group) . '">';
+
+                                        foreach ($options as $option) {
+                                            $selected = ($selected_period === $option) ? ' selected' : '';
+
+                                            echo '<option value="' . ($option) . '"' . $selected . '>'
+                                                . ($option)
+                                                . '</option>';
+                                        }
+
+                                        echo '</optgroup>';
+                                    }
+                                    @endphp
                                 </select>
 
                                 <div class="text-xs text-secondary">This shared link will stop working after the
@@ -80,16 +102,16 @@
 
                             </div>
 
-                            <div class="flex gap-2.5 hide copy_live_link_wrap">
+                            <div class="flex gap-2.5 {{ $live_share_link != "" ? '' : 'hide' }} copy_live_link_wrap">
                                 <input type="text" name="live_share_link" id="live_share_link"
-                                    placeholder="e.g https://example.com/?trd_plk=xxxxxxxxxxxxxxxxxxxxxxxxxxx" value=""
+                                    placeholder="e.g https://example.com/?trd_plk=xxxxxxxxxxxxxxxxxxxxxxxxxxx" value="{{ $live_share_link }}"
                                     class="form-input md">
                                 <button type="button" class="copy_link_btn btn btn-md btn-primary shrink-0 min-w-20">
                                     <span class="transition px-0.5">Copy</span>
                                 </button>
                             </div>
 
-                            <div class="flex flex-col gap-4 justify-center items-center hide qrcode_live_link_wrap">
+                            <div class="flex flex-col gap-4 justify-center items-center {{ $live_share_link != "" ? '' : 'hide' }} qrcode_live_link_wrap">
                                 <div class="w-full shrink-0 flex items-center gap-x-2">
                                     <div class="h-px flex-1 bg-border-secondary">
 
