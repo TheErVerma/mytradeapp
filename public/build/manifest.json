@@ -68,7 +68,7 @@
     ]
   },
   "resources/css/output.css": {
-    "file": "assets/output-CjzdcYIc.css",
+    "file": "assets/output-CpzgolF5.css",
     "name": "output",
     "names": [
       "output.css"
@@ -77,7 +77,7 @@
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-BljNNyO2.js",
+    "file": "assets/app-Ce81RueU.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

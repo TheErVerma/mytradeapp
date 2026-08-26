@@ -240,6 +240,23 @@
     --color-utility-neutral-700: var(--color-neutral-700);
     --color-utility-neutral-800: var(--color-neutral-800);
     --color-utility-neutral-900: var(--color-neutral-900);
+    --color-utility-red-50: var(--color-red-50);
+    --color-utility-red-100: var(--color-red-100);
+    --color-utility-red-200: var(--color-red-200);
+    --color-utility-red-300: var(--color-red-300);
+    --color-utility-red-400: var(--color-red-400);
+    --color-utility-red-500: var(--color-red-500);
+    --color-utility-red-600: var(--color-red-600);
+    --color-utility-red-700: var(--color-red-700);
+    --color-utility-green-50: var(--color-green-50);
+    --color-utility-green-100: var(--color-green-100);
+    --color-utility-green-200: var(--color-green-200);
+    --color-utility-green-300: var(--color-green-300);
+    --color-utility-green-400: var(--color-green-400);
+    --color-utility-green-500: var(--color-green-500);
+    --color-utility-green-600: var(--color-green-600);
+    --color-utility-green-700: var(--color-green-700);
+    --color-utility-orange-50: var(--color-orange-50);
     --color-text-primary: var(--color-neutral-900);
     --color-text-tertiary: var(--color-neutral-600);
     --color-text-error-primary: var(--color-red-600);
@@ -3919,4 +3936,26 @@ html:has(body .global-popup.active) {
       --tw-backdrop-sepia: initial;
     }
   }
+}
+
+
+.live-share {
+  display: inline-block;
+  width: calc(var(--spacing) * 2);
+  height: calc(var(--spacing) * 2);
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--color-utility-green-500);
+  outline-style: var(--tw-outline-style);
+  outline-width: 3px;
+  outline-offset: calc(1px * -1);
+  outline-color: var(--color-utility-green-100);
+}
+.live-share.on {
+  background-color: var(--color-utility-green-500);
+  outline-color: var(--color-utility-green-100);
+}
+.live-share.off {
+  background-color: var(--color-utility-red-500);
+  outline-color: var(--color-utility-red-100);
 }

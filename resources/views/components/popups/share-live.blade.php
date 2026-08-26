@@ -40,7 +40,7 @@
                             </div>
 
                             <div class="z-10 flex flex-col gap-0.5">
-                                <p class="text-xl font-semibold text-primary">Share Live Data</p>
+                                <p class="flex font-semibold gap-2 items-center text-primary text-xl"><span class="live-share {{ $live_share_link != "" ? 'on' : 'off' }}"></span> Share Live Data</p>
                                 <p class="text-sm text-tertiary">Share your live data securely with others and keep</p>
                             </div>
                         </div>

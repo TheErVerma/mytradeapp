@@ -367,7 +367,7 @@ export default class EventManager {
                 const this_form = this;
                 this_form.querySelector('[type="submit"]').classList.add('loading');
                 const this_data = new FormData(this_form);
-                console.log(this_data);
+                // console.log(this_data);
                 fetch('/generate-livesharelink', {
                     method: 'POST',
                     body: this_data,
@@ -379,6 +379,8 @@ export default class EventManager {
                         console.log(data);
                         this_form.querySelector('[type="submit"]').classList.remove('loading');
                         if (data.live_link) {
+                            document.querySelector('span.live-share').classList.remove('off');
+                            document.querySelector('span.live-share').classList.add('on');
                             document.querySelector('#share_live_trade_popup .cancel_action').classList.add('hide');
                             document.querySelector('.stop_live_sharing').classList.remove('hide');
                             document.querySelector('.copy_live_link_wrap').classList.remove('hide');
@@ -405,6 +407,9 @@ export default class EventManager {
                 }).then((response) => response.json())
                     .then((data) => {
                         console.log(data);
+                        document.querySelector('span.live-share').classList.remove('on');
+                        document.querySelector('span.live-share').classList.add('off');
+
                         document.querySelector('#share_live_trade_popup .cancel_action').classList.remove('hide');
                         document.querySelector('.stop_live_sharing').classList.add('hide');
                         document.querySelector('.copy_live_link_wrap').classList.add('hide');
