@@ -924,6 +924,7 @@ class TradeController extends Controller
             'current_page' => $current_page,
             'total_pages' => $total_pages,
             'has_more' => $has_more,
+            'pnl_amount' => $net_pnl_val,
             'pnl_html' => Number::currency(floatval($net_pnl_val), in: $currency)
         ]);
     }
@@ -1009,7 +1010,7 @@ class TradeController extends Controller
         $net_pnl_val = isset($this_filr_smry['totalPnL']) ? $this_filr_smry['totalPnL'] : '--';
         return response()->json([
             'status' => 200,
-            'html' => view('components.journalRows', ['all_trades' => $all_trades, 'currency' => $currency])->render(),
+            'html' => view('components.journalRows', ['all_trades' => $all_trades, 'currency' => $currency, 'no_actions' => true])->render(),
             'trades' => $all_trades,
             'current_page' => $current_page,
             'total_pages' => $total_pages,

@@ -411,8 +411,16 @@ export default class TradeForm {
                 }
 
                 if (data.pnl_html) {
-                    console.log(data.pnl_html);
-                    document.querySelector('.current_page_pnl span:nth-child(2)').innerHTML = data.pnl_html;
+                    const pnl_table_elm = document.querySelector('.current_page_pnl span:nth-child(2)');
+
+                    pnl_table_elm.innerHTML = data.pnl_html;
+                    if(data.pnl_amount < 0){
+                        pnl_table_elm.classList.remove('text-success-primary');
+                        pnl_table_elm.classList.add('text-error-primary');
+                    }else{
+                        pnl_table_elm.classList.remove('text-error-primary');
+                        pnl_table_elm.classList.add('text-success-primary');
+                    }
                 }
                 document.querySelector('table.trades_journal_table tbody').innerHTML = data.html;
                 document.querySelector('.pageination_status_wrap').innerHTML = `Page ${data.current_page} of ${data.total_pages}`;

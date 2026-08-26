@@ -295,7 +295,7 @@
 
                     <div
                         class="z-10 flex flex-1 flex-col-reverse gap-3 p-4 pt-6 *:grow sm:grid sm:grid-cols-2 sm:px-6 sm:pt-8 sm:pb-6">
-                        <button type="button" class="btn btn-md btn-secondary">
+                        <button type="button" class="btn btn-md btn-secondary cancel_action">
                             <span class="transition px-0.5">Cancel</span>
                         </button>
                         <button class="btn btn-md btn-primary" type="submit">

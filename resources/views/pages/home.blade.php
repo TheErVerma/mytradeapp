@@ -159,7 +159,7 @@ $all_trades_arr = collect($trades->items())->toArray();
                         @if(!isset($portfolioSummry['net_pnl']) || isset($portfolioSummry['net_pnl']) && $portfolioSummry['net_pnl'] == 0)
                             <span class="text-sm font-medium text-tertiary">No trades recorded</span>
                         @else
-                            <span class="text-sm font-medium text-tertiary">Net profit</span>
+                            <span class="text-sm font-medium text-tertiary">Net {{ isset($portfolioSummry['net_pnl']) && $portfolioSummry['net_pnl'] > 0 ? 'profit' : 'loss' }}</span>
                         @endif
                     </div>
                 </div>
@@ -267,8 +267,8 @@ $all_trades_arr = collect($trades->items())->toArray();
                     </div>
 
                     <div class="flex flex-col gap-3">
-                        <p class="flex-1 text-display-sm font-semibold text-primary">{{ isset($portfolioSummry['total_trades']) ? $portfolioSummry['total_trades'] : '--' }}</p>
-                        @if (!isset($portfolioSummry['total_trades']) || isset($portfolioSummry['total_trades']) && $portfolioSummry['total_trades'] == 0)
+                        <p class="flex-1 text-display-sm font-semibold text-primary">{{ $all_trades_count }}</p>
+                        @if ($all_trades_count == 0)
                             <span class="text-sm font-medium text-tertiary">No data yet</span>
                         @else
                             <span class="text-sm font-medium text-tertiary">Total Trades</span>

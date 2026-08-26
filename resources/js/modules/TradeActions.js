@@ -159,6 +159,7 @@ export default class TradeActions {
     }
 
     async edit(trade_id) {
+        document.getElementById('edit_trade_popup').reset();
         MainApp.popupManager.open('edit-trade-pop');
         // console.log(trade_id);
 
