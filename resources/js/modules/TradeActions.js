@@ -135,6 +135,39 @@ export default class TradeActions {
             });
         });
 
+
+        const main_summary__filter = document.querySelector('.main-summary--filter');
+        if(main_summary__filter){
+            main_summary__filter.addEventListener('change', function(){
+                const this_btn = this;
+                const this_val = this_btn.value;
+                fetch(`/mainsummery/${this_val}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': thisApp.token
+                    }
+                }).then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    const totalPnL = data.summery.totalPnL;
+                    const totalPnLHtml = data.summery.totalPnL_html;
+                    const winningTrades = data.summery.winningTrades;
+                    const losingTrades = data.summery.losingTrades;
+                    const breakevenTrades = data.summery.breakevenTrades;
+                    const totalTradeCount = data.summery.totalTradeCount;
+
+                    document.querySelector('.net_pnl_wrap').innerHTML = totalPnLHtml;
+                    document.querySelector('.net_pnl_status_wrap').innerHTML = totalPnL < 0 ? 'Net loss' : 'Net profit';
+                    document.querySelector('.main_pnl_winnings').innerHTML = winningTrades;
+                    document.querySelector('.main_pnl_loosing').innerHTML = losingTrades;
+                    document.querySelector('.main_pnl_breakeven').innerHTML = breakevenTrades;
+                    document.querySelectorAll('.main_pnl_totalTrades').forEach(itm => itm.innerHTML = totalTradeCount);
+                }).catch((err) => {
+                    console.log(err);
+                });
+            });
+        }
     }
 
     delete(trade_id) {

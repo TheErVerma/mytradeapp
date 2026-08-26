@@ -130,8 +130,11 @@
 
                         <div
                             class="z-10 flex flex-1 flex-col-reverse gap-3 p-4 pt-6 *:grow sm:grid sm:grid-cols-2 sm:px-6 sm:pt-8 sm:pb-6">
-                            <button type="button" class="btn btn-md btn-secondary cancel_action" data-popup-target="share-trade-pop">
+                            <button type="button" class="{{ $live_share_link == "" ? '' : 'hide' }} btn btn-md btn-secondary cancel_action">
                                 <span class="transition px-0.5">Cancel</span>
+                            </button>
+                            <button type="button" class="{{ $live_share_link != "" ? '' : 'hide' }} btn btn-md btn-secondary stop_live_sharing">
+                                <span class="transition px-0.5">Stop</span>
                             </button>
                             <button class="btn btn-md btn-primary" type="submit">
                                 <span class="transition px-0.5">Generate Link</span>

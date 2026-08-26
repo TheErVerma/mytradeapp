@@ -595,6 +595,9 @@ class TradeController extends Controller
     public function getPnL(Request $request, $period)
     {
         $user = Auth::user();
+        if(!$user){
+            return;
+        }
         $resp = ['status' => 400, 'message' => 'Invalid Request'];
 
         $startDate = date('Y-m-d', strtotime('today'));
@@ -610,7 +613,7 @@ class TradeController extends Controller
 
         if ($period == 'current_month') {
             $startDate = date('Y-m-01');
-            $endDate   = date('Y-m-d');
+            $endDate = date('Y-m-d');
         }
         if ($period == 'last_month') {
             $startDate = date('Y-m-d', strtotime('first day of last month'));
@@ -698,6 +701,83 @@ class TradeController extends Controller
     }
 
 
+    public function getMainSummery(Request $request, $period)
+    {
+        $user = Auth::user();
+        $resp = ['status' => 400, 'message' => 'Invalid Request'];
+
+        $startDate = date('Y-m-d', strtotime('today'));
+        $endDate = date('Y-m-d', strtotime('+1 day'));
+
+        if ($period != 'today') {
+            $endDate = date('Y-m-d', strtotime('-1 day'));
+        }
+
+        if ($period == 'last_week') {
+            $startDate = date('Y-m-d', strtotime('-1 week'));
+        }
+
+        if ($period == 'current_month') {
+            $startDate = date('Y-m-01');
+            $endDate = date('Y-m-d');
+        }
+        if ($period == 'last_month') {
+            $startDate = date('Y-m-d', strtotime('first day of last month'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
+        }
+
+        if ($period == 'last_3_month') {
+            $startDate = date('Y-m-d', strtotime('first day of -3 months'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
+        }
+
+        if ($period == 'last_6_month') {
+            $startDate = date('Y-m-d', strtotime('first day of -6 months'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
+        }
+
+        if ($period == 'last_year') {
+            $startDate = date('Y-m-d', strtotime('first day of -1 year'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
+        }
+
+        if ($period == 'last_3_year') {
+            $startDate = date('Y-m-d', strtotime('first day of -3 years'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
+        }
+
+        if ($period == 'last_5_year') {
+            $startDate = date('Y-m-d', strtotime('first day of -5 years'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
+        }
+
+        if ($period == 'last_10_year') {
+            $startDate = date('Y-m-d', strtotime('first day of -10 years'));
+            $endDate = date('Y-m-d', strtotime('first day of this month'));
+        }
+
+
+
+        $trades = Trade::where('user_id', Auth::id())
+            ->with('instrument')
+            ->when($period != 'all', function($query) use ($startDate, $endDate){
+                return $query->whereBetween('trd_date', [$startDate, $endDate]);
+            })
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $all_summery = $this::getPNLSummery($trades);
+
+        $resp = [
+            'status' => 200,
+            'message' => $period,
+            'summery' => $all_summery
+        ];
+
+        return response()->json($resp);
+    }
+
+
     public function generateLiveShareLink(Request $request)
     {
         $validated = $request->validate([
@@ -731,6 +811,19 @@ class TradeController extends Controller
         return response()->json($resp);
     }
 
+    public function stopLiveShare(Request $request)
+    {
+        $userObj = Auth::user();
+        $user = User::findOrFail($userObj->id);
+        $user->live_sharing = '';
+        $user->save();
+        $resp = [
+            'status' => 200,
+            'message' => 'Success',
+        ];
+
+        return response()->json($resp);
+    }
 
     public function liveShare(Request $request, $id)
     {
@@ -781,16 +874,20 @@ class TradeController extends Controller
     }
 
 
-    static public function getPNLSummery($all_trades)
+    static public function getPNLSummery($all_trades, $userid = null)
     {
+        $user = $userid ? User::where('id', $userid)->first() : Auth::user();
+        $currency = $user->default_country;
+        $currency = $currency ? ($currency) : 'INR';
         // PNL CALCULATE START
         $totalPnL = 0;
         $winningTrades = 0;
         $losingTrades = 0;
         $breakevenTrades = 0;
+        $totalTradeCount = 0;
 
         foreach ($all_trades as $trade) {
-
+            $totalTradeCount++;
             if ($trade['trd_type'] == "F&O") {
                 $qty = (float) ($trade['trd_lot']) * ($trade['instrument']['qty_multiplier'] <= 1 ? $trade['instrument']['lot_size'] : 1);
             }
@@ -832,10 +929,12 @@ class TradeController extends Controller
         }
         // PNL CALCULATE END
         return [
+            'totalPnL_html' => Number::currency(floatval($totalPnL), in: $currency),
             'totalPnL' => $totalPnL,
             'winningTrades' => $winningTrades,
             'losingTrades' => $losingTrades,
             'breakevenTrades' => $breakevenTrades,
+            'totalTradeCount' => $totalTradeCount,
         ];
     }
 
@@ -1003,10 +1102,10 @@ class TradeController extends Controller
         $has_more = $alltrd_obj->hasMorePages();
 
         $user = User::where('id', $usr_id)->first();
-        $currency = $user->default_country;
+        $currency = $user ? $user->default_country : false;
         $currency = $currency ? ($currency) : 'INR';
 
-        $this_filr_smry = $this::getPNLSummery($all_trades);
+        $this_filr_smry = $this::getPNLSummery($all_trades, $usr_id);
         $net_pnl_val = isset($this_filr_smry['totalPnL']) ? $this_filr_smry['totalPnL'] : '--';
         return response()->json([
             'status' => 200,

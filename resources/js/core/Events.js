@@ -155,7 +155,7 @@ export default class EventManager {
         document.addEventListener('click', function (e) {
             const this_trg = e.target;
             if (!this_trg.closest('.author-open__popup') && !this_trg.closest('.author-popup')) {
-                if(document.querySelector('.author-popup')){
+                if (document.querySelector('.author-popup')) {
                     document.querySelector('.author-popup').classList.remove('active');
                 }
             }
@@ -287,7 +287,7 @@ export default class EventManager {
                     },
                 }).then((response) => response.json())
                     .then((data) => {
-                        console.log(data);
+                        // console.log(data);
                         if (data.trades) {
                             const is_p_l = data.trade_num < 0 ? 'loss' : 'profit';
                             document.querySelector('.summary_total_npl').classList.remove('profit');
@@ -296,7 +296,7 @@ export default class EventManager {
                             document.querySelector('.summary_total_npl').classList.add(is_p_l);
                             document.querySelector('.summary_total_entries').innerHTML = data.total_entries;
                         }
-                        
+
                     }).catch((err) => {
                         console.log(err);
                     })
@@ -379,6 +379,8 @@ export default class EventManager {
                         console.log(data);
                         this_form.querySelector('[type="submit"]').classList.remove('loading');
                         if (data.live_link) {
+                            document.querySelector('#share_live_trade_popup .cancel_action').classList.add('hide');
+                            document.querySelector('.stop_live_sharing').classList.remove('hide');
                             document.querySelector('.copy_live_link_wrap').classList.remove('hide');
                             document.querySelector('.qrcode_live_link_wrap').classList.remove('hide');
                             document.getElementById('live_share_link').value = data.live_link;
@@ -390,6 +392,30 @@ export default class EventManager {
             })
         }
 
+        const stop_live_sharing_btn = document.querySelector('.stop_live_sharing');
+        if(stop_live_sharing_btn){
+            stop_live_sharing_btn.addEventListener('click', function () {
+                const this_btn = this;
+                fetch('/stop-liveshare', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': ThisApp.token
+                    }
+                }).then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        document.querySelector('#share_live_trade_popup .cancel_action').classList.remove('hide');
+                        document.querySelector('.stop_live_sharing').classList.add('hide');
+                        document.querySelector('.copy_live_link_wrap').classList.add('hide');
+                        document.querySelector('.qrcode_live_link_wrap').classList.add('hide');
+                        document.getElementById('live_share_link').value = '';
+                    }).catch((err) => {
+                        console.log(err);
+                    });
+
+            });
+        }
 
         const liveShareCountdown = document.getElementById('liveShareCountdown');
         if (liveShareCountdown) {

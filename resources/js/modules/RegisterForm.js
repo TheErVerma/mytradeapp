@@ -50,10 +50,10 @@ export default class RegisterForm {
 
         event.preventDefault();
 
-        this.loginForm.classList.add('processing');
 
         const formData = new FormData(this.loginForm);
 
+        this.loginForm.querySelector('[type="submit"]').classList.add('loading');
         // AJAX request here
         fetch('/register', {
             method: 'POST',
@@ -64,6 +64,7 @@ export default class RegisterForm {
         })
             .then((response) => response.json())
             .then((data) => {
+                this.loginForm.querySelector('[type="submit"]').classList.remove('loading');
                 console.log(data);
                 if (data.status == 200) {
                     this.addNotice(data.message, 'success');
@@ -71,13 +72,12 @@ export default class RegisterForm {
                     this.addNotice(data.message, 'warning');
                 }
 
-                this.loginForm.classList.remove('processing');
                 if(data.redirect){
                     window.location.href = data.redirect;
                 }
 
             }).catch((err) => {
-                this.loginForm.classList.remove('processing');
+                this.loginForm.querySelector('[type="submit"]').classList.remove('loading');
                 console.log(err);
             })
     }

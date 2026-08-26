@@ -78,6 +78,7 @@ export default class AuthForm {
         const formData = new FormData(this.loginForm);
         this.removeAllNotices();
 
+        this.loginForm.querySelector('[type="submit"]').classList.add('loading');
         // AJAX request here
         fetch('/login', {
             method: 'POST',
@@ -89,6 +90,7 @@ export default class AuthForm {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
+                this.loginForm.querySelector('[type="submit"]').classList.remove('loading');
                 
                 if (data.redirect) {
                     window.location.href = data.redirect;
@@ -103,6 +105,7 @@ export default class AuthForm {
                     }
                 }
             }).catch((err) => {
+                this.loginForm.querySelector('[type="submit"]').classList.remove('loading');
                 // console.log(err);
             })
     }
@@ -117,7 +120,7 @@ export default class AuthForm {
 
         event.preventDefault();
 
-        this.forgetForm.classList.add('processing');
+        this.forgetForm.querySelector('[type="submit"]').classList.add('loading');
         const formData = new FormData(this.forgetForm);
 
         // AJAX request here
@@ -143,7 +146,7 @@ export default class AuthForm {
                     ThisApp.addNotice(data.message, 'warning');
                 }
 
-                this.forgetForm.classList.remove('processing');
+                this.forgetForm.querySelector('[type="submit"]').classList.remove('loading');
 
                 // document.querySelector('.main_log_reg_form.reset_password_form').style.display = 'block';
                 if (data.redirect) {
@@ -152,7 +155,7 @@ export default class AuthForm {
 
             }).catch((err) => {
                 console.log(err);
-                this.forgetForm.classList.remove('processing');
+                this.forgetForm.querySelector('[type="submit"]').classList.remove('loading');
             })
 
     }
@@ -166,7 +169,7 @@ export default class AuthForm {
 
         event.preventDefault();
 
-        this.OtpForm.classList.add('processing');
+        this.OtpForm.querySelector('[type="submit"]').classList.add('loading');
         const formData = new FormData(this.OtpForm);
 
         // AJAX request here
@@ -196,10 +199,10 @@ export default class AuthForm {
                     this.addNotice(data.message, 'warning');
                 }
 
-                this.OtpForm.classList.remove('processing');
+                this.OtpForm.querySelector('[type="submit"]').classList.remove('loading');
             }).catch((err) => {
                 console.log(err);
-                this.OtpForm.classList.remove('processing');
+                this.OtpForm.querySelector('[type="submit"]').classList.remove('loading');
             })
     }
 
@@ -213,7 +216,7 @@ export default class AuthForm {
 
         event.preventDefault();
 
-        this.resetForm.classList.add('processing');
+        this.resetForm.querySelector('[type="submit"]').classList.add('loading');
         const formData = new FormData(this.resetForm);
 
         // AJAX request here
@@ -236,12 +239,12 @@ export default class AuthForm {
                     this.addNotice(data.message, 'warning');
                 }
 
-                this.resetForm.classList.remove('processing');
+                this.resetForm.querySelector('[type="submit"]').classList.remove('loading');
 
 
             }).catch((err) => {
                 console.log(err);
-                this.resetForm.classList.remove('processing');
+                this.resetForm.querySelector('[type="submit"]').classList.remove('loading');
             })
     }
 

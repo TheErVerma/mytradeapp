@@ -269,7 +269,7 @@
 
                                 <div class="flex items-center gap-3 order-first mr-auto hide_for_capture">
                                     <span class="text-sm font-medium text-fg-secondary pageination_status_wrap">Page <span
-                                            clas="pagination_crnt_page"></span> of
+                                            clas="pagination_crnt_page">1</span> of
                                         {{ $total_pages }}</span>
 
                                     <div class="flex flex-col gap-1.5">

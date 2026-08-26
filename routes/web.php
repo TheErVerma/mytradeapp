@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/user/{id}/save-theme', [UserController::class, 'saveTheme']);
     Route::post('/trade', [TradeController::class, 'addTrade']);
     Route::post('/generate-livesharelink', [TradeController::class, 'generateLiveShareLink']);
+    Route::post('/stop-liveshare', [TradeController::class, 'stopLiveShare']);
     Route::post('/filter-journal-items', [TradeController::class, 'filterJournalItems']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
     Route::put('/trade', [TradeController::class, 'editTrade']);
@@ -86,6 +87,7 @@ Route::group(['middleware' => ['auth']], function () {
     /**
      * Single Pages
      **/
+    Route::post('/mainsummery/{period}', [TradeController::class, 'getMainSummery']);
     Route::post('/pnl/{period}', [TradeController::class, 'getPnL']);
     Route::get('/trade/{id}', [TradeController::class, 'getTrade']);
     Route::get('/journal/{id}', [TradeController::class, 'getTrade']);
