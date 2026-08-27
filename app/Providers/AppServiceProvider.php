@@ -118,6 +118,8 @@ class AppServiceProvider extends ServiceProvider
             if ($user) {
                 $total_trades = TradeController::getAll();
                 $portfolioSummry = TradeController::summary();
+                $TradeController = new TradeController();
+                $all_matrics = $TradeController->getTradeMetrics($total_trades);
                 $currency = $user->default_country;
                 $currency = $currency ? ($currency) : 'USD';
                 $view->with('user', $user);
@@ -125,6 +127,8 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('total_trades', count($total_trades));
                 $view->with('portfolioSummry', $portfolioSummry);
                 $view->with('all_trades_count', $all_trades_count);
+                $view->with('all_matrics', $all_matrics);
+
                 $view->with('currency', $currency);
                 $view->with('upstox', $upstox_data);
                 $view->with('headMapData', $dailyPnl);

@@ -413,25 +413,27 @@ export default class TradeForm {
                 if (data.pnl_html) {
                     const pnl_table_elm = document.querySelector('.current_page_pnl span:nth-child(2)');
 
-                    pnl_table_elm.innerHTML = data.pnl_html;
-                    if(data.pnl_amount < 0){
-                        pnl_table_elm.classList.remove('text-success-primary');
-                        pnl_table_elm.classList.add('text-error-primary');
-                    }else{
-                        pnl_table_elm.classList.remove('text-error-primary');
-                        pnl_table_elm.classList.add('text-success-primary');
+                    if(pnl_table_elm){
+                        pnl_table_elm.innerHTML = data.pnl_html;
+                        if(data.pnl_amount < 0){
+                            pnl_table_elm.classList.remove('text-success-primary');
+                            pnl_table_elm.classList.add('text-error-primary');
+                        }else{
+                            pnl_table_elm.classList.remove('text-error-primary');
+                            pnl_table_elm.classList.add('text-success-primary');
+                        }
                     }
                 }
                 document.querySelector('table.trades_journal_table tbody').innerHTML = data.html;
                 document.querySelector('.pageination_status_wrap').innerHTML = `Page ${data.current_page} of ${data.total_pages}`;
                 if (data.total_pages <= 1) {
-                    document.querySelector('.prev_journal_page').setAttribute('disabled', true);
-                    document.querySelector('.next_journal_page').setAttribute('disabled', true);
+                    document.querySelectorAll('.prev_journal_page').forEach(itm => itm.setAttribute('disabled', true));
+                    document.querySelectorAll('.next_journal_page').forEach(itm => itm.setAttribute('disabled', true));
                 } else {
-                    document.querySelector('.next_journal_page').removeAttribute('disabled', true);
+                    document.querySelectorAll('.next_journal_page').forEach(itm => itm.removeAttribute('disabled', true));
                 }
                 if (data.current_page >= data.total_pages) {
-                    document.querySelector('.next_journal_page').setAttribute('disabled', true);
+                    document.querySelectorAll('.next_journal_page').forEach(itm => itm.setAttribute('disabled', true));
                 }
                 document.querySelector('.journal_loader').classList.remove('active');
                 document.dispatchEvent(new Event('journal-loaded'));

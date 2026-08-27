@@ -699,6 +699,9 @@
   .w-\[24\%\] {
     width: 24%;
   }
+  .w-\[25\%\] {
+    width: 25%;
+  }
   .w-\[35\%\] {
     width: 35%;
   }
@@ -1364,6 +1367,9 @@
     .max-md\:hidden {
       display: none;
     }
+    .max-md\:w-\[25\%\] {
+      width: 25%;
+    }
     .max-md\:w-\[35\%\] {
       width: 35%;
     }
@@ -1420,6 +1426,9 @@
     }
     .md\:w-70 {
       width: calc(var(--spacing) * 70);
+    }
+    .md\:w-\[25\%\] {
+      width: 25%;
     }
     .md\:w-\[35\%\] {
       width: 35%;

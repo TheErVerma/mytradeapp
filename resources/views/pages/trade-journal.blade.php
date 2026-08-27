@@ -286,13 +286,13 @@
 
                                 <th class="trade_h_symbol">
                                     <div class="title" role="group">
-                                        Symbol
+                                        Instrument
                                     </div>
                                 </th>
 
                                 <th class="trade_h_action">
                                     <div class="title" role="group">
-                                        Action
+                                        Type
                                     </div>
                                 </th>
 
@@ -302,7 +302,7 @@
                                     </div>
                                 </th>
 
-                                <th class="trade_h_shares">
+                                @php /*<th class="trade_h_shares">
                                     <div class="title" role="group">
                                         Shares
                                     </div>
@@ -312,10 +312,15 @@
                                     <div class="title" role="group">
                                         Lot
                                     </div>
+                                </th> */ @endphp
+                                <th class="trade_h_qty">
+                                    <div class="title" role="group">
+                                        QTY
+                                    </div>
                                 </th>
                                 <th class="trade_h_type">
                                     <div class="title" role="group">
-                                        Type
+                                        Product
                                     </div>
                                 </th>
 
@@ -528,11 +533,11 @@
                             <th class="trade_h_id">ID</th>
                             <!-- <th>Market Name</th> -->
                             <th class="trade_h_symbol">Symbol</th>
-                            <th class="trade_h_action">Action</th>
+                            <th class="trade_h_action">Type</th>
                             <th class="trade_h_date">Date</th>
                             <th class="trade_h_shares">Shares</th>
                             <th class="trade_h_lot">Lot</th>
-                            <th class="trade_h_type">Type</th>
+                            <th class="trade_h_type">Product</th>
                             <th class="trade_h_price">Price</th>
                             <th class="trade_h_exit_price">Exit Price</th>
                             <th class="trade_h_pnl">P&L</th>

@@ -13,6 +13,7 @@ class Trade extends Model
         'trd_shares',
         'trd_price',
         'trd_exit_price',
+        'trd_exit_date',
         'user_id',
         'trd_lot',
         'trd_type',

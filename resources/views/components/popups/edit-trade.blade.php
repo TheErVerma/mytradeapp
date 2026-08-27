@@ -188,28 +188,37 @@
                         </div>
                         
 
-                        <div class="fld_Wrapper shares_amount_val group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="fld_Wrapper shares_amount_val group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
                             <label class="form-label" data-label="true">Shares</label>
-                            <input type="text" required="" placeholder="Enter your name" tabindex="0"
+                            <input type="text" required="" placeholder="Enter shares amount" tabindex="0"
                                 class="form-input" name="trd_shares" value="1" title="">
                         </div>
-                        <div class="fld_Wrapper lot_amount_val group hidden flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="fld_Wrapper lot_amount_val group hidden flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
                             <label class="form-label" data-label="true">Lot</label>
-                            <input type="text" required="" placeholder="Enter your name" tabindex="0"
+                            <input type="text" required="" placeholder="Enter lot amount" tabindex="0"
                                 class="form-input" name="trd_lot" value="1" title="">
                         </div>
 
-                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
                             <label class="form-label" data-label="true">Date</label>
-                            <input type="text" required="" placeholder="Enter your name" tabindex="0"
+                            <input type="text" required="" placeholder="Entery date" tabindex="0"
                                 class="form-input datepicker" name="trd_date" value="
                                 @php 
                                     echo date('Y-m-d');
                                 @endphp
                                 " title="">
                         </div>
+                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
+                            <label class="form-label" data-label="true">Exit Date</label>
+                            <input type="text" required="" placeholder="Enter exit date" tabindex="0"
+                                class="form-input datepicker" name="trd_exit_date" value="
+                                @php 
+                                    echo date('Y-m-d');
+                                @endphp
+                                " title="">
+                        </div>
 
-                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[35%] grow">
                             <label class="form-label" data-label="true">Entry Price</label>
                             <div class="symbol-input">
                                 <span class="symbol">{{ $money_symbol }}</span>
@@ -217,7 +226,7 @@
                             </div>
                         </div>
 
-                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[35%] grow">
                             <label class="form-label" data-label="true">Exit Price</label>
                             <div class="symbol-input">
                                 <span class="symbol">{{ $money_symbol }}</span>

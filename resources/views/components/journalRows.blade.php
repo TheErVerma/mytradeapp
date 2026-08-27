@@ -65,8 +65,9 @@
                 </span>
             </td>
             <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
-            <td class="trade_b_shares">{{ $trade_item['trd_type'] == 'Cash' ? $shares : '--' }}</td>
-            <td class="trade_b_lot">{{ $trade_item['trd_type'] == 'F&O' ? $lot_size : '--' }}</td>
+            @php /*<td class="trade_b_shares">{{ $trade_item['trd_type'] == 'Cash' ? $shares : '--' }}</td>
+            <td class="trade_b_lot">{{ $trade_item['trd_type'] == 'F&O' ? $lot_size : '--' }}</td>*/ @endphp
+            <td class="trade_b_qty">{{ $lot_size_val }}</td>
             <td class="trade_b_type">{{ $inst_type }}</td>
             <td class="trade_b_price">{{ Number::currency(floatval($trade_item['trd_price']), in: $currency) }}</td>
             <td class="trade_b_exit_price">{{ Number::currency(floatval($trade_item['trd_exit_price']), in: $currency) }}</td>

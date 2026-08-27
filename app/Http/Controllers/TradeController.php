@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
@@ -61,6 +62,7 @@ class TradeController extends Controller
             'trd_symbol' => 'required|string|max:255',
             'trd_symbol_key' => 'required|string|max:255',
             'trd_date' => 'required|date',
+            // 'trd_exit_date' => 'required|date',
             // 'trd_time' => 'required',
 
             'trd_shares' => 'nullable|integer',
@@ -108,6 +110,7 @@ class TradeController extends Controller
             'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : 'Long',
 
             'trd_date' => $validated['trd_date'] ?? 0,
+            'trd_exit_date' => $request->input('trd_exit_date') ?? '',
             // 'trd_time' => $validated['trd_time'] ?? 0,
 
             'trd_shares' => $validated['trd_shares'] ?? 0,
@@ -231,6 +234,7 @@ class TradeController extends Controller
             'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : 'Long',
 
             'trd_date' => $validated['trd_date'] ?? $trade->trd_date,
+            'trd_exit_date' => $request->input('trd_exit_date') ?? '',
             // 'trd_time' => $validated['trd_time'] ?? $trade->trd_time,
 
             'trd_shares' => $validated['trd_shares'] ?? $trade->trd_shares,
@@ -595,7 +599,7 @@ class TradeController extends Controller
     public function getPnL(Request $request, $period)
     {
         $user = Auth::user();
-        if(!$user){
+        if (!$user) {
             return;
         }
         $resp = ['status' => 400, 'message' => 'Invalid Request'];
@@ -760,17 +764,17 @@ class TradeController extends Controller
 
         $trades = Trade::where('user_id', Auth::id())
             ->with('instrument')
-            ->when($period != 'all', function($query) use ($startDate, $endDate){
+            ->when($period != 'all', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('trd_date', [$startDate, $endDate]);
             })
             ->orderBy('id', 'ASC')
             ->get();
-        
+
         $dailyPnl = Trade::where('trades.user_id', Auth::id())
             ->join('instruments', 'instruments.instrument_key', '=', 'trades.trd_symbol_key')
             ->whereNotNull('trades.trd_exit_price')
-            ->when($period != 'all', function($query) use ($startDate, $endDate){
-                return $query->whereBetween('trades.trd_date', [$startDate ,$endDate]);
+            ->when($period != 'all', function ($query) use ($startDate, $endDate) {
+                return $query->whereBetween('trades.trd_date', [$startDate, $endDate]);
             })
             ->selectRaw("
                 DATE(trades.trd_date) AS date,
@@ -831,24 +835,273 @@ class TradeController extends Controller
             ->map(function ($trade) {
                 return [
                     'date' => $trade->date,
-                    'pnl'  => (float) $trade->pnl,
+                    'pnl' => (float) $trade->pnl,
                 ];
             })
             ->values()
             ->toArray();
 
         $all_summery = $this::getPNLSummery($trades);
+        $all_matrics = $this->getTradeMetrics($trades);
 
         $resp = [
             'status' => 200,
             'message' => $period,
             'summery' => $all_summery,
             'pnl_cal_data' => $dailyPnl,
+            'matrics' => $all_matrics,
         ];
 
         return response()->json($resp);
     }
 
+    private function formatCurrency($value, $userid = null)
+    {
+        $user = $userid ? User::where('id', $userid)->first() : Auth::user();
+        $currency = $user ? $user->default_country : false;
+        $currency = $currency ? ($currency) : 'INR';
+        return Number::currency(floatval($value), in: $currency);
+    }
+
+    private function getAverageHoldingTime($winningTrades)
+    {
+        if ($winningTrades->isEmpty()) {
+            return '0d 0h 0m';
+        }
+
+        $totalMinutes = 0;
+
+        $winningTradesArr = collect($winningTrades)->toArray();
+        foreach ($winningTradesArr as $trade) {
+            $trade = $trade['trade'];
+            
+            if (!$trade->trd_exit_date) {
+                continue;
+            }
+
+            $entry = Carbon::parse($trade->trd_date);
+            $exit = Carbon::parse($trade->trd_exit_date);
+
+            $totalMinutes += $entry->diffInMinutes($exit);
+        }
+
+        if ($winningTrades->count() === 0) {
+            return '0d 0h 0m';
+        }
+
+        $averageMinutes = round($totalMinutes / $winningTrades->count());
+
+        $days = intdiv($averageMinutes, 1440);
+        $hours = intdiv($averageMinutes % 1440, 60);
+        $minutes = $averageMinutes % 60;
+
+        return "{$days}d {$hours}h {$minutes}m";
+    }
+
+
+    public function getTradeMetrics($trades)
+    {
+
+        $calculatedTrades = collect();
+
+        foreach ($trades as $trade) {
+
+            /*
+             * Calculate quantity
+             */
+            if ($trade->trd_type === 'F&O') {
+
+                $qty = (float) $trade->trd_lot *
+                    ($trade->instrument->qty_multiplier <= 1
+                        ? $trade->instrument->lot_size
+                        : 1);
+
+            } elseif ($trade->trd_type === 'Cash') {
+
+                $qty = (float) $trade->trd_shares;
+
+            } else {
+
+                continue;
+            }
+
+            $qty *= (float) $trade->instrument->qty_multiplier;
+
+            /*
+             * Entry / Exit
+             */
+            $entry = (float) $trade->trd_price;
+            $exit = (float) $trade->trd_exit_price;
+
+            /*
+             * Calculate P&L
+             */
+            if ($trade->trd_action === 'Long') {
+
+                $pnl = (($exit - $entry) * $qty)
+                    - (float) $trade->trd_charges_amount;
+
+            } elseif ($trade->trd_action === 'Short') {
+
+                $pnl = (($entry - $exit) * $qty)
+                    - (float) $trade->trd_charges_amount;
+
+            } else {
+
+                $pnl = 0;
+            }
+
+            /*
+             * Add calculated P&L to collection
+             */
+            $calculatedTrades->push([
+                'trade' => $trade,
+                'pnl' => $pnl,
+            ]);
+        }
+
+        // Log::debug(print_r($calculatedTrades, true));
+
+        /*
+         * Winning / Losing trades
+         */
+        $winningTrades = $calculatedTrades
+            ->filter(fn($item) => $item['pnl'] > 0);
+
+        $losingTrades = $calculatedTrades
+            ->filter(fn($item) => $item['pnl'] < 0);
+
+        /*
+         * Best trade
+         */
+        $bestTrade = $calculatedTrades->max('pnl') ?? 0;
+
+        /*
+         * Average winning trade
+         */
+        $averageWinningTrade = $winningTrades->avg('pnl') ?? 0;
+
+        /*
+         * Total profit and loss
+         */
+        $totalProfit = $winningTrades->sum('pnl');
+        $totalLoss = abs($losingTrades->sum('pnl'));
+
+        /*
+         * Profit Factor
+         *
+         * Total profits / Total losses
+         */
+        $profitFactor = $totalLoss > 0
+            ? $totalProfit / $totalLoss
+            : 0;
+
+        /*
+         * Risk : Reward
+         *
+         * Average winning trade / Average losing trade
+         */
+        $averageLosingTrade = abs($losingTrades->avg('pnl') ?? 0);
+
+        $riskReward = $averageLosingTrade > 0
+            ? $averageWinningTrade / $averageLosingTrade
+            : 0;
+
+        /*
+         * Long performance
+         */
+        $longPerformance = $calculatedTrades
+            ->filter(fn($item) => $item['trade']->trd_action === 'Long')
+            ->sum('pnl');
+
+        /*
+         * Winning days
+         */
+        $winningDays = $calculatedTrades
+            ->filter(fn($item) => $item['pnl'] > 0)
+            ->groupBy(function ($item) {
+                return date(
+                    'Y-m-d',
+                    strtotime($item['trade']->trd_date)
+                );
+            })
+            ->map(fn($dayTrades) => $dayTrades->sum('pnl'));
+
+        /*
+         * Average winning day P&L
+         */
+        $averageWinningDayPnl = $winningDays->avg() ?? 0;
+
+        /*
+         * Largest profitable day
+         */
+        $largestProfitableDay = $winningDays->max() ?? 0;
+
+        /*
+         * Average holding time for winning trades
+         */
+        $averageHoldingTime = $this->getAverageHoldingTime(
+            $winningTrades
+        );
+
+        return [
+
+            [
+                'id'    => 'best-trade',
+                'title' => 'Best Trade',
+                'value' => $this->formatCurrency($bestTrade),
+            ],
+
+            [
+                'id'    => 'average-winning-trade',
+                'title' => 'Average Winning Trade',
+                'value' => $this->formatCurrency($averageWinningTrade),
+            ],
+
+            [
+                'id'    => 'number-of-winning-trades',
+                'title' => 'Number of Winning Trades',
+                'value' => $winningTrades->count(),
+            ],
+
+            [
+                'id'    => 'average-holding-days-winners',
+                'title' => 'Average Holding Days (Winners)',
+                'value' => $averageHoldingTime,
+            ],
+
+            [
+                'id'    => 'average-winning-day-p-l',
+                'title' => 'Average Winning Day P&L',
+                'value' => $this->formatCurrency($averageWinningDayPnl),
+            ],
+
+            [
+                'id'    => 'largest-profitable-day-profits',
+                'title' => 'Largest Profitable Day (Profits)',
+                'value' => $this->formatCurrency($largestProfitableDay),
+            ],
+
+            [
+                'id'    => 'long-performance',
+                'title' => 'Long Performance',
+                'value' => $this->formatCurrency($longPerformance),
+            ],
+
+            [
+                'id'    => 'profit-factor',
+                'title' => 'Profit Factor',
+                'value' => number_format($profitFactor, 2),
+            ],
+
+            [
+                'id'    => 'risk-reward-ratio',
+                'title' => 'Risk:Reward Ratio',
+                'value' => '1:' . number_format($riskReward, 2),
+            ],
+
+        ];
+    }
 
     public function generateLiveShareLink(Request $request)
     {

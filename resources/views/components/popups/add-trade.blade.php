@@ -79,72 +79,7 @@
                                         </svg>
                                     </div>
 
-                                    <div class="dropdown-list hidden">
-                                        <div class="dropdown-list__item">
-
-                                            <span class="symbol">
-                                                NATURALGAS FUT 27 OCT 26
-                                                <div class="symbol_meta">
-                                                    <span class="exchange">MCX</span>
-                                                    <span class="segment">Future</span>
-                                                </div>
-                                            </span>
-
-                                            <span class="name">NATURALGAS</span>
-
-                                        </div>
-                                        <div class="dropdown-list__item">
-
-                                            <span class="symbol">
-                                                NATURALGAS FUT 27 OCT 26
-                                                <div class="symbol_meta">
-                                                    <span class="exchange MCX">MCX</span>
-                                                    <span class="segment">Future</span>
-                                                </div>
-                                            </span>
-
-                                            <span class="name">NATURALGAS</span>
-
-                                        </div>
-                                        <div class="dropdown-list__item">
-
-                                            <span class="symbol">
-                                                NATURALGAS FUT 27 OCT 26
-                                                <div class="symbol_meta">
-                                                    <span class="exchange MCX">MCX</span>
-                                                    <span class="segment">Future</span>
-                                                </div>
-                                            </span>
-
-                                            <span class="name">NATURALGAS</span>
-
-                                        </div>
-                                        <div class="dropdown-list__item">
-
-                                            <span class="symbol">
-                                                NATURALGAS FUT 27 OCT 26
-                                                <div class="symbol_meta">
-                                                    <span class="exchange MCX">MCX</span>
-                                                    <span class="segment">Future</span>
-                                                </div>
-                                            </span>
-
-                                            <span class="name">NATURALGAS</span>
-
-                                        </div>
-                                        <div class="dropdown-list__item">
-                                            <span class="symbol">
-                                                NATURALGAS FUT 27 OCT 26
-                                                <div class="symbol_meta">
-                                                    <span class="exchange MCX">MCX</span>
-                                                    <span class="segment">Future</span>
-                                                </div>
-                                            </span>
-
-                                            <span class="name">NATURALGAS</span>
-
-                                        </div>
-                                    </div>
+                                    <div class="dropdown-list hidden"></div>
 
 
                                     <div class="px-1.5 border-t border-primary py-2">
@@ -185,28 +120,37 @@
                         </div>
                         
 
-                        <div class="fld_Wrapper shares_amount_val group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="fld_Wrapper shares_amount_val group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
                             <label class="form-label" data-label="true">Shares</label>
-                            <input type="text" required="" placeholder="Enter your name" tabindex="0"
+                            <input type="text" required="" placeholder="Enter shares amount" tabindex="0"
                                 class="form-input" name="trd_shares" value="1" title="">
                         </div>
-                        <div class="fld_Wrapper lot_amount_val group hidden flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="fld_Wrapper lot_amount_val group hidden flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
                             <label class="form-label" data-label="true">Lot</label>
-                            <input type="text" required="" placeholder="Enter your name" tabindex="0"
+                            <input type="text" required="" placeholder="Enter lot amount" tabindex="0"
                                 class="form-input" name="trd_lot" value="1" title="">
                         </div>
 
-                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
-                            <label class="form-label" data-label="true">Date</label>
-                            <input type="text" required="" placeholder="Enter your name" tabindex="0"
+                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
+                            <label class="form-label" data-label="true">Entry Date</label>
+                            <input type="text" required="" placeholder="Enter entry date" tabindex="0"
                                 class="form-input datepicker" name="trd_date" value="
                                 @php 
                                     echo date('Y-m-d');
                                 @endphp
                             " title="">
                         </div>
+                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
+                            <label class="form-label" data-label="true">Exit Date</label>
+                            <input type="text" required="" placeholder="Enter exit date" tabindex="0"
+                                class="form-input datepicker" name="trd_exit_date" value="
+                                @php 
+                                    echo date('Y-m-d');
+                                @endphp
+                            " title="">
+                        </div>
 
-                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[35%] grow">
                             <label class="form-label" data-label="true">Entry Price</label>
                             <div class="symbol-input">
                                 <span class="symbol">{{ $money_symbol }}</span>
@@ -214,7 +158,7 @@
                             </div>
                         </div>
 
-                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-[35%] grow">
+                        <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[35%] grow">
                             <label class="form-label" data-label="true">Exit Price</label>
                             <div class="symbol-input">
                                 <span class="symbol">{{ $money_symbol }}</span>

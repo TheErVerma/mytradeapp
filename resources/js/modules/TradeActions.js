@@ -168,6 +168,13 @@ export default class TradeActions {
                             pnl_js_data = data.pnl_cal_data;
                             document.dispatchEvent(new Event('heat_map_load'));
                         }
+
+                        if(data.matrics){
+                            const new_matrics = data.matrics;
+                            (new_matrics).forEach(mtric => {
+                                document.querySelector('.matric_item.'+mtric.id+' .value').innerHTML = mtric.value;
+                            });
+                        }
                     }).catch((err) => {
                         console.log(err);
                     });
@@ -257,7 +264,7 @@ export default class TradeActions {
                                     }
                                     inp.dispatchEvent(inputEvent);
                                 }
-                                if (clm == 'trd_date') {
+                                if (clm == 'trd_date' || clm == 'trd_exit_date') {
                                     const ddpinp = document.querySelector('#edit_trade_popup [name=' + clm + ']');
                                     ddpinp._flatpickr.setDate(data[clm]);
                                 }
