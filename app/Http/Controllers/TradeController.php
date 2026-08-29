@@ -1153,6 +1153,9 @@ class TradeController extends Controller
 
             $day = Carbon::parse($trade->trd_date)->format('l');
 
+            if(!isset($summary[$day])){
+                continue;
+            }
             /*
              * Count ALL trades
              */
