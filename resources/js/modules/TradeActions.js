@@ -37,12 +37,38 @@ export default class TradeActions {
                     });
                 }
 
-
             });
         });
 
+
+        const customize_analytics_form = document.querySelector('#customize-analytics_form');
+        if(customize_analytics_form){
+            customize_analytics_form.addEventListener('submit', function(e){
+                e.preventDefault();
+                const this_form = this;
+                const this_btn = this_form.querySelector('[type="submit"]');
+                const this_data = new FormData(this_form);
+
+                this_btn.classList.add('loading');
+                fetch('/save-customized-analytics', {
+                    method: 'POST',
+                    body:this_data,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                }).then((response) => response.json())
+                    .then((data) => {
+                        // console.log(data);
+                        if(data.status == 200){
+                            window.location.reload();
+                        }
+                        this_btn.classList.remove('loading');
+                    });
+            });
+        }
+
         document.addEventListener('trd_loaded_ssthumbs', function () {
-            console.log('Thumbs Loaded');
+            // console.log('Thumbs Loaded');
             document.querySelectorAll('.screenshot-delete').forEach(elm => elm.addEventListener('click', function () {
                 const this_btn = this;
                 const this_prnt = this_btn.parentNode;
@@ -279,7 +305,7 @@ export default class TradeActions {
 
                                     const this_instrument = data[clm];
 
-                                    lot_size_hinp.value = this_instrument.qty_multiplier <= 1 ? this_instrument.lot_size : 1;
+                                    lot_size_hinp.value = this_instrument.qty_multiplier <= 1 && data['trd_type'] != 'Cash' ? this_instrument.lot_size : 1;
                                     qty_mult_hinp.value = this_instrument.qty_multiplier;
 
                                     lot_size_hinp.dispatchEvent(inputEvent);

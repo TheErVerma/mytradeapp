@@ -64,7 +64,7 @@
                     {{ ($trade_item['trd_action'])[0] }}
                 </span>
             </td>
-            <td class="trade_b_date">{{ date('F d, Y', strtotime($trade_item['trd_date'])) }}</td>
+            <td class="trade_b_date">{{ date('F d D, Y', strtotime($trade_item['trd_date'])) }}</td>
             @php /*<td class="trade_b_shares">{{ $trade_item['trd_type'] == 'Cash' ? $shares : '--' }}</td>
             <td class="trade_b_lot">{{ $trade_item['trd_type'] == 'F&O' ? $lot_size : '--' }}</td>*/ @endphp
             <td class="trade_b_qty">{{ $lot_size_val }}</td>

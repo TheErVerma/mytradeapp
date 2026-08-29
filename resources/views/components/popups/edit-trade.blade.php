@@ -210,7 +210,7 @@
                         </div>
                         <div class="group flex h-max flex-col items-start justify-start gap-1.5 w-full md:w-[25%] grow">
                             <label class="form-label" data-label="true">Exit Date</label>
-                            <input type="text" required="" placeholder="Enter exit date" tabindex="0"
+                            <input type="text" placeholder="Enter exit date" tabindex="0"
                                 class="form-input datepicker" name="trd_exit_date" value="
                                 @php 
                                     echo date('Y-m-d');

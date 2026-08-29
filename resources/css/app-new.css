@@ -1356,6 +1356,9 @@ div#trading-heatmap .map .month .day{
     overflow: hidden;
 }
 
+table.global-table.week_summery_table td {
+    color: revert-layer;
+}
 .trades_journal_table_main_wrap .current_page_pnl {
     width: 100%;
     display: flex;
@@ -2199,6 +2202,20 @@ div#tfa_disable_form .main_set_field label {
     padding: 10px 0;
 }
 
+table.week_summery_table th.trade_h_day {
+    text-align: left;
+}
+table.week_summery_table th.trade_h_net_profits,
+table.week_summery_table td.trade_b_total_profits,
+table.week_summery_table td.trade_b_total_loss,
+table.week_summery_table td.trade_b_trades,
+table.week_summery_table th.trade_h_total_profits,
+table.week_summery_table th.trade_h_total_loss,
+table.week_summery_table th.trade_h_trades,
+table.week_summery_table td.trade_b_net_profits
+{
+    text-align: right;
+}
 .single_trade_body .single_trade_tabs {
     display: inline-flex;
     justify-content: flex-start;

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Options;
 use App\Models\User;
+use App\Services\OptionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -110,7 +112,7 @@ class TradeController extends Controller
             'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : 'Long',
 
             'trd_date' => $validated['trd_date'] ?? 0,
-            'trd_exit_date' => $request->input('trd_exit_date') ?? '',
+            'trd_exit_date' => $request->input('trd_exit_date') ?? null,
             // 'trd_time' => $validated['trd_time'] ?? 0,
 
             'trd_shares' => $validated['trd_shares'] ?? 0,
@@ -234,7 +236,7 @@ class TradeController extends Controller
             'trd_action' => !empty($request->input('trd_action')) ? $request->input('trd_action') : 'Long',
 
             'trd_date' => $validated['trd_date'] ?? $trade->trd_date,
-            'trd_exit_date' => $request->input('trd_exit_date') ?? '',
+            'trd_exit_date' => $request->input('trd_exit_date') ?? null,
             // 'trd_time' => $validated['trd_time'] ?? $trade->trd_time,
 
             'trd_shares' => $validated['trd_shares'] ?? $trade->trd_shares,
@@ -874,7 +876,7 @@ class TradeController extends Controller
         $winningTradesArr = collect($winningTrades)->toArray();
         foreach ($winningTradesArr as $trade) {
             $trade = $trade['trade'];
-            
+
             if (!$trade->trd_exit_date) {
                 continue;
             }
@@ -1047,60 +1049,216 @@ class TradeController extends Controller
         return [
 
             [
-                'id'    => 'best-trade',
+                'id' => 'best-trade',
                 'title' => 'Best Trade',
+                'desc' => 'The trade with the highest profit among all completed trades.',
                 'value' => $this->formatCurrency($bestTrade),
             ],
 
             [
-                'id'    => 'average-winning-trade',
+                'id' => 'average-winning-trade',
                 'title' => 'Average Winning Trade',
+                'desc' => 'The average profit earned from all profitable trades.',
                 'value' => $this->formatCurrency($averageWinningTrade),
             ],
 
             [
-                'id'    => 'number-of-winning-trades',
+                'id' => 'number-of-winning-trades',
                 'title' => 'Number of Winning Trades',
+                'desc' => 'The total number of trades that closed with a profit.',
                 'value' => $winningTrades->count(),
             ],
 
             [
-                'id'    => 'average-holding-days-winners',
+                'id' => 'average-holding-days-winners',
                 'title' => 'Average Holding Days (Winners)',
+                'desc' => 'The average number of days profitable trades were held before being closed.',
                 'value' => $averageHoldingTime,
             ],
 
             [
-                'id'    => 'average-winning-day-p-l',
+                'id' => 'average-winning-day-p-l',
                 'title' => 'Average Winning Day P&L',
+                'desc' => 'The average profit generated on days when your overall daily P&L was positive.',
                 'value' => $this->formatCurrency($averageWinningDayPnl),
             ],
 
             [
-                'id'    => 'largest-profitable-day-profits',
+                'id' => 'largest-profitable-day-profits',
                 'title' => 'Largest Profitable Day (Profits)',
+                'desc' => 'The highest total profit generated on a single trading day.',
                 'value' => $this->formatCurrency($largestProfitableDay),
             ],
 
             [
-                'id'    => 'long-performance',
+                'id' => 'long-performance',
                 'title' => 'Long Performance',
+                'desc' => 'The overall performance of trades taken in the Long direction, including their total P&L.',
                 'value' => $this->formatCurrency($longPerformance),
             ],
 
             [
-                'id'    => 'profit-factor',
+                'id' => 'profit-factor',
                 'title' => 'Profit Factor',
+                'desc' => 'The ratio of total profits to total losses. A value above 1 indicates that profits exceed losses.',
                 'value' => number_format($profitFactor, 2),
             ],
 
             [
-                'id'    => 'risk-reward-ratio',
+                'id' => 'risk-reward-ratio',
                 'title' => 'Risk:Reward Ratio',
+                'desc' => 'The average potential reward compared with the average risk taken per trade. A higher ratio indicates more reward relative to risk.',
                 'value' => '1:' . number_format($riskReward, 2),
             ],
 
         ];
+    }
+
+
+    // Get WeekDay Summery
+    public function weekdaySummary($trades = null)
+    {
+
+        if ($trades == null) {
+            $trades = Trade::where('user_id', Auth::id())
+                ->with('instrument')->get();
+        }
+
+        $days = [
+            // 'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            // 'Saturday',
+        ];
+
+        $summary = [];
+
+        foreach ($days as $day) {
+            $summary[$day] = [
+                'day' => $day,
+                'net_profit' => 0,
+                'winning_percent' => 0,
+                'total_profit' => 0,
+                'total_loss' => 0,
+                'trades' => 0,
+                'winning_trades' => 0,
+                'losing_trades' => 0,
+            ];
+        }
+
+        foreach ($trades as $trade) {
+
+            $day = Carbon::parse($trade->trd_date)->format('l');
+
+            /*
+             * Count ALL trades
+             */
+            $summary[$day]['trades']++;
+
+            /*
+             * No exit price = no realized P&L
+             */
+            if (is_null($trade->trd_exit_price)) {
+                continue;
+            }
+
+            /*
+             * Your exact P&L calculation
+             */
+            $trd_type = $trade->trd_type ?? 'Cash';
+
+            $instrument = $trade->instrument;
+
+            $shares = $trade->trd_shares;
+
+            $lot_size = $trade->trd_lot;
+            $lot_size = $lot_size <= 0 ? 1 : $lot_size;
+
+            $entry_prc = (float) $trade->trd_price;
+            $exit_prc = (float) $trade->trd_exit_price;
+
+            $charges_prc = (float) ($trade->trd_charges_amount ?? 0);
+
+            $qty_multiplier = (float) ($instrument->qty_multiplier ?? 1);
+
+            /*
+             * Calculate quantity
+             */
+            $lot_size_val = $shares ?? 1;
+
+            if ($trd_type != 'Cash') {
+
+                $instrument_lot_size = (
+                    isset($instrument->lot_size) && $qty_multiplier <= 1
+                    ? $instrument->lot_size
+                    : 1
+                );
+
+                $lot_size_val = $instrument_lot_size * $lot_size;
+            }
+
+            $lot_size_val *= $qty_multiplier;
+
+            /*
+             * Calculate P&L
+             */
+            if ($trade->trd_action == 'Short') {
+
+                $pnl = (($entry_prc - $exit_prc) * $lot_size_val)
+                    - $charges_prc;
+
+            } else {
+
+                $pnl = (($exit_prc - $entry_prc) * $lot_size_val)
+                    - $charges_prc;
+            }
+
+            /*
+             * Add to totals
+             */
+            $summary[$day]['net_profit'] += $pnl;
+
+            if ($pnl > 0) {
+
+                $summary[$day]['winning_trades']++;
+                $summary[$day]['total_profit'] += $pnl;
+
+            } elseif ($pnl < 0) {
+
+                $summary[$day]['losing_trades']++;
+                $summary[$day]['total_loss'] += abs($pnl);
+            }
+        }
+
+        /*
+         * Calculate winning percentage
+         */
+        foreach ($summary as &$day) {
+
+            /*
+             * Winning % should be based on trades
+             * that actually have a calculated P&L.
+             */
+            $closed_trades = $day['winning_trades'] + $day['losing_trades'];
+
+            if ($closed_trades > 0) {
+                $day['winning_percent'] = round(
+                    ($day['winning_trades'] / $closed_trades) * 100,
+                    2
+                );
+            }
+
+            $day['net_profit'] = round($day['net_profit'], 2);
+            $day['total_profit'] = round($day['total_profit'], 2);
+            $day['total_loss'] = round($day['total_loss'], 2);
+        }
+
+        unset($day);
+
+        return array_values($summary);
     }
 
     public function generateLiveShareLink(Request $request)
@@ -1440,6 +1598,22 @@ class TradeController extends Controller
             'total_pages' => $total_pages,
             'has_more' => $has_more,
             // 'pnl_html' => Number::currency(floatval($net_pnl_val), in: $currency)
+        ]);
+    }
+
+
+    public function saveCstmAnalytics(Request $request){
+
+        $cards = $request->input('analytic_cards');
+
+    
+        $resp = OptionService::updateOption('customized_analytic_cards', $cards);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'success',
+            'data' => $cards,
+            'resp' => $resp
         ]);
     }
 }

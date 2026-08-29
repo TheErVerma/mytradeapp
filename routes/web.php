@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/delete-image', [TradeController::class, 'deleteScreenshot']);
     Route::delete('/save-notes', [TradeController::class, 'updateNotes']);
     Route::get('/exporttrades', [TradeController::class, 'exportCsv']);
+    Route::post('/save-customized-analytics', [TradeController::class, 'saveCstmAnalytics']);
     Route::post('/loadmorestocks', [UpstoxController::class, 'loadMoreData']);
     /**
      * APIs End

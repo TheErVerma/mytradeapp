@@ -240,23 +240,8 @@
     --color-utility-neutral-700: var(--color-neutral-700);
     --color-utility-neutral-800: var(--color-neutral-800);
     --color-utility-neutral-900: var(--color-neutral-900);
-    --color-utility-red-50: var(--color-red-50);
-    --color-utility-red-100: var(--color-red-100);
-    --color-utility-red-200: var(--color-red-200);
-    --color-utility-red-300: var(--color-red-300);
-    --color-utility-red-400: var(--color-red-400);
-    --color-utility-red-500: var(--color-red-500);
-    --color-utility-red-600: var(--color-red-600);
-    --color-utility-red-700: var(--color-red-700);
-    --color-utility-green-50: var(--color-green-50);
     --color-utility-green-100: var(--color-green-100);
-    --color-utility-green-200: var(--color-green-200);
-    --color-utility-green-300: var(--color-green-300);
-    --color-utility-green-400: var(--color-green-400);
     --color-utility-green-500: var(--color-green-500);
-    --color-utility-green-600: var(--color-green-600);
-    --color-utility-green-700: var(--color-green-700);
-    --color-utility-orange-50: var(--color-orange-50);
     --color-text-primary: var(--color-neutral-900);
     --color-text-tertiary: var(--color-neutral-600);
     --color-text-error-primary: var(--color-red-600);
@@ -333,6 +318,7 @@
     --background-color-tertiary: var(--color-bg-tertiary);
     --background-color-brand-primary: var(--color-bg-brand-primary);
     --background-color-success-primary: var(--color-bg-success-primary);
+    --background-color-brand-solid: var(--color-bg-brand-solid);
     --background-color-primary_hover: var(--color-bg-primary_hover);
     --background-color-error-primary: var(--color-bg-error-primary);
     --background-color-secondary: var(--color-bg-secondary);
@@ -351,7 +337,6 @@
     --text-color-placeholder: var(--color-text-placeholder);
     --text-color-brand-tertiary: var(--color-text-brand-tertiary);
     --text-color-quaternary: var(--color-text-quaternary);
-    --text-color-brand-primary: var(--color-text-brand-primary);
     --text-color-brand-secondary_hover: var(--color-text-brand-secondary_hover);
     --border-color-primary: var(--color-border-primary);
     --border-color-secondary: var(--color-border-secondary);
@@ -698,12 +683,6 @@
   }
   .w-\[24\%\] {
     width: 24%;
-  }
-  .w-\[25\%\] {
-    width: 25%;
-  }
-  .w-\[35\%\] {
-    width: 35%;
   }
   .w-auto {
     width: auto;
@@ -1366,9 +1345,6 @@
   @media (width < 48rem) {
     .max-md\:hidden {
       display: none;
-    }
-    .max-md\:w-\[25\%\] {
-      width: 25%;
     }
     .max-md\:w-\[35\%\] {
       width: 35%;
@@ -3070,6 +3046,68 @@ input[type='number'] {
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   --tw-ring-color: var(--ring-color-brand);
 }
+.toggle_btn_wrap {
+  height: calc(var(--spacing) * 5);
+  width: calc(var(--spacing) * 9);
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  background-color: var(--background-color-tertiary);
+  padding: calc(var(--spacing) * 0.5);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(0.5px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-color: var(--ring-color-secondary);
+  outline-color: var(--color-focus-ring);
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 150ms;
+  transition-duration: 150ms;
+  --tw-ease: linear;
+  transition-timing-function: linear;
+  --tw-ring-inset: inset;
+  .toggle_btn_slider {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+    border-radius: var(--radius-full);
+    background-color: var(--color-fg-white);
+    --tw-shadow: 0px 1px 3px var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0px 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+}
+label:has(input:checked) .toggle_btn_wrap {
+  height: calc(var(--spacing) * 5);
+  width: calc(var(--spacing) * 9);
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  background-color: var(--background-color-brand-solid);
+  padding: calc(var(--spacing) * 0.5);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(0.5px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-color: var(--ring-color-secondary);
+  outline-color: var(--color-focus-ring);
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 150ms;
+  transition-duration: 150ms;
+  --tw-ease: linear;
+  transition-timing-function: linear;
+  --tw-ring-inset: inset;
+  .toggle_btn_slider {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+    --tw-translate-x: calc(var(--spacing) * 4);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+    border-radius: var(--radius-full);
+    background-color: var(--color-fg-white);
+    --tw-shadow: 0px 1px 3px var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0px 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+      --tw-translate-x: calc(var(--spacing) * -4);
+      translate: var(--tw-translate-x) var(--tw-translate-y);
+    }
+  }
+}
 .global-table {
   width: 100%;
   overflow-x: hidden;
@@ -3222,9 +3260,6 @@ input[type='number'] {
       &:has(.hb-checkbox input:checked) {
         background-color: var(--background-color-secondary);
       }
-    }
-    tr.open {
-      background-color: var(--background-color-success-primary);
     }
     td {
       position: relative;
@@ -3438,8 +3473,7 @@ html:has(body .global-popup.active) {
 .global-popup__inner {
   display: table;
   min-height: 100%;
-  width: auto;
-  margin: 0 auto;
+  width: 100%;
 }
 .global-popup__main {
   display: table-cell;
@@ -3687,6 +3721,21 @@ html:has(body .global-popup.active) {
   height: 16px;
   border-radius: 4px;
 }
+tr.open {
+  background-color: var(--background-color-success-primary);
+}
+.live-share-on {
+  display: inline-block;
+  width: calc(var(--spacing) * 2);
+  height: calc(var(--spacing) * 2);
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--color-utility-green-500);
+  outline-style: var(--tw-outline-style);
+  outline-width: 3px;
+  outline-offset: calc(1px * -1);
+  outline-color: var(--color-utility-green-100);
+}
 @property --tw-rotate-x {
   syntax: "*";
   inherits: false;
@@ -3852,6 +3901,21 @@ html:has(body .global-popup.active) {
   inherits: false;
   initial-value: solid;
 }
+@property --tw-translate-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
 @property --tw-backdrop-blur {
   syntax: "*";
   inherits: false;
@@ -3934,6 +3998,9 @@ html:has(body .global-popup.active) {
       --tw-ease: initial;
       --tw-content: "";
       --tw-outline-style: solid;
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-translate-z: 0;
       --tw-backdrop-blur: initial;
       --tw-backdrop-brightness: initial;
       --tw-backdrop-contrast: initial;
@@ -3945,26 +4012,4 @@ html:has(body .global-popup.active) {
       --tw-backdrop-sepia: initial;
     }
   }
-}
-
-
-.live-share {
-  display: inline-block;
-  width: calc(var(--spacing) * 2);
-  height: calc(var(--spacing) * 2);
-  flex-shrink: 0;
-  border-radius: var(--radius-full);
-  background-color: var(--color-utility-green-500);
-  outline-style: var(--tw-outline-style);
-  outline-width: 3px;
-  outline-offset: calc(1px * -1);
-  outline-color: var(--color-utility-green-100);
-}
-.live-share.on {
-  background-color: var(--color-utility-green-500);
-  outline-color: var(--color-utility-green-100);
-}
-.live-share.off {
-  background-color: var(--color-utility-red-500);
-  outline-color: var(--color-utility-red-100);
 }
