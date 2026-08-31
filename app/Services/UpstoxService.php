@@ -63,32 +63,34 @@ class UpstoxService
             $broker_init = BrokerIntegration::where('user_id', $user_id)->first();
             $broker_init = collect($broker_init)->toArray();
 
-            // Log::debug(print_r($broker_init, true));
-            $accessToken =
-                $headers = [
-                    'Accept' => 'application/json',
-                    'Authorization' => 'Bearer ' . $broker_init['access_token'],
+            if (isset($broker_init['access_token'])) {
+                // Log::debug(print_r($broker_init, true));
+                $accessToken =
+                    $headers = [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $broker_init['access_token'],
+                    ];
+
+                $holdings = Http::withHeaders($headers)
+                    ->get($this->baseUrl . '/portfolio/long-term-holdings');
+
+                $positions = Http::withHeaders($headers)
+                    ->get($this->baseUrl . '/portfolio/short-term-positions');
+
+                return [
+                    'holdings' => $holdings->successful()
+                        ? $holdings->json('data', [])
+                        : [],
+
+                    'positions' => $positions->successful()
+                        ? $positions->json('data', [])
+                        : [],
+
+                    'holdings_response' => $holdings->json(),
+
+                    'positions_response' => $positions->json(),
                 ];
-
-            $holdings = Http::withHeaders($headers)
-                ->get($this->baseUrl . '/portfolio/long-term-holdings');
-
-            $positions = Http::withHeaders($headers)
-                ->get($this->baseUrl . '/portfolio/short-term-positions');
-
-            return [
-                'holdings' => $holdings->successful()
-                    ? $holdings->json('data', [])
-                    : [],
-
-                'positions' => $positions->successful()
-                    ? $positions->json('data', [])
-                    : [],
-
-                'holdings_response' => $holdings->json(),
-
-                'positions_response' => $positions->json(),
-            ];
+            }
         }
     }
 }
