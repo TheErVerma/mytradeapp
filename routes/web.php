@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\BrokerController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HelperController;
 use App\Http\Controllers\UpstoxController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\TwoFactorController;
+use App\Models\BrokerIntegration;
+use App\Services\UpstoxService;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use function Pest\Laravel\post;
@@ -19,10 +22,10 @@ Route::group(['middleware' => ['auth']], function () {
      **/
     Route::get('/logout', [UserController::class, 'logout']);
 
-    
+
     /***********************
      * Pages Start
-    **/
+     **/
     Route::get('/', function () {
         $user = Auth::user();
         $apiObj = new ApiController();
@@ -56,10 +59,43 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/settings', function () {
         return view('pages/settings/settings');
     })->name('settings');
-
+    Route::get('/integrate', function () {
+        $upser = new UpstoxService();
+        $portfolio = $upser->getPortfolio();
+        return view('pages/settings/integrate', ['portfolio' => $portfolio]);
+    })->name('integrate');
     /**
      * Pages End
      ***********************/
+
+
+
+
+    /**
+     * Upstx OAuth Start
+     */
+    Route::get('/connect-upstox', [
+        UpstoxController::class,
+        'connect'
+    ]);
+    
+    Route::get('/integrate-callback', [
+        UpstoxController::class,
+        'callback'
+    ])->name('upstox.callback');
+
+    // Route::post('/integrations/upstox/import', [
+    //     UpstoxController::class,
+    //     'importTrades'
+    // ])->name('upstox.import');
+
+    // Route::delete('/integrations/upstox', [
+    //     UpstoxController::class,
+    //     'disconnect'
+    // ])->name('upstox.disconnect');
+    /**
+     * Upstx OAuth End
+     */
 
 
     /***********************
@@ -98,11 +134,11 @@ Route::group(['middleware' => ['auth']], function () {
      * Two-Factor Authentication (2FA) Management — requires authenticated session
      * These endpoints are called from the Settings page.
      **/
-    Route::post('/user/two-factor/enable',           [TwoFactorController::class, 'enable']);
-    Route::get('/user/two-factor/setup',             [TwoFactorController::class, 'setup']);
-    Route::post('/user/two-factor/confirm',          [TwoFactorController::class, 'confirm']);
-    Route::post('/user/two-factor/disable',          [TwoFactorController::class, 'disable']);
-    Route::post('/user/two-factor/recovery-codes',   [TwoFactorController::class, 'regenerateCodes']);
+    Route::post('/user/two-factor/enable', [TwoFactorController::class, 'enable']);
+    Route::get('/user/two-factor/setup', [TwoFactorController::class, 'setup']);
+    Route::post('/user/two-factor/confirm', [TwoFactorController::class, 'confirm']);
+    Route::post('/user/two-factor/disable', [TwoFactorController::class, 'disable']);
+    Route::post('/user/two-factor/recovery-codes', [TwoFactorController::class, 'regenerateCodes']);
     /**
      * 2FA Management End
      **********************/
@@ -123,7 +159,7 @@ Route::post('/reset-all-data', [UserController::class, 'resetAllData']);
 /***********************
  * Two-Factor Challenge — for users who are mid-login (not yet fully authenticated)
  **/
-Route::get('/two-factor-authenticate',  [TwoFactorController::class, 'showChallenge'])->name('two-factor.challenge');
+Route::get('/two-factor-authenticate', [TwoFactorController::class, 'showChallenge'])->name('two-factor.challenge');
 Route::post('/two-factor-authenticate', [TwoFactorController::class, 'challenge']);
 /**
  * 2FA Challenge End

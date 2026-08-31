@@ -37,6 +37,8 @@ return [
     'upstox' => [
         'access_token' => env('UPSTOX_ACCESS_TOKEN'),
         'sandbox' => env('UPSTOX_SANDBOX', false),
+        'client_id' => env('UPSTOX_CLIENT_ID'),
+        'client_secret' => env('UPSTOX_CLIENT_SECRET'),
+        'redirect_uri' => env('UPSTOX_REDIRECT_URI'),
     ],
-
 ];

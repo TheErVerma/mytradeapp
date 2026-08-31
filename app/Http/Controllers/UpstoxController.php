@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BrokerIntegration;
 use App\Models\Instruments;
 use DB;
 use Illuminate\Http\Request;
@@ -14,37 +15,53 @@ use Illuminate\Support\Facades\Log;
 class UpstoxController extends Controller
 {
 
+    public function connect()
+    {
+        $query = http_build_query([
+            'client_id' => config('services.upstox.client_id'),
+            'redirect_uri' => config('services.upstox.redirect_uri'),
+            'response_type' => 'code',
+        ]);
+
+        $url = 'https://api.upstox.com/v2/login/authorization/dialog?' . $query;
+
+        return redirect()->away($url);
+    }
+
+    public function callback(Request $request)
+    {
+        if (!$request->filled('code')) {
+            return redirect()
+                ->route('brokers.index')
+                ->with('error', 'Upstox authorization failed.');
+        }
+
+        $service = app(UpstoxService::class);
+
+        $token = $service->getAccessToken(
+            $request->code
+        );
+
+        // Store token for authenticated user
+        BrokerIntegration::updateOrCreate(
+            [
+                'user_id' => auth()->id(),
+                'broker' => 'upstox',
+            ],
+            [
+                'access_token' => $token['access_token'],
+                'is_active' => true,
+            ]
+        );
+
+        return redirect()
+            ->route('integrate')
+            ->with('success', 'Upstox connected successfully.');
+    }
+
     static public function fetchData($search = 'a', $type = null, $page = 1)
     {
-        // $data = Cache::remember(
-        //     'upstox_api_data_'.$page,
-        //     now()->addSecond(1),
-        //     function () use ($search, $type, $page) {
-        // $upstox = app(UpstoxService::class);
-
-        // $instrumentInstance = new InstrumentsApi(
-        //     $upstox->client(),
-        //     $upstox->config()
-        // );
-
-        // $resp = $instrumentInstance->searchInstrument(
-        //     $search,
-        //     null,
-        //     $type,
-        //     null,
-        //     null,
-        //     null,
-        //     $page,
-        //     20
-        // );
-
-        // $upstox_data = $resp->getData();
-        // return self::refineUpstoxData($upstox_data);
         return false;
-        //     }
-        // );
-
-        // return $data;
     }
 
     public function loadMoreData(Request $request)
@@ -121,21 +138,21 @@ class UpstoxController extends Controller
 
             })
             ->whereNot('exchange', ['GLOBAL'])
-        //     ->orderByRaw(
-        //         DB::connection()->getDriverName() === 'pgsql'
-        //         ? "CASE
-        //     WHEN LOWER(trading_symbol) LIKE LOWER(?) THEN 1
-        //     WHEN trading_symbol ~ '^[A-Za-z]' THEN 2
-        //     ELSE 3
-        //   END"
-        //         : "CASE
-        //     WHEN LOWER(trading_symbol) LIKE LOWER(?) THEN 1
-        //     WHEN trading_symbol REGEXP '^[A-Za-z]' THEN 2
-        //     ELSE 3
-        //   END",
-        //         [$searchTerms[0] . '%']
-        //     )
-        //     ->orderBy('trading_symbol', 'ASC')
+            //     ->orderByRaw(
+            //         DB::connection()->getDriverName() === 'pgsql'
+            //         ? "CASE
+            //     WHEN LOWER(trading_symbol) LIKE LOWER(?) THEN 1
+            //     WHEN trading_symbol ~ '^[A-Za-z]' THEN 2
+            //     ELSE 3
+            //   END"
+            //         : "CASE
+            //     WHEN LOWER(trading_symbol) LIKE LOWER(?) THEN 1
+            //     WHEN trading_symbol REGEXP '^[A-Za-z]' THEN 2
+            //     ELSE 3
+            //   END",
+            //         [$searchTerms[0] . '%']
+            //     )
+            //     ->orderBy('trading_symbol', 'ASC')
             ->orderByRaw("
                 CASE
                     WHEN underlying_type = 'COM' AND instrument_type = 'FUT' THEN 1
