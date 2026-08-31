@@ -195,6 +195,12 @@ export default class TradeActions {
                             document.dispatchEvent(new Event('heat_map_load'));
                         }
 
+                        if (data.monthlyPerformance) {
+                            const ctx_cnv = document.querySelector('#main_analytics_chart');
+                            ctx_cnv.setAttribute('data_ch_hash', btoa(JSON.stringify(data.monthlyPerformance)));
+                            document.dispatchEvent(new Event('update_analytics_monthly_performace'));
+                        }
+
                         if(data.matrics){
                             const new_matrics = data.matrics;
                             (new_matrics).forEach(mtric => {

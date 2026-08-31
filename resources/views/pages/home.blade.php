@@ -186,6 +186,7 @@ $all_trades_arr = collect($trades->items())->toArray();
                 </div>
             </div>
 
+            
             <div class="rounded-xl bg-primary shadow-xs ring-1 ring-secondary ring-inset lg:w-[25%] md:w-[35%] w-full grow">
                 <div class="relative flex flex-col gap-4 px-4 py-5 md:gap-5 md:px-5">
 
@@ -244,11 +245,78 @@ $all_trades_arr = collect($trades->items())->toArray();
 
         </div>
         
+        <div class="{{ !in_array('performance-metrics', $cstmAltcCrds) ? 'hide' : '' }}  flex flex-col gap-6 border rounded-lg p-4 border-secondary shadow-xs">
+            <div class="flex flex-1 flex-col gap-1">
+                <h2 class="text-xl font-semibold text-primary">Performance Metrics</h2>
+                <p class="text-sm text-balance text-tertiary">Key stats</p>
+            </div>
+            <div class="flex flex-row gap-8">
+                @php
+                $all_mtrc_chunks = array_chunk($all_matrics, ceil(count($all_matrics) / 2));
+                $all_mtrc_first  = $all_mtrc_chunks[0] ?? [];
+                $all_mtrc_second = $all_mtrc_chunks[1] ?? [];
+                @endphp
+                <div class="w-full flex flex-col gap-2">
+                    @foreach ($all_mtrc_first as $matric_item)
+                        <div class="flex flex-row justify-between matric_item {{ ($matric_item['id']) }}">
+                            <div class="flex gap-1 items-center matric_title text-quaternary text-sm">
+                                {{ $matric_item['title'] }}
+                                <div class="tooltip-wrap ">
+                                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-3.5">
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Z">
+                                        </path>
+                                    </svg>
+                                    <div class="tooltip-popup">
+                                        <div class="z-50 flex max-w-xs flex-col items-start gap-1 rounded-lg bg-primary-solid px-3 shadow-xs will-change-transform py-2">
+                                            <span class="text-xs font-semibold text-white">{{ $matric_item['desc'] }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="value text-md {{ (strpos($matric_item['value'], '-') == "" ? 'text-success-primary' : 'text-error-primary') }} matric_value">{{ $matric_item['value'] }}</div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="w-full flex flex-col gap-2">
+                    @foreach ($all_mtrc_second as $matric_item)
+                        <div class="flex flex-row justify-between matric_item {{ ($matric_item['id']) }}">
+                            <div class="flex gap-1 items-center matric_title text-quaternary text-sm">
+                                {{ $matric_item['title'] }}
+                                <div class="tooltip-wrap ">
+                                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-3.5">
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Z">
+                                        </path>
+                                    </svg>
+                                    <div class="tooltip-popup">
+                                        <div class="z-50 flex max-w-xs flex-col items-start gap-1 rounded-lg bg-primary-solid px-3 shadow-xs will-change-transform py-2">
+                                            <span class="text-xs font-semibold text-white">{{ $matric_item['desc'] }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="value text-md text-success-primary matric_value">{{ $matric_item['value'] }}</div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <div class="{{ !in_array('monthly-performance', $cstmAltcCrds) ? 'hide' : '' }} flex flex-col gap-6 border rounded-lg p-4 border-secondary shadow-xs">
+            <div class="flex flex-1 flex-col gap-1">
+                <h2 class="text-xl font-semibold text-primary">Monthly Performance</h2>
+                <p class="text-sm text-balance text-tertiary">Your P&L broken down by month</p>
+            </div>
+            <canvas id="main_analytics_chart" data_ch_hash="{{ base64_encode(json_encode($monthlyPerformance)) }}" style="max-height:264px;"></canvas>
+        </div>    
+
         <script>
             let pnl_js_data = JSON.parse(atob(`{{ base64_encode(json_encode($headMapData)) }}`));
         </script>
         <div
-            class="{{ !in_array('trading-calendar', $cstmAltcCrds) ? 'hide' : '' }} custom-heatmap__wrap flex flex-1 flex-col gap-4 rounded-xl shadow-xs ring-1 ring-secondary ring-inset p-6">
+            class="{{ !in_array('trading-activity', $cstmAltcCrds) ? 'hide' : '' }} custom-heatmap__wrap flex flex-1 flex-col gap-4 rounded-xl shadow-xs ring-1 ring-secondary ring-inset p-6">
+            <div class="flex flex-1 flex-col gap-1">
+                <h2 class="text-xl font-semibold text-primary">Trading Activity</h2>
+            </div>
             <div id="trading-heatmap" data-heat-js='{
                 "year": {{ date('Y') }},
                 "views": {
@@ -316,62 +384,6 @@ $all_trades_arr = collect($trades->items())->toArray();
 
             </div>
         </div>
-        <div class="{{ !in_array('performance-metrics', $cstmAltcCrds) ? 'hide' : '' }}  flex flex-col gap-6 border rounded-lg p-4 border-secondary shadow-xs">
-            <div class="flex flex-1 flex-col gap-1">
-                <h2 class="text-xl font-semibold text-primary">Performance Metrics</h2>
-                <p class="text-sm text-balance text-tertiary">Key stats</p>
-            </div>
-            <div class="flex flex-row gap-8">
-                @php
-                $all_mtrc_chunks = array_chunk($all_matrics, ceil(count($all_matrics) / 2));
-                $all_mtrc_first  = $all_mtrc_chunks[0] ?? [];
-                $all_mtrc_second = $all_mtrc_chunks[1] ?? [];
-                @endphp
-                <div class="w-full flex flex-col gap-2">
-                    @foreach ($all_mtrc_first as $matric_item)
-                        <div class="flex flex-row justify-between matric_item {{ ($matric_item['id']) }}">
-                            <div class="flex gap-1 items-center matric_title text-quaternary text-sm">
-                                {{ $matric_item['title'] }}
-                                <div class="tooltip-wrap ">
-                                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-3.5">
-                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Z">
-                                        </path>
-                                    </svg>
-                                    <div class="tooltip-popup">
-                                        <div class="z-50 flex max-w-xs flex-col items-start gap-1 rounded-lg bg-primary-solid px-3 shadow-xs will-change-transform py-2">
-                                            <span class="text-xs font-semibold text-white">{{ $matric_item['desc'] }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="value text-md text-success-primary matric_value">{{ $matric_item['value'] }}</div>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="w-full flex flex-col gap-2">
-                    @foreach ($all_mtrc_second as $matric_item)
-                        <div class="flex flex-row justify-between matric_item {{ ($matric_item['id']) }}">
-                            <div class="flex gap-1 items-center matric_title text-quaternary text-sm">
-                                {{ $matric_item['title'] }}
-                                <div class="tooltip-wrap ">
-                                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-3.5">
-                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Z">
-                                        </path>
-                                    </svg>
-                                    <div class="tooltip-popup">
-                                        <div class="z-50 flex max-w-xs flex-col items-start gap-1 rounded-lg bg-primary-solid px-3 shadow-xs will-change-transform py-2">
-                                            <span class="text-xs font-semibold text-white">{{ $matric_item['desc'] }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="value text-md text-success-primary matric_value">{{ $matric_item['value'] }}</div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
 
         <div class="{{ !in_array('weekly-summary', $cstmAltcCrds) ? 'hide' : '' }} flex flex-col gap-6 border rounded-lg p-4 border-secondary shadow-xs">
             <div class="flex flex-1 flex-col gap-1">
@@ -410,8 +422,8 @@ $all_trades_arr = collect($trades->items())->toArray();
                                             <span style="width:{{ 100 - $wkdy_smry_itm['winning_percent'] }}%; background: var(--color-bg-error-solid);" class="rounded-lg flex py-1"></span>
                                         </span>
                                     </td>
-                                    <td class=" {{ chkpnlClass($wkdy_smry_itm['total_profit']) }} trade_b_total_profits">{{ Number::currency(floatval($wkdy_smry_itm['total_profit']), in: $currency) }}</td>
-                                    <td class=" {{ chkpnlClass($wkdy_smry_itm['total_loss']) }} trade_b_total_loss">{{ Number::currency(floatval($wkdy_smry_itm['total_loss']), in: $currency) }}</td>
+                                    <td class="text-success-primary trade_b_total_profits">{{ Number::currency(floatval($wkdy_smry_itm['total_profit']), in: $currency) }}</td>
+                                    <td class="text-error-primary trade_b_total_loss">{{ Number::currency(floatval($wkdy_smry_itm['total_loss']), in: $currency) }}</td>
                                     <td class="trade_b_trades">{{ $wkdy_smry_itm['trades'] }}</td>
                                 </tr>
                             @endforeach
@@ -420,63 +432,12 @@ $all_trades_arr = collect($trades->items())->toArray();
                 </table>
             </div>
         </div>
+
+
+        
         
     </div>
-
-    @php
-        /*
-        <div class="relative flex flex-col gap-6">
-            <div class="flex flex-1 flex-col gap-1">
-                <p class="text-display-xs font-semibold text-primary">Account Summary</p>
-                <p class="text-sm text-balance text-tertiary">Returns are shown once deposits are made.</p>
-            </div>
-
-            <div class="flex w-full flex-col flex-wrap gap-4 md:flex-row lg:gap-5">
-                <div class="rounded-xl bg-primary shadow-xs ring-1 ring-secondary ring-inset lg:w-[25%] md:w-[35%] w-full grow">
-                    <div class="relative flex flex-col gap-2 px-4 py-5 md:px-5">
-                        <h3 class="text-sm font-medium text-tertiary">Profit & Loss</h3>
-                        <div class="flex items-end gap-4">
-                            <p class="flex-1 text-display-sm font-semibold text-primary">
-                                {{ Number::currency(floatval($portfolioSummry['net_pnl']), in: $currency) }}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="rounded-xl bg-primary shadow-xs ring-1 ring-secondary ring-inset lg:w-[25%] md:w-[35%] w-full grow">
-                    <div class="relative flex flex-col gap-2 px-4 py-5 md:px-5">
-                        <h3 class="text-sm font-medium text-tertiary">Winnings</h3>
-                        <div class="flex items-end gap-4">
-                            <p class="flex-1 text-display-sm font-semibold text-primary">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="rounded-xl bg-primary shadow-xs ring-1 ring-secondary ring-inset lg:w-[25%] md:w-[35%] w-full grow">
-                    <div class="relative flex flex-col gap-2 px-4 py-5 md:px-5">
-                        <h3 class="text-sm font-medium text-tertiary">Lossing</h3>
-                        <div class="flex items-end gap-4">
-                            <p class="flex-1 text-display-sm font-semibold text-primary">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="rounded-xl bg-primary shadow-xs ring-1 ring-secondary ring-inset lg:w-[25%] md:w-[35%] w-full grow">
-                    <div class="relative flex flex-col gap-2 px-4 py-5 md:px-5">
-                        <h3 class="text-sm font-medium text-tertiary">Break</h3>
-                        <div class="flex items-end gap-4">
-                            <p class="flex-1 text-display-sm font-semibold text-primary">0</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="rounded-xl bg-primary shadow-xs ring-1 ring-secondary ring-inset lg:w-[25%] md:w-[35%] w-full grow">
-                    <div class="relative flex flex-col gap-2 px-4 py-5 md:px-5">
-                        <h3 class="text-sm font-medium text-tertiary">Total</h3>
-                        <div class="flex items-end gap-4">
-                            <p class="flex-1 text-display-sm font-semibold text-primary">0</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        */
-    @endphp
+    
 
 
 @endsection

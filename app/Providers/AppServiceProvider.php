@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Providers;
-
+use Carbon\Carbon;
 use App\Models\Trade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
@@ -18,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+
 
     /**
      * Bootstrap any application services.
@@ -114,12 +115,17 @@ class AppServiceProvider extends ServiceProvider
                 ->values()
                 ->toArray();
 
+
+                
+
+
             $all_trades_count = Trade::where('user_id', Auth::id())->count();
             if ($user) {
                 $total_trades = TradeController::getAll();
                 $portfolioSummry = TradeController::summary();
                 $TradeController = new TradeController();
                 $all_matrics = $TradeController->getTradeMetrics($total_trades);
+                $monthlyPerformance = $TradeController->getMonthlyPerformance($total_trades);
                 $weekdaySummary = $TradeController->weekdaySummary();
                 $currency = $user->default_country;
                 $currency = $currency ? ($currency) : 'USD';
@@ -130,6 +136,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('all_trades_count', $all_trades_count);
                 $view->with('all_matrics', $all_matrics);
                 $view->with('weekday_summary', $weekdaySummary);
+                $view->with('monthlyPerformance', $monthlyPerformance);
 
                 $view->with('currency', $currency);
                 $view->with('upstox', $upstox_data);

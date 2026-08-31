@@ -852,6 +852,7 @@ class TradeController extends Controller
             'summery' => $all_summery,
             'pnl_cal_data' => $dailyPnl,
             'matrics' => $all_matrics,
+            'monthlyPerformance' => $this->getMonthlyPerformance($trades, true)
         ];
 
         return response()->json($resp);
@@ -903,9 +904,11 @@ class TradeController extends Controller
 
     public function getTradeMetrics($trades)
     {
-
         $calculatedTrades = collect();
 
+        /*
+         * Calculate P&L for each trade
+         */
         foreach ($trades as $trade) {
 
             /*
@@ -941,12 +944,12 @@ class TradeController extends Controller
             if ($trade->trd_action === 'Long') {
 
                 $pnl = (($exit - $entry) * $qty)
-                    - (float) $trade->trd_charges_amount;
+                    - (float) ($trade->trd_charges_amount ?? 0);
 
             } elseif ($trade->trd_action === 'Short') {
 
                 $pnl = (($entry - $exit) * $qty)
-                    - (float) $trade->trd_charges_amount;
+                    - (float) ($trade->trd_charges_amount ?? 0);
 
             } else {
 
@@ -954,7 +957,7 @@ class TradeController extends Controller
             }
 
             /*
-             * Add calculated P&L to collection
+             * Add calculated trade
              */
             $calculatedTrades->push([
                 'trade' => $trade,
@@ -962,32 +965,61 @@ class TradeController extends Controller
             ]);
         }
 
-        // Log::debug(print_r($calculatedTrades, true));
 
         /*
          * Winning / Losing trades
          */
         $winningTrades = $calculatedTrades
-            ->filter(fn($item) => $item['pnl'] > 0);
+            ->filter(fn($item) => $item['pnl'] > 0)
+            ->values();
 
         $losingTrades = $calculatedTrades
-            ->filter(fn($item) => $item['pnl'] < 0);
+            ->filter(fn($item) => $item['pnl'] < 0)
+            ->values();
+
 
         /*
-         * Best trade
+         * Best / Worst trade
          */
         $bestTrade = $calculatedTrades->max('pnl') ?? 0;
+
+        $worstTrade = $calculatedTrades->min('pnl') ?? 0;
+
 
         /*
          * Average winning trade
          */
         $averageWinningTrade = $winningTrades->avg('pnl') ?? 0;
 
+
         /*
-         * Total profit and loss
+         * Average losing trade
+         *
+         * Keep signed value for displaying the loss.
+         */
+        $averageLosingTradeSigned = $losingTrades->avg('pnl') ?? 0;
+
+        /*
+         * Absolute value is used for Risk:Reward calculation.
+         */
+        $averageLosingTrade = abs($averageLosingTradeSigned);
+
+
+        /*
+         * Number of trades
+         */
+        $numberOfWinningTrades = $winningTrades->count();
+
+        $numberOfLosingTrades = $losingTrades->count();
+
+
+        /*
+         * Total profit / loss
          */
         $totalProfit = $winningTrades->sum('pnl');
+
         $totalLoss = abs($losingTrades->sum('pnl'));
+
 
         /*
          * Profit Factor
@@ -998,61 +1030,241 @@ class TradeController extends Controller
             ? $totalProfit / $totalLoss
             : 0;
 
+
         /*
          * Risk : Reward
          *
          * Average winning trade / Average losing trade
          */
-        $averageLosingTrade = abs($losingTrades->avg('pnl') ?? 0);
-
         $riskReward = $averageLosingTrade > 0
             ? $averageWinningTrade / $averageLosingTrade
             : 0;
+
 
         /*
          * Long performance
          */
         $longPerformance = $calculatedTrades
-            ->filter(fn($item) => $item['trade']->trd_action === 'Long')
+            ->filter(
+                fn($item) =>
+                $item['trade']->trd_action === 'Long'
+            )
             ->sum('pnl');
 
+
         /*
-         * Winning days
+         * Short performance
          */
-        $winningDays = $calculatedTrades
-            ->filter(fn($item) => $item['pnl'] > 0)
+        $shortPerformance = $calculatedTrades
+            ->filter(
+                fn($item) =>
+                $item['trade']->trd_action === 'Short'
+            )
+            ->sum('pnl');
+
+
+        /*
+         * Daily P&L
+         *
+         * First calculate the TOTAL P&L for each day.
+         */
+        $dailyPnl = $calculatedTrades
             ->groupBy(function ($item) {
+
                 return date(
                     'Y-m-d',
                     strtotime($item['trade']->trd_date)
                 );
+
             })
-            ->map(fn($dayTrades) => $dayTrades->sum('pnl'));
+            ->map(function ($dayTrades) {
+
+                return $dayTrades->sum('pnl');
+
+            });
+
+
+        /*
+         * Winning days
+         */
+        $winningDays = $dailyPnl
+            ->filter(fn($pnl) => $pnl > 0);
+
+
+        /*
+         * Losing days
+         */
+        $losingDays = $dailyPnl
+            ->filter(fn($pnl) => $pnl < 0);
+
 
         /*
          * Average winning day P&L
          */
         $averageWinningDayPnl = $winningDays->avg() ?? 0;
 
+
         /*
          * Largest profitable day
          */
         $largestProfitableDay = $winningDays->max() ?? 0;
 
+
+        /*
+         * Average losing day P&L
+         */
+        $averageLosingDayPnl = $losingDays->avg() ?? 0;
+
+
+        /*
+         * Largest losing day
+         *
+         * Since losses are negative,
+         * min() gives the largest loss.
+         */
+        $largestLosingDay = $losingDays->min() ?? 0;
+
+
         /*
          * Average holding time for winning trades
          */
-        $averageHoldingTime = $this->getAverageHoldingTime(
+        $averageHoldingTimeWinners = $this->getAverageHoldingTime(
             $winningTrades
         );
 
+
+        /*
+         * Average holding time for losing trades
+         */
+        $averageHoldingTimeLosers = $this->getAverageHoldingTime(
+            $losingTrades
+        );
+
+
+        /*
+         * Average time in trade
+         *
+         * Includes all completed trades.
+         */
+        $averageTimeInTrade = $this->getAverageHoldingTime(
+            $calculatedTrades
+        );
+
+
+        /*
+         * Consecutive Wins / Losses
+         *
+         * Sort trades chronologically first.
+         */
+        $orderedTrades = $calculatedTrades
+            ->sortBy(function ($item) {
+
+                return strtotime($item['trade']->trd_date);
+
+            })
+            ->values();
+
+
+        $currentWins = 0;
+        $currentLosses = 0;
+
+        $consecutiveWins = 0;
+        $consecutiveLosses = 0;
+
+
+        foreach ($orderedTrades as $item) {
+
+            $pnl = $item['pnl'];
+
+            /*
+             * Winning trade
+             */
+            if ($pnl > 0) {
+
+                $currentWins++;
+                $currentLosses = 0;
+
+                $consecutiveWins = max(
+                    $consecutiveWins,
+                    $currentWins
+                );
+
+                /*
+                 * Losing trade
+                 */
+            } elseif ($pnl < 0) {
+
+                $currentLosses++;
+                $currentWins = 0;
+
+                $consecutiveLosses = max(
+                    $consecutiveLosses,
+                    $currentLosses
+                );
+
+                /*
+                 * Break-even trade
+                 */
+            } else {
+
+                $currentWins = 0;
+                $currentLosses = 0;
+            }
+        }
+
+
+        /*
+         * Total charges
+         */
+        $totalCharges = $calculatedTrades
+            ->sum(function ($item) {
+
+                return (float) (
+                    $item['trade']->trd_charges_amount ?? 0
+                );
+
+            });
+
+
+        /*
+         * Total brokerage
+         *
+         * Change trd_brokerage_amount if your
+         * actual column name is different.
+         */
+        $totalBrokerage = $calculatedTrades
+            ->sum(function ($item) {
+
+                return (float) (
+                    $item['trade']->trd_brokerage_amount ?? 0
+                );
+
+            });
+
+
+        /*
+         * Return metrics
+         */
         return [
+
+            /*
+             * =========================
+             * Trade Metrics
+             * =========================
+             */
 
             [
                 'id' => 'best-trade',
                 'title' => 'Best Trade',
                 'desc' => 'The trade with the highest profit among all completed trades.',
                 'value' => $this->formatCurrency($bestTrade),
+            ],
+
+            [
+                'id' => 'worst-trade',
+                'title' => 'Worst Trade',
+                'desc' => 'The trade with the largest loss among all completed trades.',
+                'value' => $this->formatCurrency($worstTrade),
             ],
 
             [
@@ -1063,23 +1275,51 @@ class TradeController extends Controller
             ],
 
             [
+                'id' => 'average-losing-trade',
+                'title' => 'Average Losing Trade',
+                'desc' => 'The average loss generated by all losing trades.',
+                'value' => $this->formatCurrency($averageLosingTradeSigned),
+            ],
+
+            [
                 'id' => 'number-of-winning-trades',
                 'title' => 'Number of Winning Trades',
                 'desc' => 'The total number of trades that closed with a profit.',
-                'value' => $winningTrades->count(),
+                'value' => $numberOfWinningTrades,
+            ],
+
+            [
+                'id' => 'number-of-losing-trades',
+                'title' => 'Number of Losing Trades',
+                'desc' => 'The total number of trades that closed with a loss.',
+                'value' => $numberOfLosingTrades,
             ],
 
             [
                 'id' => 'average-holding-days-winners',
                 'title' => 'Average Holding Days (Winners)',
-                'desc' => 'The average number of days profitable trades were held before being closed.',
-                'value' => $averageHoldingTime,
+                'desc' => 'The average amount of time profitable trades were held before being closed.',
+                'value' => $averageHoldingTimeWinners,
             ],
+
+            [
+                'id' => 'average-holding-days-losers',
+                'title' => 'Average Holding Days (Losers)',
+                'desc' => 'The average amount of time losing trades were held before being closed.',
+                'value' => $averageHoldingTimeLosers,
+            ],
+
+
+            /*
+             * =========================
+             * Daily Metrics
+             * =========================
+             */
 
             [
                 'id' => 'average-winning-day-p-l',
                 'title' => 'Average Winning Day P&L',
-                'desc' => 'The average profit generated on days when your overall daily P&L was positive.',
+                'desc' => 'The average profit generated on days when the overall daily P&L was positive.',
                 'value' => $this->formatCurrency($averageWinningDayPnl),
             ],
 
@@ -1091,11 +1331,81 @@ class TradeController extends Controller
             ],
 
             [
+                'id' => 'average-losing-day-p-l',
+                'title' => 'Average Losing Day P&L',
+                'desc' => 'The average net loss on trading days where the overall daily P&L was negative.',
+                'value' => $this->formatCurrency($averageLosingDayPnl),
+            ],
+
+            [
+                'id' => 'largest-losing-day-losses',
+                'title' => 'Largest Losing Day (Losses)',
+                'desc' => 'The largest net loss generated on a single trading day.',
+                'value' => $this->formatCurrency($largestLosingDay),
+            ],
+
+
+            /*
+             * =========================
+             * Streak Metrics
+             * =========================
+             */
+
+            [
+                'id' => 'consecutive-wins',
+                'title' => 'Consecutive Wins',
+                'desc' => 'The highest number of profitable trades achieved consecutively.',
+                'value' => $consecutiveWins,
+            ],
+
+            [
+                'id' => 'consecutive-losses',
+                'title' => 'Consecutive Losses',
+                'desc' => 'The highest number of losing trades recorded consecutively.',
+                'value' => $consecutiveLosses,
+            ],
+
+
+            /*
+             * =========================
+             * Direction Metrics
+             * =========================
+             */
+
+            [
                 'id' => 'long-performance',
                 'title' => 'Long Performance',
-                'desc' => 'The overall performance of trades taken in the Long direction, including their total P&L.',
+                'desc' => 'The overall P&L generated from trades taken in the Long direction.',
                 'value' => $this->formatCurrency($longPerformance),
             ],
+
+            [
+                'id' => 'short-performance',
+                'title' => 'Short Performance',
+                'desc' => 'The overall P&L generated from trades taken in the Short direction.',
+                'value' => $this->formatCurrency($shortPerformance),
+            ],
+
+
+            /*
+             * =========================
+             * Time Metrics
+             * =========================
+             */
+
+            [
+                'id' => 'average-time-in-trade',
+                'title' => 'Avg. Time in Trade',
+                'desc' => 'The average amount of time a trade remained open before being closed.',
+                'value' => $averageTimeInTrade,
+            ],
+
+
+            /*
+             * =========================
+             * Performance Ratios
+             * =========================
+             */
 
             [
                 'id' => 'profit-factor',
@@ -1111,6 +1421,111 @@ class TradeController extends Controller
                 'value' => '1:' . number_format($riskReward, 2),
             ],
 
+
+            /*
+             * =========================
+             * Cost Metrics
+             * =========================
+             */
+
+            [
+                'id' => 'total-charges',
+                'title' => 'Total Charges',
+                'desc' => 'The total trading charges incurred across all completed trades.',
+                'value' => $this->formatCurrency($totalCharges),
+            ],
+
+            [
+                'id' => 'total-brokerage',
+                'title' => 'Total Brokerage',
+                'desc' => 'The total brokerage fees incurred across all completed trades.',
+                'value' => $this->formatCurrency($totalBrokerage),
+            ],
+        ];
+    }
+
+
+    public function getMonthlyPerformance($trades, $is_array = false)
+    {
+        $trades = !$is_array ? collect($trades->items())->all() : $trades;
+        $monthlyPnl = [];
+        
+
+        foreach ($trades as $trade) {
+            /*
+            * Calculate quantity
+            */
+            if ($trade->trd_type === 'F&O') {
+
+                $qty = (float) $trade->trd_lot *
+                    (
+                        $trade->instrument->qty_multiplier <= 1
+                            ? $trade->instrument->lot_size
+                            : $trade->instrument->qty_multiplier
+                    );
+
+            } else {
+
+                $qty = (float) $trade->trd_qty;
+            }
+
+            /*
+            * Skip trades without exit price
+            */
+            if (
+                $trade->trd_exit_price === null ||
+                $trade->trd_price === null
+            ) {
+                continue;
+            }
+
+            /*
+            * Calculate P&L
+            */
+            $entryPrice = (float) $trade->trd_price;
+            $exitPrice  = (float) $trade->trd_exit_price;
+
+            if ($trade->trd_action === 'Long') {
+
+                $pnl = ($exitPrice - $entryPrice) * $qty;
+
+            } else {
+
+                $pnl = ($entryPrice - $exitPrice) * $qty;
+            }
+
+            /*
+            * Group by month
+            */
+            $month = Carbon::parse($trade->trd_date)->format('Y-m');
+
+            if (!isset($monthlyPnl[$month])) {
+                $monthlyPnl[$month] = 0;
+            }
+
+            
+            $monthlyPnl[$month] += $pnl;
+        }
+
+        /*
+        * Sort chronologically
+        */
+        ksort($monthlyPnl);
+        /*
+        * Format for Chart.js
+        */
+        return [
+            'monthlyPnlLabels' => array_map(
+                function ($month) {
+                    return Carbon::createFromFormat('Y-m', $month)->format('n/Y');
+                },
+                array_keys($monthlyPnl)
+            ),
+
+            'monthlyPnlData' => array_map(
+                fn ($pnl) => round($pnl, 2),
+                array_values($monthlyPnl)
+            ),
         ];
     }
 
@@ -1153,7 +1568,7 @@ class TradeController extends Controller
 
             $day = Carbon::parse($trade->trd_date)->format('l');
 
-            if(!isset($summary[$day])){
+            if (!isset($summary[$day])) {
                 continue;
             }
             /*
@@ -1605,11 +2020,12 @@ class TradeController extends Controller
     }
 
 
-    public function saveCstmAnalytics(Request $request){
+    public function saveCstmAnalytics(Request $request)
+    {
 
         $cards = $request->input('analytic_cards');
 
-    
+
         $resp = OptionService::updateOption('customized_analytic_cards', $cards);
 
         return response()->json([

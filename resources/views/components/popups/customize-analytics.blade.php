@@ -6,12 +6,16 @@
             'desc' => 'Choose which summary cards you want to display on your dashboard.'
         ],
         [
-            'title' => 'Trading Calendar',
-            'desc' => 'Show your daily trading activity and P&L on the calendar.'
-        ],
-        [
             'title' => 'Performance Metrics',
             'desc' => 'Show key statistics that summarize your trading performance.'
+        ],
+        [
+            'title' => 'Monthly Performance',
+            'desc' => 'Get analytics and performance by month of the year.'
+        ],
+        [
+            'title' => 'Trading Activity',
+            'desc' => 'Show your daily trading activity and P&L on the calendar.'
         ],
         [
             'title' => 'Weekly Summary',

@@ -1349,9 +1349,11 @@ div#live_link_qr_zone svg path {
     animation: spin 1s linear infinite;
     flex-shrink: 0;
 }
-div#trading-heatmap .map .month .day{
+
+div#trading-heatmap .map .month .day {
     cursor: pointer;
 }
+
 .trades_journal_table_main_wrap.capturing table.global-table.trades_journal_table {
     overflow: hidden;
 }
@@ -1359,6 +1361,7 @@ div#trading-heatmap .map .month .day{
 table.global-table.week_summery_table td {
     color: revert-layer;
 }
+
 .trades_journal_table_main_wrap .current_page_pnl {
     width: 100%;
     display: flex;
@@ -1381,9 +1384,11 @@ table.global-table.week_summery_table td {
 .trades_journal_table_main_wrap.capturing thead th.trade_h_actions {
     display: none !important;
 }
-.trades_journal_table_main_wrap.capturing .only_for_capture{
+
+.trades_journal_table_main_wrap.capturing .only_for_capture {
     display: block !important;
 }
+
 table.trades_journal_table tbody td.trade_b_action.long svg circle {
     fill: var(--color-bg-success-solid);
     stroke: var(--color-bg-success-solid);
@@ -2205,6 +2210,7 @@ div#tfa_disable_form .main_set_field label {
 table.week_summery_table th.trade_h_day {
     text-align: left;
 }
+
 table.week_summery_table th.trade_h_net_profits,
 table.week_summery_table td.trade_b_total_profits,
 table.week_summery_table td.trade_b_total_loss,
@@ -2212,10 +2218,10 @@ table.week_summery_table td.trade_b_trades,
 table.week_summery_table th.trade_h_total_profits,
 table.week_summery_table th.trade_h_total_loss,
 table.week_summery_table th.trade_h_trades,
-table.week_summery_table td.trade_b_net_profits
-{
+table.week_summery_table td.trade_b_net_profits {
     text-align: right;
 }
+
 .single_trade_body .single_trade_tabs {
     display: inline-flex;
     justify-content: flex-start;
@@ -2683,4 +2689,24 @@ table.week_summery_table td.trade_b_net_profits
 
 .heavy-profit {
     background: #16B957 !important;
+}
+
+#trading-heatmap .day.hastooltip {
+    overflow: unset;
+    z-index: 9;
+    position: relative;
+}
+
+#trading-heatmap .day.hastooltip .tooltip-popup {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    width: max-content;
+    top: -36px;
+    transition: all 0.2s;
+}
+
+#trading-heatmap .day.hastooltip:hover .tooltip-popup {
+    opacity: 1;
+    visibility: visible;
 }
