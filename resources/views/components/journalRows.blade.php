@@ -48,8 +48,8 @@
         <tr class="@php echo implode(' ', $tred_classes); @endphp ">
             @if($has_inline_actions)
             <td class="trade_b_check w-15 pr-0!" tabindex="-1">
-                <label class="hb-checkbox size-lg" for="rememberMe{{ $row_id }}">
-                    <span><input type="checkbox" id="rememberMe{{ $row_id }}"></span>
+                <label class="hb-checkbox size-lg" for="rowSelectChk-{{ $row_id }}">
+                    <span><input type="checkbox" id="rowSelectChk-{{ $row_id }}" value="{{ $row_id }}"></span>
                 </label>
             </td>
             @endif

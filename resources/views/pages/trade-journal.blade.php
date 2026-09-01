@@ -270,9 +270,9 @@
                         <thead>
                             <tr>
                                 <th class="trade_h_check w-min pr-0!">
-                                    <label class="hb-checkbox size-lg" for="rememberMe">
+                                    <label class="hb-checkbox size-lg" for="selectAllTrades">
                                         <span>
-                                            <input type="checkbox" id="rememberMe">
+                                            <input type="checkbox" id="selectAllTrades">
                                         </span>
 
                                     </label>

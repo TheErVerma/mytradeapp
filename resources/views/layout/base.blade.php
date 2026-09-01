@@ -60,6 +60,7 @@
         @include('../components/popups/share-live')
         @include('../components/popups/custom-symbol')
         @include('../components/popups/customize-analytics')
+        @include('../components/popups/bottom-action')
         
     @else
         @yield('content')

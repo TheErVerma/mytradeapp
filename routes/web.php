@@ -59,11 +59,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/settings', function () {
         return view('pages/settings/settings');
     })->name('settings');
-    Route::get('/integrate', function () {
-        $upser = new UpstoxService();
-        $portfolio = $upser->getPortfolio();
-        return view('pages/settings/integrate', ['portfolio' => $portfolio]);
-    })->name('integrate');
+    Route::get('/integrate', [UpstoxController::class, 'integratePage'])->name('integrate');
+    Route::get('/disconnect-upstox', [UpstoxController::class, 'disconnectUpstox']);
     /**
      * Pages End
      ***********************/
@@ -74,15 +71,15 @@ Route::group(['middleware' => ['auth']], function () {
     /**
      * Upstx OAuth Start
      */
-    Route::get('/connect-upstox', [
-        UpstoxController::class,
-        'connect'
-    ]);
-    
-    Route::get('/integrate-callback', [
-        UpstoxController::class,
-        'callback'
-    ])->name('upstox.callback');
+    // Route::get('/connect-upstox', [
+    //     UpstoxController::class,
+    //     'connect'
+    // ]);
+
+    // Route::get('/integrate-callback', [
+    //     UpstoxController::class,
+    //     'callback'
+    // ])->name('upstox.callback');
 
     // Route::post('/integrations/upstox/import', [
     //     UpstoxController::class,
@@ -109,6 +106,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/stop-liveshare', [TradeController::class, 'stopLiveShare']);
     Route::post('/filter-journal-items', [TradeController::class, 'filterJournalItems']);
     Route::delete('/trade', [TradeController::class, 'deleteItem']);
+    Route::delete('/trades', [TradeController::class, 'deleteItems']);
     Route::put('/trade', [TradeController::class, 'editTrade']);
     Route::post('/upload-image', [TradeController::class, 'uploadScreenshots']);
     Route::delete('/delete-image', [TradeController::class, 'deleteScreenshot']);
@@ -116,6 +114,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/exporttrades', [TradeController::class, 'exportCsv']);
     Route::post('/save-customized-analytics', [TradeController::class, 'saveCstmAnalytics']);
     Route::post('/loadmorestocks', [UpstoxController::class, 'loadMoreData']);
+    Route::post('/sync-upstox-data', [UpstoxController::class, 'syncUpstoxData']);
     /**
      * APIs End
      **********************/
@@ -155,6 +154,15 @@ Route::post('/reset-password', [UserController::class, 'resetPassword']);
 Route::post('/reset-all-data', [UserController::class, 'resetAllData']);
 
 
+Route::get('/connect-upstox', [
+    UpstoxController::class,
+    'connect'
+]);
+
+Route::get('/integrate-callback', [
+    UpstoxController::class,
+    'callback'
+])->name('upstox.callback');
 
 /***********************
  * Two-Factor Challenge — for users who are mid-login (not yet fully authenticated)

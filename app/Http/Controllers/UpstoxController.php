@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\BrokerIntegration;
 use App\Models\Instruments;
+use App\Models\Trade;
+use App\Models\User;
+use Auth;
 use DB;
+use Http;
 use Illuminate\Http\Request;
 use App\Services\UpstoxService;
+use Str;
 use Upstox\Client\Api\UserApi;
 use Upstox\Client\Api\InstrumentsApi;
 use Illuminate\Support\Facades\Cache;
@@ -30,33 +35,123 @@ class UpstoxController extends Controller
 
     public function callback(Request $request)
     {
-        if (!$request->filled('code')) {
+        $usr_id = Auth::id();
+
+        if ($usr_id) {
+            if (!$request->filled('code')) {
+                return redirect()
+                    ->route('brokers.index')
+                    ->with('error', 'Upstox authorization failed.');
+            }
+
+            $service = app(UpstoxService::class);
+
+            $token = $service->getAccessToken(
+                $request->code
+            );
+
+            // Store token for authenticated user
+            BrokerIntegration::updateOrCreate(
+                [
+                    'user_id' => auth()->id(),
+                    'broker' => 'upstox',
+                ],
+                [
+                    'access_token' => $token['access_token'],
+                    'is_active' => true,
+                ]
+            );
+
             return redirect()
-                ->route('brokers.index')
-                ->with('error', 'Upstox authorization failed.');
+                ->route('integrate')
+                ->with('success', 'Upstox connected successfully.');
+        } else {
+
+            session()->forget('upstox_oauth_state');
+
+            if (!$request->code) {
+                Log::debug("No Code");
+                return redirect()
+                    ->route('login')
+                    ->withErrors([
+                        'upstox' => 'Upstox authentication failed.',
+                    ]);
+            }
+
+            /*
+             * Exchange authorization code for access token.
+             */
+            $response = Http::asForm()
+                ->withHeaders([
+                    'Accept' => 'application/json',
+                ])
+                ->post(
+                    'https://api.upstox.com/v2/login/authorization/token',
+                    [
+                        'code' => $request->code,
+                        'client_id' => config('services.upstox.client_id'),
+                        'client_secret' => config('services.upstox.client_secret'),
+                        'redirect_uri' => config('services.upstox.redirect_uri'),
+                        'grant_type' => 'authorization_code',
+                    ]
+                );
+
+            if ($response->failed()) {
+                Log::debug(print_r($response->json(), true));
+                return redirect()
+                    ->route('login')
+                    ->withErrors([
+                        'upstox' => $response->json('message')
+                            ?? 'Unable to authenticate with Upstox.',
+                    ]);
+            }
+
+            $upstox = $response->json();
+
+            DB::transaction(function () use ($upstox, &$user) {
+
+                /*
+                 * Find existing Laravel user.
+                 */
+                $user = User::where('email', $upstox['email'])->first();
+
+                /*
+                 * Create new Laravel user.
+                 */
+                if (!$user) {
+                    $user = User::create([
+                        'name' => $upstox['user_name'],
+                        'email' => $upstox['email'],
+                        'password' => bcrypt(str()->random(32)),
+                    ]);
+                }
+
+                /*
+                 * Create/update Upstox integration.
+                 */
+                BrokerIntegration::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'broker' => 'upstox',
+                    ],
+                    [
+                        'broker_user_id' => $upstox['user_id'],
+                        'access_token' => $upstox['access_token'],
+                        'refresh_token' => $upstox['refresh_token'] ?? null,
+                        'token_expires_at' => isset($upstox['expires_at'])
+                            ? now()->addSeconds($upstox['expires_at'])
+                            : null,
+                        'is_active' => true,
+                    ]
+                );
+            });
+
+            Auth::login($user, true);
+
+            $request->session()->regenerate();
+
+            return redirect()->intended('/journal');
         }
-
-        $service = app(UpstoxService::class);
-
-        $token = $service->getAccessToken(
-            $request->code
-        );
-
-        // Store token for authenticated user
-        BrokerIntegration::updateOrCreate(
-            [
-                'user_id' => auth()->id(),
-                'broker' => 'upstox',
-            ],
-            [
-                'access_token' => $token['access_token'],
-                'is_active' => true,
-            ]
-        );
-
-        return redirect()
-            ->route('integrate')
-            ->with('success', 'Upstox connected successfully.');
     }
 
     static public function fetchData($search = 'a', $type = null, $page = 1)
@@ -249,4 +344,91 @@ class UpstoxController extends Controller
             ], 500);
         }
     }
+
+
+    public function syncUpstoxData()
+    {
+        $UpstoxService = new UpstoxService();
+        $getPortfolio = $UpstoxService->getPortfolio();
+        $req_log = [];
+        if (isset($getPortfolio['positions'])) {
+            $positions = $getPortfolio['positions'];
+            if (is_array($positions) && !empty($positions)) {
+                foreach ($positions as $position) {
+                    $instrument_arr = collect(Instruments::where('instrument_key', (isset($position["instrument_token"]) ? $position["instrument_token"] : ''))->first())->toArray();
+                    $new_data = [
+                        'trd_symbol' => $instrument_arr['trading_symbol'] . (isset($instrument_arr['short_name']) && $instrument_arr['short_name'] != "" ? ' (' . $instrument_arr['short_name'] . ')' : ''),
+                        'trd_symbol_key' => $instrument_arr['instrument_key'],
+                        'trd_action' => 'Long',
+                        'trd_date' => date('Y-m-d'),
+                        'trd_exit_date' => null,
+                        'trd_shares' => isset($position["quantity"]) ? $position["quantity"] : 0,
+                        'trd_price' => isset($position["buy_price"]) ? $position["buy_price"] : 0,
+                        'trd_exit_price' => isset($position["sell_price"]) ? $position["sell_price"] : '',
+                        'trd_charges_amount' => 0,
+                        'trd_lot' => isset($position["quantity"]) ? $position["quantity"] : 0,
+                        'trd_type' => 'Cash',
+                        'user_id' => Auth::id(),
+                        // isset($position["exchange"]) ? $position["exchange"] : '',
+                        // isset($position["multiplier"]) ? $position["multiplier"] : '',
+                        // isset($position["value"]) ? $position["value"] : '',
+                        // isset($position["pnl"]) ? $position["pnl"] : '',
+                        // isset($position["product"]) ? $position["product"] : '',
+
+                        // isset($position["average_price"]) ? $position["average_price"] : '',
+                        // isset($position["buy_value"]) ? $position["buy_value"] : '',
+                        // isset($position["overnight_quantity"]) ? $position["overnight_quantity"] : '',
+                        // isset($position["day_buy_value"]) ? $position["day_buy_value"] : '',
+                        // isset($position["day_buy_price"]) ? $position["day_buy_price"] : '',
+                        // isset($position["overnight_buy_amount"]) ? $position["overnight_buy_amount"] : '',
+                        // isset($position["overnight_buy_quantity"]) ? $position["overnight_buy_quantity"] : '',
+                        // isset($position["day_buy_quantity"]) ? $position["day_buy_quantity"] : '',
+                        // isset($position["day_sell_value"]) ? $position["day_sell_value"] : '',
+                        // isset($position["day_sell_price"]) ? $position["day_sell_price"] : '',
+                        // isset($position["overnight_sell_amount"]) ? $position["overnight_sell_amount"] : '',
+                        // isset($position["overnight_sell_quantity"]) ? $position["overnight_sell_quantity"] : '',
+                        // isset($position["day_sell_quantity"]) ? $position["day_sell_quantity"] : '',
+
+                        // isset($position["last_price"]) ? $position["last_price"] : '',
+                        // isset($position["unrealised"]) ? $position["unrealised"] : '',
+                        // isset($position["realised"]) ? $position["realised"] : '',
+                        // isset($position["sell_value"]) ? $position["sell_value"] : '',
+                        // isset($position["tradingsymbol"]) ? $position["tradingsymbol"] : '',
+
+                        // isset($position["close_price"]) ? $position["close_price"] : '',
+                        // isset($position["buy_price"]) ? $position["buy_price"] : '',
+                        // isset($position["sell_price"]) ? $position["sell_price"] : '',
+                    ];
+                    $new_row = Trade::create($new_data);
+
+                    $req_log[] = $new_data;
+                }
+            }
+        }
+        return response()->json([
+            "status" => 200,
+            "data" => $req_log,
+        ]);
+    }
+
+    public function integratePage(){
+        $upstox_connected = false;
+        $broker_init = collect(BrokerIntegration::where('user_id', Auth::id())->get())->toArray();
+        if($broker_init && !empty($broker_init)){
+            foreach($broker_init as $brokerinit){
+                if($brokerinit['broker'] == 'upstox' && $brokerinit['access_token'] != ""){
+                    $upstox_connected = true;
+                }
+            }
+        }
+        $upser = new UpstoxService();
+        $portfolio = $upser->getPortfolio();
+        return view('pages/settings/integrate', ['portfolio' => $portfolio, 'upstox_connected' => $upstox_connected]);
+    }
+
+    public function disconnectUpstox(){
+        BrokerIntegration::where('user_id', Auth::id())->delete();
+        return redirect()->intended('/integrate');
+    }
+
 }

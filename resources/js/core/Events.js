@@ -160,6 +160,7 @@ export default class EventManager {
                 }
             }
         });
+       
 
         const cs_trd_type_elm = document.querySelector('#cs_trd_type');
         if (cs_trd_type_elm) {
@@ -477,6 +478,94 @@ export default class EventManager {
                     });
 
                     document.querySelector('#otp').value = finalOtp.join('');
+                });
+            })
+        }
+
+        const checkActiveCheck = () => {
+            const allRowChkd = document.querySelectorAll('.trade_b_check input:checked');
+            const btn_pp = document.querySelector('.bottom-action-wrap');
+            const totalSelected = allRowChkd.length;
+            if(totalSelected >= 1){
+                btn_pp.classList.add('active');
+            }else{
+                btn_pp.classList.remove('active');
+                document.querySelector('#selectAllTrades').checked = false;
+            }
+            btn_pp.querySelector('.selected_info').innerHTML = totalSelected+' selected';
+        }
+
+        const uncheckAllRows = document.querySelector('.uncheckAllRows');
+        if(uncheckAllRows){
+            uncheckAllRows.addEventListener('click', function(){
+                const allRowChks = document.querySelectorAll('.trade_b_check input');
+                if(allRowChks){
+                    allRowChks.forEach(function(chk){chk.checked = false, chk.dispatchEvent(new Event('change'))});
+                }
+            });
+        }
+
+        const selectAllTradeschk = document.getElementById('selectAllTrades');
+        if(selectAllTradeschk){
+            selectAllTradeschk.addEventListener('change', function(){
+                const chk = this;
+                const allRowChks = document.querySelectorAll('.trade_b_check input');
+                if(allRowChks){
+                    if(chk.checked){
+                        allRowChks.forEach(function(ch){
+                            ch.checked = true,ch.dispatchEvent(new Event('change'))
+                        });
+                    }else{
+                        allRowChks.forEach(function(ch){
+                            ch.checked = false,ch.dispatchEvent(new Event('change'))
+                        });
+                    }
+                    setTimeout(() => {
+                        checkActiveCheck();
+                    }, 100);
+                }
+            })
+        }
+
+        const alrowChks = document.querySelectorAll('.trade_b_check input');
+        if(alrowChks){
+            alrowChks.forEach(alrowChk => alrowChk.addEventListener('change', function(){
+                checkActiveCheck();
+            }));
+        }
+
+        const deleteChkdAllRows = document.querySelector('.deleteChkdAllRows');
+        if(deleteChkdAllRows){
+            deleteChkdAllRows.addEventListener('click', function(){
+                const this_btn = this;
+                MainApp.ConfirmPop.confirm('Are you sure? do you want to delete selected entries?', () => {
+                    const allRowChkd = document.querySelectorAll('.trade_b_check input:checked');
+                    let allIds = [];
+                    if(allRowChkd && allRowChkd.length >= 1){
+                        allRowChkd.forEach(chk => {
+                            allIds.push(chk.value);
+                        });
+                    }
+                   
+                    fetch(`/trades`, {
+                        method: 'DELETE',
+                        body:JSON.stringify({
+                            ids: allIds
+                        }),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': ThisApp.token
+                        },
+                    }).then((response) => response.json())
+                        .then((data) => {
+                            console.log(data);
+                            if(data.status == 200){
+                                window.location.reload();
+                            }
+                        }).catch((err) => {
+                            console.log(err);
+                        })
                 });
             })
         }

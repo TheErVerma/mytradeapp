@@ -251,20 +251,21 @@
 
             <div class="flex flex-col gap-2 md:gap-3">
               <h1 class="text-xl font-semibold text-primary md:text-display-xs">Welcome to Trade Log</h1>
-              <p class="text-md text-tertiary">Track your trades, analyze your performance, and grow as a smarter trader.</p>
+              <p class="text-md text-tertiary">Track your trades, analyze your performance, and grow as a smarter trader.
+              </p>
             </div>
           </div>
 
           @php
             if (isset($_GET['verified']) && $_GET['verified'] == 1) {
               echo '<div class="verified-notice">
-                              <p><strong>Your account has been verified!</strong> You can now log in to your account.</p>
-                            </div>';
+                                                                              <p><strong>Your account has been verified!</strong> You can now log in to your account.</p>
+                                                                            </div>';
             }
             if (isset($_GET['resetpass']) && $_GET['resetpass'] == 1) {
               echo '<div class="verified-notice">
-                              <p><strong>Your password has been reset successfully!</strong> You can now log in to your account.</p>
-                            </div>';
+                                                                              <p><strong>Your password has been reset successfully!</strong> You can now log in to your account.</p>
+                                                                            </div>';
             }
           @endphp
           <form class="relative flex flex-col gap-6" id="login_form">
@@ -359,10 +360,54 @@
                   </path>
                 </svg>Sign in with Google</button>
                 */
-                @endphp
+              @endphp
             </div>
 
           </form>
+
+
+          <div class="w-full shrink-0 flex items-center gap-x-2">
+            <div class="h-px flex-1 bg-border-secondary"></div><span class="text-sm font-medium text-tertiary">Or</span>
+            <div class="h-px flex-1 bg-border-secondary"></div>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <a href="/connect-upstox"
+              class="group disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
+              <svg viewBox="0 0 36 36" fill="none" width="22" class="mr-2">
+                <rect width="36" height="36" rx="4" fill="#6A369E"></rect>
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M24.7669 12C22.9624 12 21.7782 12.6767 21.0451 13.6353V12.2256H18.9022V27H21.0451V21.2481C21.8346 22.2632 23.0188 22.8835 24.7669 22.8835C27.7556 22.8835 30.0677 20.6842 30.0677 17.5263C30.0677 14.312 27.7556 12 24.7669 12ZM24.5413 20.9662C22.5113 20.9662 21.0451 19.4436 21.0451 17.5263C21.0451 15.609 22.5113 13.9737 24.5413 13.9737C26.5714 13.9737 27.9248 15.609 27.9248 17.5263C27.9248 19.4436 26.5714 20.9662 24.5413 20.9662ZM7.73684 17.8083C8.07519 17.5827 8.35714 17.3571 8.6391 17.0752C9.14661 16.5677 9.59774 15.9474 9.93609 15.3271V18.0902C9.93609 19.8383 10.8947 20.797 12.4737 20.797C14.109 20.797 15.406 19.782 15.406 18.0902V12.2256H17.5489V22.6579H15.406V21.3609C15.0677 21.8684 14.0526 22.8835 12.1353 22.8835C9.2594 22.8835 7.73684 21.0789 7.73684 18.5414V17.8083ZM3 18.9925V16.906C4.2406 16.906 5.4812 16.3985 6.38346 15.5526C6.83459 15.1015 7.17293 14.594 7.39849 14.0301C7.62406 13.4662 7.73684 12.8459 7.73684 12.2256H9.8797C9.8797 13.1278 9.71052 14.0301 9.37218 14.8195C9.03383 15.6654 8.52631 16.3985 7.90601 17.0188C6.55263 18.3158 4.80451 18.9925 3 18.9925Z"
+                  fill="white"></path>
+              </svg>
+              Upstox
+            </a>
+            <button disabled
+              class="group opacity-25 disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
+              <svg viewBox="0 0 38 38" fill="none" width="20" class="mr-2">
+                <g clip-path="url(#clip0_3954_49)">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M2.04492 10.4802C2.81868 8.77577 3.91255 7.28774 5.19604 5.94157C8.09942 2.8961 11.6135 0.945729 15.7738 0.280298C21.5969 -0.650489 26.8083 0.723238 31.3122 4.6056C31.5967 4.85054 31.667 4.99445 31.3581 5.29757C29.7688 6.85602 28.204 8.43999 26.6299 10.0148C26.4689 10.176 26.3598 10.373 26.0733 10.1107C22.1087 6.4733 15.6362 6.51514 11.4228 10.4383C9.97623 11.7855 8.9476 13.3991 8.27477 15.2494C8.1769 15.1851 8.07292 15.128 7.98015 15.0565C6.0014 13.5328 4.02367 12.007 2.04594 10.4812L2.04492 10.4802Z"
+                    fill="#D7282A"></path>
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M8.22705 22.6768C8.7959 24.1219 9.50136 25.4885 10.5514 26.6489C13.2203 29.6005 16.5294 30.8732 20.493 30.4609C22.3352 30.269 24.0132 29.6444 25.5811 28.685C25.732 28.8197 25.8747 28.9637 26.0337 29.0882C27.8688 30.5221 29.7068 31.954 31.5428 33.3859C29.5172 35.3118 27.1256 36.5937 24.4353 37.2744C18.0922 38.8798 12.2457 37.8653 7.05367 33.7635C4.90773 32.0673 3.2185 29.973 2.02881 27.494C4.09421 25.8886 6.16063 24.2822 8.22603 22.6768H8.22705Z"
+                    fill="#45AC43"></path>
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M31.5437 33.387C29.7066 31.9551 27.8696 30.5232 26.0346 29.0893C25.8755 28.9648 25.7328 28.8209 25.5819 28.6861C26.8257 27.736 27.8635 26.6123 28.5445 25.1845C28.8156 24.615 29.0073 24.0189 29.1877 23.4168C29.3121 23.0014 29.2734 22.8401 28.7606 22.8442C25.7033 22.8697 22.6459 22.8575 19.5886 22.8565C19.157 22.8565 18.9409 22.633 18.9402 22.1859C18.9402 20.1111 18.9504 18.0372 18.9311 15.9623C18.927 15.5622 18.9973 15.4081 19.4479 15.4102C25.0865 15.4265 30.7261 15.4234 36.3646 15.4153C36.6695 15.4153 36.8601 15.4377 36.9131 15.8082C37.6145 20.7459 37.0528 25.4631 34.4705 29.821C33.6804 31.155 32.7303 32.3736 31.5416 33.387H31.5437Z"
+                    fill="#5D7FBE"></path>
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M8.22685 22.6766C6.16145 24.282 4.09503 25.8874 2.02963 27.4939C1.02038 25.616 0.439291 23.5993 0.167099 21.4978C-0.302867 17.8574 0.213993 14.3547 1.75642 11.0153C1.84103 10.8316 1.94807 10.6591 2.04492 10.4805C4.02265 12.0052 6.00038 13.531 7.97913 15.0548C8.0719 15.1262 8.17486 15.1834 8.27375 15.2477C7.44494 17.7186 7.48673 20.1956 8.22685 22.6756V22.6766Z"
+                    fill="#F4C300"></path>
+                </g>
+                <defs>
+                  <clipPath id="clip0_3954_49">
+                    <rect width="37.1915" height="38" fill="white"></rect>
+                  </clipPath>
+                </defs>
+              </svg>
+              Sign in with Google
+            </button>
+          </div>
 
           <div class="flex justify-center gap-1 text-center">
             <span class="text-sm text-tertiary">Don't have an account?</span>

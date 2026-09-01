@@ -150,6 +150,21 @@ class TradeController extends Controller
         ]);
     }
 
+    public function deleteItems(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required',
+        ]);
+
+        $trades = Trade::whereIn('id', $request->input('ids'))->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Selected trades deleted successfully',
+            'data' => $trades   
+        ]);
+    }
+
     public function getTrade(Request $request, $id)
     {
         $trade_obj = Trade::where('id', $id)->with('instrument')->first();

@@ -239,6 +239,27 @@ export default class UpstoxActions {
         }
 
 
+        const syncWithUpstox = document.querySelector('.syncWithUpstox');
+        if (syncWithUpstox) {
+            syncWithUpstox.addEventListener('click', function () {
+                const this_btn = this;
+                this.classList.add('loading');
+                fetch('/sync-upstox-data', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': ThisApp.token
+                    },
+                }).then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        this.classList.remove('loading');
+                    });
+            });
+        }
+
+
 
         // const stockWrapper = document.querySelector('.form_fields .form_field ul.field_drop_down');
         // stockWrapper.addEventListener('scroll', function () {

@@ -2710,3 +2710,12 @@ table.week_summery_table td.trade_b_net_profits {
     opacity: 1;
     visibility: visible;
 }
+.bottom-action-wrap {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s;
+}
+.bottom-action-wrap.active {
+    opacity: 1;
+    visibility: visible;
+}

@@ -260,6 +260,14 @@ export default class AuthForm {
                         });
                     })
                 }
+                if (itm.href.includes('disconnect')) {
+                    itm.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        MainApp.ConfirmPop.confirm('Are you sure? do you want to disconnect the integration?', () => {
+                            window.location.href = itm.href;
+                        });
+                    })
+                }
             })
         }
     }

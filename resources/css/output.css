@@ -1001,6 +1001,9 @@
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
   }
+  .py-2\.5 {
+    padding-block: calc(var(--spacing) * 2.5);
+  }
   .py-3 {
     padding-block: calc(var(--spacing) * 3);
   }
@@ -1273,6 +1276,10 @@
     content: var(--tw-content);
     inset: var(--spacing);
   }
+  .before\:rounded-\[7px\]::before {
+    content: var(--tw-content);
+    border-radius: 7px;
+  }
   .before\:rounded-lg::before {
     content: var(--tw-content);
     border-radius: var(--radius-lg);
@@ -1318,6 +1325,9 @@
     .hover\:text-fg-white:hover {
       color: var(--color-fg-white);
     }
+    .hover\:text-secondary_hover:hover {
+      color: var(--text-color-secondary_hover);
+    }
   }
   .focus-visible\:outline-2:focus-visible {
     outline-style: var(--tw-outline-style);
@@ -1336,6 +1346,9 @@
   :is(.\*\:data-icon\:size-6 > *)[data-icon] {
     width: calc(var(--spacing) * 6);
     height: calc(var(--spacing) * 6);
+  }
+  .data-icon-only\:p-3[data-icon-only] {
+    padding: calc(var(--spacing) * 3);
   }
   @media (width < 64rem) {
     .max-lg\:hidden {
@@ -3106,6 +3119,29 @@ label:has(input:checked) .toggle_btn_wrap {
       --tw-translate-x: calc(var(--spacing) * -4);
       translate: var(--tw-translate-x) var(--tw-translate-y);
     }
+  }
+}
+.bottom-action-wrap {
+  position: fixed;
+  right: 0px;
+  bottom: calc(var(--spacing) * 6);
+  left: 0px;
+  margin-inline: auto;
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: calc(var(--spacing) * 4);
+  border-radius: var(--radius-xl);
+  background-color: var(--background-color-primary);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 3);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-color: var(--ring-color-secondary);
+  .selected_info {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    color: var(--text-color-secondary);
   }
 }
 .global-table {
