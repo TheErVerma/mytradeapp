@@ -36,7 +36,7 @@ class TradeController extends Controller
 
         $alltrd_obj = Trade::where('user_id', Auth::id())
             ->with('instrument')
-            ->when($trade_type != "", function($query) use ($trade_type) {
+            ->when($trade_type != "", function ($query) use ($trade_type) {
                 return $query->where('trd_type', $trade_type);
             })
             ->orderBy('id', 'DESC')
@@ -164,7 +164,7 @@ class TradeController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Selected trades deleted successfully',
-            'data' => $trades   
+            'data' => $trades
         ]);
     }
 
@@ -788,8 +788,14 @@ class TradeController extends Controller
             ->when($period != 'all', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('trd_date', [$startDate, $endDate]);
             })
-            ->when($analytic_type != "", function($query) use ($analytic_type){
-                return $query->where('trd_type', $analytic_type);
+            ->when($analytic_type != "", function ($query) use ($analytic_type) {
+                // return $query->where('trd_type', $analytic_type);
+                $query->where(function ($q) use ($analytic_type) {
+                    $q->where('trd_type', $analytic_type)
+                        ->orWhereHas('instrument', function ($instrumentQuery) use ($analytic_type) {
+                            $instrumentQuery->where('underlying_type', $analytic_type);
+                        });
+                });
             })
             ->orderBy('id', 'ASC')
             ->get();
@@ -1471,19 +1477,19 @@ class TradeController extends Controller
     {
         $trades = !$is_array ? collect($trades->items())->all() : $trades;
         $monthlyPnl = [];
-        
+
 
         foreach ($trades as $trade) {
             /*
-            * Calculate quantity
-            */
+             * Calculate quantity
+             */
             if ($trade->trd_type === 'F&O') {
 
                 $qty = (float) $trade->trd_lot *
                     (
                         $trade->instrument->qty_multiplier <= 1
-                            ? $trade->instrument->lot_size
-                            : $trade->instrument->qty_multiplier
+                        ? $trade->instrument->lot_size
+                        : $trade->instrument->qty_multiplier
                     );
 
             } else {
@@ -1492,8 +1498,8 @@ class TradeController extends Controller
             }
 
             /*
-            * Skip trades without exit price
-            */
+             * Skip trades without exit price
+             */
             if (
                 $trade->trd_exit_price === null ||
                 $trade->trd_price === null
@@ -1502,10 +1508,10 @@ class TradeController extends Controller
             }
 
             /*
-            * Calculate P&L
-            */
+             * Calculate P&L
+             */
             $entryPrice = (float) $trade->trd_price;
-            $exitPrice  = (float) $trade->trd_exit_price;
+            $exitPrice = (float) $trade->trd_exit_price;
 
             if ($trade->trd_action === 'Long') {
 
@@ -1517,25 +1523,25 @@ class TradeController extends Controller
             }
 
             /*
-            * Group by month
-            */
+             * Group by month
+             */
             $month = Carbon::parse($trade->trd_date)->format('Y-m');
 
             if (!isset($monthlyPnl[$month])) {
                 $monthlyPnl[$month] = 0;
             }
 
-            
+
             $monthlyPnl[$month] += $pnl;
         }
 
         /*
-        * Sort chronologically
-        */
+         * Sort chronologically
+         */
         ksort($monthlyPnl);
         /*
-        * Format for Chart.js
-        */
+         * Format for Chart.js
+         */
         return [
             'monthlyPnlLabels' => array_map(
                 function ($month) {
@@ -1545,7 +1551,7 @@ class TradeController extends Controller
             ),
 
             'monthlyPnlData' => array_map(
-                fn ($pnl) => round($pnl, 2),
+                fn($pnl) => round($pnl, 2),
                 array_values($monthlyPnl)
             ),
         ];

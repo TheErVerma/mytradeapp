@@ -20,7 +20,6 @@ $all_trades_arr = collect($trades->items())->toArray();
 
     <div class="relative flex flex-col gap-6">
 
-
         @if(is_array($all_trades_arr) && count($all_trades_arr) == 0)
             <div class="flex flex-1 flex-col gap-4 rounded-xl shadow-xs ring-1 ring-secondary ring-inset p-6">
                 <div class="flex flex-col gap-5">
@@ -71,13 +70,12 @@ $all_trades_arr = collect($trades->items())->toArray();
                         <div data_type="Cash" class="filter-tab">
                             <span class="flex items-center gap-1.5 px-0.5">Cash</span>
                         </div>
-                        @php /*
                         <div data_type="COM" class="filter-tab">
                             <span class="flex items-center gap-1.5 px-0.5">Commodity</span>
                         </div>
                         <div data_type="CUR" class="filter-tab">
                             <span class="flex items-center gap-1.5 px-0.5">Currency</span>
-                        </div> */ @endphp
+                        </div>
 
                     </div>
                     <button type="button" class="btn btn-icon-only btn-secondary btn-sm" data-popup-target="customize-analytics-pop" >
