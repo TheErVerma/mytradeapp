@@ -162,54 +162,85 @@ export default class TradeActions {
         });
 
 
+        const filterAnalyticsData = () => {
+            let anlytc_type_val = '';
+            const anlytc_type_tb = document.querySelector('.analytics_filter_btm .filter-tab.active');
+            if(anlytc_type_tb){
+                anlytc_type_val = anlytc_type_tb.getAttribute('data_type');
+            }
+            const this_btn = document.querySelector('.main-summary--filter');
+            const this_val = this_btn ? this_btn.value : '';
+            fetch(`/mainsummery/${this_val}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    analytic_type: anlytc_type_val
+                }),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-type': 'application/json',
+                    'X-CSRF-TOKEN': thisApp.token
+                }
+            }).then((response) => response.json())
+                .then((data) => {
+                    // console.log(data);
+                    const totalPnL = data.summery.totalPnL;
+                    const totalPnLHtml = data.summery.totalPnL_html;
+                    const winningTrades = data.summery.winningTrades;
+                    const losingTrades = data.summery.losingTrades;
+                    const breakevenTrades = data.summery.breakevenTrades;
+                    const totalTradeCount = data.summery.totalTradeCount;
+
+
+                    const net_pnl_wrap = document.querySelector('.net_pnl_wrap')
+                    const net_pnl_status_wrap = document.querySelector('.net_pnl_status_wrap')
+                    const main_pnl_winnings = document.querySelector('.main_pnl_winnings')
+                    const main_pnl_loosing = document.querySelector('.main_pnl_loosing')
+                    const main_pnl_breakeven = document.querySelector('.main_pnl_breakeven')
+                    const main_pnl_totalTrades = document.querySelectorAll('.main_pnl_totalTrades')
+
+                    net_pnl_wrap ? net_pnl_wrap.innerHTML = totalPnLHtml : false;
+                    net_pnl_status_wrap ? net_pnl_status_wrap.innerHTML = totalPnL < 0 ? 'Net loss' : 'Net profit' : false;
+                    main_pnl_winnings ? main_pnl_winnings.innerHTML = winningTrades : false;
+                    main_pnl_loosing ? main_pnl_loosing.innerHTML = losingTrades : false;
+                    main_pnl_breakeven ? main_pnl_breakeven.innerHTML = breakevenTrades : false;
+                    main_pnl_totalTrades ? main_pnl_totalTrades.forEach(itm => itm.innerHTML = totalTradeCount) : false;
+
+                    if (data.pnl_cal_data) {
+                        pnl_js_data = data.pnl_cal_data;
+                        document.dispatchEvent(new Event('heat_map_load'));
+                    }
+
+                    if (data.monthlyPerformance) {
+                        const ctx_cnv = document.querySelector('#main_analytics_chart');
+                        ctx_cnv.setAttribute('data_ch_hash', btoa(JSON.stringify(data.monthlyPerformance)));
+                        document.dispatchEvent(new Event('update_analytics_monthly_performace'));
+                    }
+
+                    if(data.matrics){
+                        const new_matrics = data.matrics;
+                        (new_matrics).forEach(mtric => {
+                            const mtr_itmval = document.querySelector('.matric_item.'+mtric.id+' .value');
+                            mtr_itmval ? mtr_itmval.innerHTML = mtric.value : false;
+                        });
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                });
+        }
+
+        const anlytc_type_tbs = document.querySelectorAll('.analytics_filter_btm .filter-tab');
+        if (anlytc_type_tbs.length >= 1) {
+            anlytc_type_tbs.forEach(anlytc_type_tb => anlytc_type_tb.addEventListener('click', function () {
+                anlytc_type_tbs.forEach(itm => itm.classList.remove('active'));
+                anlytc_type_tb.classList.add('active');
+                filterAnalyticsData();
+            }));
+        }
+
         const main_summary__filter = document.querySelector('.main-summary--filter');
         if (main_summary__filter) {
             main_summary__filter.addEventListener('change', function () {
-                const this_btn = this;
-                const this_val = this_btn.value;
-                fetch(`/mainsummery/${this_val}`, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': thisApp.token
-                    }
-                }).then((response) => response.json())
-                    .then((data) => {
-                        // console.log(data);
-                        const totalPnL = data.summery.totalPnL;
-                        const totalPnLHtml = data.summery.totalPnL_html;
-                        const winningTrades = data.summery.winningTrades;
-                        const losingTrades = data.summery.losingTrades;
-                        const breakevenTrades = data.summery.breakevenTrades;
-                        const totalTradeCount = data.summery.totalTradeCount;
-
-                        document.querySelector('.net_pnl_wrap').innerHTML = totalPnLHtml;
-                        document.querySelector('.net_pnl_status_wrap').innerHTML = totalPnL < 0 ? 'Net loss' : 'Net profit';
-                        document.querySelector('.main_pnl_winnings').innerHTML = winningTrades;
-                        document.querySelector('.main_pnl_loosing').innerHTML = losingTrades;
-                        document.querySelector('.main_pnl_breakeven').innerHTML = breakevenTrades;
-                        document.querySelectorAll('.main_pnl_totalTrades').forEach(itm => itm.innerHTML = totalTradeCount);
-
-                        if (data.pnl_cal_data) {
-                            pnl_js_data = data.pnl_cal_data;
-                            document.dispatchEvent(new Event('heat_map_load'));
-                        }
-
-                        if (data.monthlyPerformance) {
-                            const ctx_cnv = document.querySelector('#main_analytics_chart');
-                            ctx_cnv.setAttribute('data_ch_hash', btoa(JSON.stringify(data.monthlyPerformance)));
-                            document.dispatchEvent(new Event('update_analytics_monthly_performace'));
-                        }
-
-                        if(data.matrics){
-                            const new_matrics = data.matrics;
-                            (new_matrics).forEach(mtric => {
-                                document.querySelector('.matric_item.'+mtric.id+' .value').innerHTML = mtric.value;
-                            });
-                        }
-                    }).catch((err) => {
-                        console.log(err);
-                    });
+                filterAnalyticsData();
             });
         }
     }

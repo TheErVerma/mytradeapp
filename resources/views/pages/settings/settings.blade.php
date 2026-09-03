@@ -3,6 +3,9 @@
 @section('content')
 
 @php
+use App\Services\OptionService;
+
+$disable_select_trade = OptionService::getOption('disable_select_trade');
 $user = Auth::user();
 
 $countries = [
@@ -46,6 +49,19 @@ $countries = [
                             <span class="field_bmt_text">Your account balance when you started using the system. This is
                                 used as the starting point for all financial calculations.</span>
                         </div> */ ?>
+                        <div class="main_set_field">
+                            <label
+                                class="border border-secondary bg-primary cursor-pointer flex flex-col gap-0.5 hover:bg-primary_hover p-4 rounded-xl z-10 hb-checkbox"
+                                for="brkrtrdsslctpop">
+                                <div class="flex flex-row items-center gap-2">
+                                    <span style="margin-top: 0px;">
+                                        <input type="checkbox" id="brkrtrdsslctpop" name="brokerTradeSelect" value="yes" {{ $disable_select_trade ? 'checked' : '' }}>
+                                    </span>
+                                    <div class="text-md text-primary">Disable Broker Trades Select Popup</div>
+                                </div>
+                                <div class="text-sm text-fg-quaternary">Enable popup to sync select trades from broker API.</div>
+                            </label>
+                        </div>
 
                         <div class="form_notices"></div>
                         <div class="main_set_actions">

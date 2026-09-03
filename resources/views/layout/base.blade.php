@@ -61,6 +61,7 @@
         @include('../components/popups/custom-symbol')
         @include('../components/popups/customize-analytics')
         @include('../components/popups/bottom-action')
+        @include('../components/popups/select-entries')
         
     @else
         @yield('content')

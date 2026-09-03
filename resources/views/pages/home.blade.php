@@ -1,6 +1,7 @@
 @php
     use Illuminate\Support\Number;
     use App\Services\OptionService;
+    use App\Models\Trade;
 @endphp
 @extends('../layout/base')
 
@@ -62,6 +63,23 @@ $all_trades_arr = collect($trades->items())->toArray();
                     <p class="text-sm text-balance text-tertiary">Returns are shown once deposits are made.</p>
                 </div>
                 <div class="w-max flex items-center gap-4">
+                    <div
+                        class="group flex gap-0.5 rounded-lg bg-secondary_alt ring-1 ring-inset ring-secondary analytics_filter_btm">
+                        <div data_type="F&O" class="filter-tab active">
+                            <span class="flex items-center gap-1.5 px-0.5">F&O</span>
+                        </div>
+                        <div data_type="Cash" class="filter-tab">
+                            <span class="flex items-center gap-1.5 px-0.5">Cash</span>
+                        </div>
+                        @php /*
+                        <div data_type="COM" class="filter-tab">
+                            <span class="flex items-center gap-1.5 px-0.5">Commodity</span>
+                        </div>
+                        <div data_type="CUR" class="filter-tab">
+                            <span class="flex items-center gap-1.5 px-0.5">Currency</span>
+                        </div> */ @endphp
+
+                    </div>
                     <button type="button" class="btn btn-icon-only btn-secondary btn-sm" data-popup-target="customize-analytics-pop" >
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path

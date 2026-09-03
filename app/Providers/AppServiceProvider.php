@@ -119,16 +119,17 @@ class AppServiceProvider extends ServiceProvider
                 
 
 
-            $all_trades_count = Trade::where('user_id', Auth::id())->count();
+            $all_trades_count = Trade::where('user_id', Auth::id())->where('trd_type', 'F&O')->count();
             if ($user) {
                 $total_trades = TradeController::getAll();
-                $portfolioSummry = TradeController::summary();
+                $fo_total_trades = TradeController::getAll('F&O');
+                $portfolioSummry = TradeController::summary($fo_total_trades);
                 $TradeController = new TradeController();
-                $all_matrics = $TradeController->getTradeMetrics($total_trades);
-                $monthlyPerformance = $TradeController->getMonthlyPerformance($total_trades);
+                $all_matrics = $TradeController->getTradeMetrics($fo_total_trades);
+                $monthlyPerformance = $TradeController->getMonthlyPerformance($fo_total_trades);
                 $weekdaySummary = $TradeController->weekdaySummary();
                 $currency = $user->default_country;
-                $currency = $currency ? ($currency) : 'USD';
+                $currency = $currency != null ? $currency : 'INR';
                 $view->with('user', $user);
                 $view->with('trades', $total_trades);
                 $view->with('total_trades', count($total_trades));

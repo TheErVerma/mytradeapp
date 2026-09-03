@@ -21,7 +21,7 @@
                 $has_more = $all_trades->hasMorePages();
 
                 $all_trades = $all_trades->items();
-                $currency = $user->default_country;
+                $currency = $user->default_country ?? 'INR';
 
                 $trad_actions = array_column($all_trades, 'trd_action');
                 $trdActnCnt = array_count_values($trad_actions);

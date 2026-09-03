@@ -27,7 +27,7 @@ class TradeController extends Controller
         return Trade::where('user_id', Auth::id())->where('trd_action', 'Buy')->sum('trd_price');
     }
 
-    static public function getAll()
+    static public function getAll($trade_type = '')
     {
         // $trades = Trade::orderBy('id', 'ASC')->get()->toArray();;
         // $trades = Trade::where('user_id', Auth::id())->orderBy('id', 'ASC')->get()->toArray();
@@ -36,6 +36,9 @@ class TradeController extends Controller
 
         $alltrd_obj = Trade::where('user_id', Auth::id())
             ->with('instrument')
+            ->when($trade_type != "", function($query) use ($trade_type) {
+                return $query->where('trd_type', $trade_type);
+            })
             ->orderBy('id', 'DESC')
             ->paginate($perPage, ['*'], 'page', $page);
 
@@ -277,14 +280,14 @@ class TradeController extends Controller
     }
 
 
-    public static function summary()
+    public static function summary($trades)
     {
         $userId = Auth::id();
 
-        $trades = Trade::where('user_id', $userId)
-            ->with('instrument')
-            ->orderBy('id', 'ASC')
-            ->get();
+        // $trades = Trade::where('user_id', $userId)
+        //     ->with('instrument')
+        //     ->orderBy('id', 'ASC')
+        //     ->get();
 
         $totalPnL = 0;
         $winningTrades = 0;
@@ -724,6 +727,7 @@ class TradeController extends Controller
 
     public function getMainSummery(Request $request, $period)
     {
+        $analytic_type = $request->input('analytic_type');
         $user = Auth::user();
         $resp = ['status' => 400, 'message' => 'Invalid Request'];
 
@@ -783,6 +787,9 @@ class TradeController extends Controller
             ->with('instrument')
             ->when($period != 'all', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('trd_date', [$startDate, $endDate]);
+            })
+            ->when($analytic_type != "", function($query) use ($analytic_type){
+                return $query->where('trd_type', $analytic_type);
             })
             ->orderBy('id', 'ASC')
             ->get();

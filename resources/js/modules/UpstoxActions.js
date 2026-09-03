@@ -243,9 +243,14 @@ export default class UpstoxActions {
         if (syncWithUpstox) {
             syncWithUpstox.addEventListener('click', function () {
                 const this_btn = this;
+                const selectTradeFut = this_btn.getAttribute('data_select_trades');
+                
                 this.classList.add('loading');
-                fetch('/sync-upstox-data', {
+                fetch('/get-upstox-data', {
                     method: 'POST',
+                    body: JSON.stringify({
+                        selectTrades: selectTradeFut
+                    }),
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                         'Content-Type': 'application/json',
@@ -255,6 +260,35 @@ export default class UpstoxActions {
                     .then((data) => {
                         console.log(data);
                         this.classList.remove('loading');
+                        if(data.html && selectTradeFut == 'yes'){
+                            document.querySelector('.select-entries-rows_wrap').innerHTML = data.html;
+                            MainApp.popupManager.open('select-entries');
+                        }
+                    });
+            });
+        }
+
+        const sync_broker_trades_form = document.getElementById('sync_broker_trades_form');
+        if (sync_broker_trades_form) {
+            sync_broker_trades_form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const this_form = this;
+                const this_btn = this_form.querySelector('[type="submit"]');
+                const this_data = new FormData(this_form);
+                this_btn.classList.add('loading');
+                fetch('/sync-upstox-data', {
+                    method: 'POST',
+                    body: this_data,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                }).then((response) => response.json())
+                    .then((data) => {
+                        MainApp.popupManager.close('select-entries');
+                        console.log(data);
+                        this_btn.classList.remove('loading');
+                        document.querySelector('.select-entries-rows_wrap').innerHTML = '';
+                        window.location.reload();
                     });
             });
         }

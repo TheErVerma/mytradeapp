@@ -1,5 +1,7 @@
 @extends('../../layout/base')
-
+@php
+use App\Services\OptionService;
+@endphp
 
 @section('content')
     <div class="relative flex flex-col gap-6">
@@ -33,7 +35,10 @@
 
                     <div class="flex gap-4 items-center">
                         @if($upstox_connected)
-                            <button type="button" class="btn btn-md btn-primary w-fit syncWithUpstox">Sync Portfolio</button>
+                        @php
+                        $disable_select_trade = OptionService::getOption('disable_select_trade');
+                        @endphp
+                            <button type="button" class="btn btn-md btn-primary w-fit syncWithUpstox" data_select_trades="{{ $disable_select_trade ? 'no' : 'yes' }}">Sync Portfolio</button>
                             <a href="/disconnect-upstox" class="btn btn-md btn-secondary w-fit">Disconnect</a>
                         @else
                             <a href="/connect-upstox" class="btn btn-md btn-primary w-fit">Connect</a>

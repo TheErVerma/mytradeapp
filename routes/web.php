@@ -115,6 +115,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/save-customized-analytics', [TradeController::class, 'saveCstmAnalytics']);
     Route::post('/loadmorestocks', [UpstoxController::class, 'loadMoreData']);
     Route::post('/sync-upstox-data', [UpstoxController::class, 'syncUpstoxData']);
+    Route::post('/get-upstox-data', [UpstoxController::class, 'getUpstoxData']);
     /**
      * APIs End
      **********************/

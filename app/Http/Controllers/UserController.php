@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\OTPEmail;
 use App\Mail\ResetPassEmail;
+use App\Services\OptionService;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
@@ -318,10 +319,13 @@ class UserController extends Controller
         ]);
 
         $country = $request->input('default_country');
+        $brokerTradeSelect = $request->input('brokerTradeSelect') == 'yes';
         // $init_balance = $request->input('initial_balance');
 
         $user = User::findOrFail($id);
         $user->default_country = $country;
+
+        OptionService::updateOption('disable_select_trade', $brokerTradeSelect);
         // $user->initial_balance = $init_balance;
 
         $user->save();

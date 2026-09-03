@@ -6,6 +6,7 @@ use App\Models\BrokerIntegration;
 use App\Models\Instruments;
 use App\Models\Trade;
 use App\Models\User;
+use App\Services\OptionService;
 use Auth;
 use DB;
 use Http;
@@ -345,61 +346,101 @@ class UpstoxController extends Controller
         }
     }
 
-
-    public function syncUpstoxData()
+    public function getUpstoxData(Request $request)
     {
+        $selectTrades = $request->input('selectTrades');
+        
+        $UpstoxService = new UpstoxService();
+        $getPortfolio = $UpstoxService->getPortfolio();
+        // Log::debug(print_r($getPortfolio, true));
+        $req_resp = [];
+        if (isset($getPortfolio['positions'])) {
+            $positions = $getPortfolio['positions'];
+            if (isset($getPortfolio['holdings'])) {
+                $positions = array_merge($positions, $getPortfolio['holdings']);
+            }
+            if (is_array($positions) && !empty($positions)) {
+                foreach ($positions as $position) {
+                    $instrument_arr = collect(Instruments::where('instrument_key', (isset($position["instrument_token"]) ? $position["instrument_token"] : ''))->first())->toArray();
+                    // Log::debug(print_r($instrument_arr, true));
+                    $trd_type_ = isset($instrument_arr['instrument_type']) ? $instrument_arr['instrument_type'] : $instrument_arr['segment'];
+                    $trd_type = (strpos($trd_type_, '_FO') || strpos($trd_type_, 'FUT')) ? 'F&O' : 'Cash';
+                    $new_data = [
+                        'trd_symbol' => $instrument_arr['trading_symbol'] . (isset($instrument_arr['short_name']) && $instrument_arr['short_name'] != "" ? ' (' . $instrument_arr['short_name'] . ')' : ''),
+                        'trd_symbol_key' => $instrument_arr['instrument_key'],
+                        'trd_action' => 'Short',
+                        'trd_date' => date('Y-m-d'),
+                        'trd_exit_date' => null,
+                        'trd_shares' => isset($position["quantity"]) ? $position["quantity"] : 0,
+                        'trd_price' => isset($position["buy_price"]) ? $position["buy_price"] : 0,
+                        'trd_exit_price' => isset($position["sell_price"]) ? $position["sell_price"] : 0,
+                        'trd_charges_amount' => 0,
+                        'trd_lot' => isset($position["quantity"]) ? $position["quantity"] : 0,
+                        'trd_type' => $trd_type,
+                        'user_id' => Auth::id(),
+                    ];
+                    if($selectTrades != "no"){
+                        $new_data['instrument'] = $instrument_arr;
+                    }else{
+                        $new_row = Trade::updateOrCreate($new_data, ['trd_symbol_key' => $instrument_arr['instrument_key']]);
+                    }
+                    $req_resp[] = $new_data;
+
+
+                }
+            }
+        }
+        return response()->json([
+            "status" => 200,
+            "data" => $req_resp,
+            "html" => $selectTrades == "yes" ? view('components.broker-trades', ['broker_data' => $req_resp])->render() : '',
+        ]);
+    }
+
+    public function syncUpstoxData(Request $request)
+    {
+        $selected_stocks = $request->input('slctTrdEntry');
+        $dontshowagain = $request->input('dontshowagain') == 'yes';
+        $selected_stocks = $selected_stocks == null ? [] : $selected_stocks;
+
+        OptionService::updateOption('disable_select_trade', $dontshowagain);
+
         $UpstoxService = new UpstoxService();
         $getPortfolio = $UpstoxService->getPortfolio();
         $req_log = [];
         if (isset($getPortfolio['positions'])) {
             $positions = $getPortfolio['positions'];
+
+            if (isset($getPortfolio['holdings'])) {
+                $positions = array_merge($getPortfolio['positions'], $getPortfolio['holdings']);
+            }
             if (is_array($positions) && !empty($positions)) {
                 foreach ($positions as $position) {
+
+                    if (!empty($selected_stocks)) {
+                        if (!in_array($position["instrument_token"], $selected_stocks)) {
+                            continue;
+                        }
+                    }
+
                     $instrument_arr = collect(Instruments::where('instrument_key', (isset($position["instrument_token"]) ? $position["instrument_token"] : ''))->first())->toArray();
+                    $trd_type_ = isset($instrument_arr['instrument_type']) ? $instrument_arr['instrument_type'] : $instrument_arr['segment'];
+                    $trd_type = (strpos($trd_type_, '_FO') || strpos($trd_type_, 'FUT')) ? 'F&O' : 'Cash';
                     $new_data = [
                         'trd_symbol' => $instrument_arr['trading_symbol'] . (isset($instrument_arr['short_name']) && $instrument_arr['short_name'] != "" ? ' (' . $instrument_arr['short_name'] . ')' : ''),
                         'trd_symbol_key' => $instrument_arr['instrument_key'],
-                        'trd_action' => 'Long',
+                        'trd_action' => 'Short',
                         'trd_date' => date('Y-m-d'),
                         'trd_exit_date' => null,
                         'trd_shares' => isset($position["quantity"]) ? $position["quantity"] : 0,
                         'trd_price' => isset($position["buy_price"]) ? $position["buy_price"] : 0,
-                        'trd_exit_price' => isset($position["sell_price"]) ? $position["sell_price"] : '',
+                        'trd_exit_price' => isset($position["sell_price"]) ? $position["sell_price"] : 0,
                         'trd_charges_amount' => 0,
                         'trd_lot' => isset($position["quantity"]) ? $position["quantity"] : 0,
-                        'trd_type' => 'Cash',
+                        'trd_type' => $trd_type,
                         'user_id' => Auth::id(),
-                        // isset($position["exchange"]) ? $position["exchange"] : '',
-                        // isset($position["multiplier"]) ? $position["multiplier"] : '',
-                        // isset($position["value"]) ? $position["value"] : '',
-                        // isset($position["pnl"]) ? $position["pnl"] : '',
-                        // isset($position["product"]) ? $position["product"] : '',
-
-                        // isset($position["average_price"]) ? $position["average_price"] : '',
-                        // isset($position["buy_value"]) ? $position["buy_value"] : '',
-                        // isset($position["overnight_quantity"]) ? $position["overnight_quantity"] : '',
-                        // isset($position["day_buy_value"]) ? $position["day_buy_value"] : '',
-                        // isset($position["day_buy_price"]) ? $position["day_buy_price"] : '',
-                        // isset($position["overnight_buy_amount"]) ? $position["overnight_buy_amount"] : '',
-                        // isset($position["overnight_buy_quantity"]) ? $position["overnight_buy_quantity"] : '',
-                        // isset($position["day_buy_quantity"]) ? $position["day_buy_quantity"] : '',
-                        // isset($position["day_sell_value"]) ? $position["day_sell_value"] : '',
-                        // isset($position["day_sell_price"]) ? $position["day_sell_price"] : '',
-                        // isset($position["overnight_sell_amount"]) ? $position["overnight_sell_amount"] : '',
-                        // isset($position["overnight_sell_quantity"]) ? $position["overnight_sell_quantity"] : '',
-                        // isset($position["day_sell_quantity"]) ? $position["day_sell_quantity"] : '',
-
-                        // isset($position["last_price"]) ? $position["last_price"] : '',
-                        // isset($position["unrealised"]) ? $position["unrealised"] : '',
-                        // isset($position["realised"]) ? $position["realised"] : '',
-                        // isset($position["sell_value"]) ? $position["sell_value"] : '',
-                        // isset($position["tradingsymbol"]) ? $position["tradingsymbol"] : '',
-
-                        // isset($position["close_price"]) ? $position["close_price"] : '',
-                        // isset($position["buy_price"]) ? $position["buy_price"] : '',
-                        // isset($position["sell_price"]) ? $position["sell_price"] : '',
                     ];
-                    $new_row = Trade::create($new_data);
+                    $new_row = Trade::updateOrCreate($new_data, ['trd_symbol_key' => $instrument_arr['instrument_key']]);
 
                     $req_log[] = $new_data;
                 }
@@ -411,12 +452,13 @@ class UpstoxController extends Controller
         ]);
     }
 
-    public function integratePage(){
+    public function integratePage()
+    {
         $upstox_connected = false;
         $broker_init = collect(BrokerIntegration::where('user_id', Auth::id())->get())->toArray();
-        if($broker_init && !empty($broker_init)){
-            foreach($broker_init as $brokerinit){
-                if($brokerinit['broker'] == 'upstox' && $brokerinit['access_token'] != ""){
+        if ($broker_init && !empty($broker_init)) {
+            foreach ($broker_init as $brokerinit) {
+                if ($brokerinit['broker'] == 'upstox' && $brokerinit['access_token'] != "") {
                     $upstox_connected = true;
                 }
             }
@@ -426,7 +468,8 @@ class UpstoxController extends Controller
         return view('pages/settings/integrate', ['portfolio' => $portfolio, 'upstox_connected' => $upstox_connected]);
     }
 
-    public function disconnectUpstox(){
+    public function disconnectUpstox()
+    {
         BrokerIntegration::where('user_id', Auth::id())->delete();
         return redirect()->intended('/integrate');
     }

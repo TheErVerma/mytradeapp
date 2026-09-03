@@ -345,6 +345,7 @@
     --ring-color-secondary_alt: var(--color-border-secondary_alt);
     --ring-color-error: var(--color-border-error);
     --ring-color-brand: var(--color-border-brand);
+    --ring-color-brand-solid: var(--color-bg-brand-solid);
     --outline-color-brand: var(--color-border-brand);
   }
 }
