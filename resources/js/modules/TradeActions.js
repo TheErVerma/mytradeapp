@@ -42,8 +42,8 @@ export default class TradeActions {
 
 
         const customize_analytics_form = document.querySelector('#customize-analytics_form');
-        if(customize_analytics_form){
-            customize_analytics_form.addEventListener('submit', function(e){
+        if (customize_analytics_form) {
+            customize_analytics_form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 const this_form = this;
                 const this_btn = this_form.querySelector('[type="submit"]');
@@ -52,14 +52,14 @@ export default class TradeActions {
                 this_btn.classList.add('loading');
                 fetch('/save-customized-analytics', {
                     method: 'POST',
-                    body:this_data,
+                    body: this_data,
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
                     }
                 }).then((response) => response.json())
                     .then((data) => {
                         // console.log(data);
-                        if(data.status == 200){
+                        if (data.status == 200) {
                             window.location.reload();
                         }
                         this_btn.classList.remove('loading');
@@ -165,7 +165,7 @@ export default class TradeActions {
         const filterAnalyticsData = () => {
             let anlytc_type_val = '';
             const anlytc_type_tb = document.querySelector('.analytics_filter_btm .filter-tab.active');
-            if(anlytc_type_tb){
+            if (anlytc_type_tb) {
                 anlytc_type_val = anlytc_type_tb.getAttribute('data_type');
             }
             const this_btn = document.querySelector('.main-summary--filter');
@@ -216,10 +216,10 @@ export default class TradeActions {
                         document.dispatchEvent(new Event('update_analytics_monthly_performace'));
                     }
 
-                    if(data.matrics){
+                    if (data.matrics) {
                         const new_matrics = data.matrics;
                         (new_matrics).forEach(mtric => {
-                            const mtr_itmval = document.querySelector('.matric_item.'+mtric.id+' .value');
+                            const mtr_itmval = document.querySelector('.matric_item.' + mtric.id + ' .value');
                             mtr_itmval ? mtr_itmval.innerHTML = mtric.value : false;
                         });
                     }
@@ -241,6 +241,34 @@ export default class TradeActions {
         if (main_summary__filter) {
             main_summary__filter.addEventListener('change', function () {
                 filterAnalyticsData();
+            });
+        }
+
+
+
+        const customize_journal_columns_form = document.getElementById('customize-journal-columns_form');
+        if (customize_journal_columns_form) {
+            customize_journal_columns_form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const this_form = this;
+                const this_btn = this_form.querySelector('[type="submit"]');
+                const this_data = new FormData(this_form);
+
+                this_btn.classList.add('loading');
+                fetch('/save-journal-columns', {
+                    method: 'POST',
+                    body: this_data,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                }).then((response) => response.json())
+                    .then((data) => {
+                        this_btn.classList.remove('loading');
+                        console.log(data);
+                        if(data.status == 200){
+                            window.location.reload();
+                        }
+                    });
             });
         }
     }

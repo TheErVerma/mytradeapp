@@ -345,7 +345,6 @@
     --ring-color-secondary_alt: var(--color-border-secondary_alt);
     --ring-color-error: var(--color-border-error);
     --ring-color-brand: var(--color-border-brand);
-    --ring-color-brand-solid: var(--color-bg-brand-solid);
     --outline-color-brand: var(--color-border-brand);
   }
 }
@@ -762,12 +761,6 @@
   }
   .grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-  .grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .grid-cols-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
   .flex-col {
     flex-direction: column;
@@ -1432,14 +1425,8 @@
     .md\:w-\[35\%\] {
       width: 35%;
     }
-    .md\:grid-cols-1 {
-      grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
     .md\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .md\:grid-cols-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
     .md\:flex-row {
       flex-direction: row;
@@ -3529,9 +3516,9 @@ html:has(body .global-popup.active) {
   opacity: 100%;
 }
 .global-popup__inner {
+  margin: auto;
   display: table;
   min-height: 100%;
-  width: 100%;
 }
 .global-popup__main {
   display: table-cell;

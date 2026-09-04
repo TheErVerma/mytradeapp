@@ -62,6 +62,7 @@
         @include('../components/popups/customize-analytics')
         @include('../components/popups/bottom-action')
         @include('../components/popups/select-entries')
+        @include('../components/popups/config-journal-column')
         
     @else
         @yield('content')

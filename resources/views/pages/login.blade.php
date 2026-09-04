@@ -259,13 +259,13 @@
           @php
             if (isset($_GET['verified']) && $_GET['verified'] == 1) {
               echo '<div class="verified-notice">
-                                                                              <p><strong>Your account has been verified!</strong> You can now log in to your account.</p>
-                                                                            </div>';
+                                                                                          <p><strong>Your account has been verified!</strong> You can now log in to your account.</p>
+                                                                                        </div>';
             }
             if (isset($_GET['resetpass']) && $_GET['resetpass'] == 1) {
               echo '<div class="verified-notice">
-                                                                              <p><strong>Your password has been reset successfully!</strong> You can now log in to your account.</p>
-                                                                            </div>';
+                                                                                          <p><strong>Your password has been reset successfully!</strong> You can now log in to your account.</p>
+                                                                                        </div>';
             }
           @endphp
           <form class="relative flex flex-col gap-6" id="login_form">
@@ -340,26 +340,26 @@
               </button>
 
               @php /*<button type="button" class="social-link">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  class="pointer-events-none shrink-0 transition-inherit-all size-5">
-                  <path
-                    d="M23.766 12.2764C23.766 11.4607 23.6999 10.6406 23.5588 9.83807H12.24V14.4591H18.7217C18.4528 15.9494 17.5885 17.2678 16.323 18.1056V21.1039H20.19C22.4608 19.0139 23.766 15.9274 23.766 12.2764Z"
-                    fill="#4285F4">
-                  </path>
-                  <path
-                    d="M12.24 24.0008C15.4764 24.0008 18.2058 22.9382 20.1944 21.1039L16.3274 18.1055C15.2516 18.8375 13.8626 19.252 12.2444 19.252C9.11376 19.252 6.45934 17.1399 5.50693 14.3003H1.51648V17.3912C3.55359 21.4434 7.70278 24.0008 12.24 24.0008Z"
-                    fill="#34A853">
-                  </path>
-                  <path
-                    d="M5.50253 14.3003C4.99987 12.8099 4.99987 11.1961 5.50253 9.70575V6.61481H1.51649C-0.18551 10.0056 -0.18551 14.0004 1.51649 17.3912L5.50253 14.3003Z"
-                    fill="#FBBC04">
-                  </path>
-                  <path
-                    d="M12.24 4.74966C13.9508 4.7232 15.6043 5.36697 16.8433 6.54867L20.2694 3.12262C18.1 1.0855 15.2207 -0.034466 12.24 0.000808666C7.70277 0.000808666 3.55359 2.55822 1.51648 6.61481L5.50252 9.70575C6.45052 6.86173 9.10935 4.74966 12.24 4.74966Z"
-                    fill="#EA4335">
-                  </path>
-                </svg>Sign in with Google</button>
-                */
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                   class="pointer-events-none shrink-0 transition-inherit-all size-5">
+                   <path
+                     d="M23.766 12.2764C23.766 11.4607 23.6999 10.6406 23.5588 9.83807H12.24V14.4591H18.7217C18.4528 15.9494 17.5885 17.2678 16.323 18.1056V21.1039H20.19C22.4608 19.0139 23.766 15.9274 23.766 12.2764Z"
+                     fill="#4285F4">
+                   </path>
+                   <path
+                     d="M12.24 24.0008C15.4764 24.0008 18.2058 22.9382 20.1944 21.1039L16.3274 18.1055C15.2516 18.8375 13.8626 19.252 12.2444 19.252C9.11376 19.252 6.45934 17.1399 5.50693 14.3003H1.51648V17.3912C3.55359 21.4434 7.70278 24.0008 12.24 24.0008Z"
+                     fill="#34A853">
+                   </path>
+                   <path
+                     d="M5.50253 14.3003C4.99987 12.8099 4.99987 11.1961 5.50253 9.70575V6.61481H1.51649C-0.18551 10.0056 -0.18551 14.0004 1.51649 17.3912L5.50253 14.3003Z"
+                     fill="#FBBC04">
+                   </path>
+                   <path
+                     d="M12.24 4.74966C13.9508 4.7232 15.6043 5.36697 16.8433 6.54867L20.2694 3.12262C18.1 1.0855 15.2207 -0.034466 12.24 0.000808666C7.70277 0.000808666 3.55359 2.55822 1.51648 6.61481L5.50252 9.70575C6.45052 6.86173 9.10935 4.74966 12.24 4.74966Z"
+                     fill="#EA4335">
+                   </path>
+                 </svg>Sign in with Google</button>
+                 */
               @endphp
             </div>
 
@@ -367,7 +367,7 @@
 
 
           <div class="w-full shrink-0 flex items-center gap-x-2">
-            <div class="h-px flex-1 bg-border-secondary"></div><span class="text-sm font-medium text-tertiary">Or</span>
+            <div class="h-px flex-1 bg-border-secondary"></div><span class="text-sm font-medium text-tertiary">Or login with</span>
             <div class="h-px flex-1 bg-border-secondary"></div>
           </div>
 
@@ -382,7 +382,33 @@
               </svg>
               Upstox
             </a>
-            <button disabled
+            <a disabled href=""
+              class="group disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
+              <svg width="22" height="22" viewBox="0 0 220.5 204.5" role="img" aria-label="Angel One logo"
+                class="sc-dmlrTW iPnMQW">
+                <g clip-path="url(#clipPath16)" transform="matrix(1.0476 0 0 -1.0476 -377.498 675.286)">
+                  <path fill="#11af4b"
+                    d="M437.013 614.602a2.96 2.96 0 0 1 .001-3.035l95.906-160.434a2.96 2.96 0 0 1 2.54-1.441h32.163c2.298 0 3.718 2.505 2.54 4.477l-113.2 189.382a1.548 1.548 0 0 1-2.657 0z">
+                  </path>
+                  <path fill="#ff7300"
+                    d="M435.908 580.345h16.2a1.477 1.477 0 0 0 1.28-2.216l-8.1-14.03-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.03a1.477 1.477 0 0 0 1.28 2.216zM416.565 547.808h16.2a1.478 1.478 0 0 0 1.28-2.217l-8.1-14.029-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.029a1.478 1.478 0 0 0 1.28 2.217zM397.094 514.758h16.2a1.478 1.478 0 0 0 1.28-2.217l-8.1-14.029-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.03a1.478 1.478 0 0 0 1.28 2.216zM378.264 480.83h16.2a1.478 1.478 0 0 0 1.28-2.216l-8.1-14.03-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.03a1.478 1.478 0 0 0 1.28 2.217zM416.693 480.83h16.2a1.478 1.478 0 0 0 1.28-2.216l-8.1-14.03-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.03a1.478 1.478 0 0 0 1.28 2.217zM455.636 480.83h16.2a1.478 1.478 0 0 0 1.28-2.216l-8.1-14.03-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.03a1.478 1.478 0 0 0 1.28 2.217zM494.578 480.83h16.2a1.478 1.478 0 0 0 1.28-2.216l-8.1-14.03-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.03a1.478 1.478 0 0 0 1.28 2.217zM436.42 514.758h16.2a1.478 1.478 0 0 0 1.28-2.217l-8.1-14.029-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.03a1.478 1.478 0 0 0 1.28 2.216zM474.338 514.758h16.2a1.478 1.478 0 0 0 1.28-2.217l-8.1-14.029-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.03a1.478 1.478 0 0 0 1.28 2.216zM456.148 547.808h16.2a1.478 1.478 0 0 0 1.28-2.217l-8.1-14.029-8.1-14.03a1.478 1.478 0 0 0-2.56 0l-8.1 14.03-8.1 14.029a1.478 1.478 0 0 0 1.28 2.217z">
+                  </path>
+                </g>
+              </svg>
+              AngelOne
+            </a>
+            <a disabled href=""
+              class="group disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="22" height="22" role="img"
+                aria-label="Zerodha logo" class="sc-dmlrTW iPnMQW">
+                <g fill-rule="nonzero" fill="none">
+                  <path fill="#F6461A" d="M8 0L0 8l8 8 8-8 8-8z"></path>
+                  <path fill="#DB342C" d="M8 16l8-8 8 8z"></path>
+                </g>
+              </svg>
+              Zerodha
+            </a>
+            <a href="" disabled
               class="group opacity-25 disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
               <svg viewBox="0 0 38 38" fill="none" width="20" class="mr-2">
                 <g clip-path="url(#clip0_3954_49)">
@@ -406,7 +432,7 @@
                 </defs>
               </svg>
               Sign in with Google
-            </button>
+            </a>
           </div>
 
           <div class="flex justify-center gap-1 text-center">

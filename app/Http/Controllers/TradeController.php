@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Options;
 use App\Models\User;
 use App\Services\OptionService;
+use App\Services\TradeService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -2063,4 +2064,28 @@ class TradeController extends Controller
             'resp' => $resp
         ]);
     }
+
+    public function saveJournalColumns(Request $request)
+    {
+        $org_cols = TradeService::getJournalColumns();
+        $org_cols = array_column($org_cols, 'id');
+
+
+        $cols = $request->input('journal-columns');
+        if($cols == null){
+            $cols = [];
+        }
+
+        $disabled = array_diff($org_cols, $cols);
+
+        OptionService::updateOption('journal_columns', $disabled);
+
+        return response()->json([
+            "status" => 200,
+            "data" => $cols,
+            "org" => $org_cols,
+            "disabled" => $disabled
+        ]);
+    }
+
 }

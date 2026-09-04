@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/save-notes', [TradeController::class, 'updateNotes']);
     Route::get('/exporttrades', [TradeController::class, 'exportCsv']);
     Route::post('/save-customized-analytics', [TradeController::class, 'saveCstmAnalytics']);
+    Route::post('/save-journal-columns', [TradeController::class, 'saveJournalColumns']);
     Route::post('/loadmorestocks', [UpstoxController::class, 'loadMoreData']);
     Route::post('/sync-upstox-data', [UpstoxController::class, 'syncUpstoxData']);
     Route::post('/get-upstox-data', [UpstoxController::class, 'getUpstoxData']);
