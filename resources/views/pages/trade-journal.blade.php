@@ -298,6 +298,9 @@
 
                                 @php
                                     $dis_cols = OptionService::getOption('journal_columns');
+                                    if($dis_cols == null){
+                                        $dis_cols = [];
+                                    }
                                     $org_cols = TradeService::getJournalColumns();
                                 @endphp
 
