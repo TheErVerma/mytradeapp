@@ -223,6 +223,22 @@ export default class TradeActions {
                             mtr_itmval ? mtr_itmval.innerHTML = mtric.value : false;
                         });
                     }
+
+                    if(data.weeklySummery){
+                        const wksumdata = data.weeklySummery;
+                        if(wksumdata){
+                            wksumdata.forEach((item, index) => {
+                                console.log(item);
+                                const wk_row = document.querySelector('table.global-table.week_summery_table tbody tr:nth-child('+(index+1)+')');
+                                wk_row.querySelector('.trade_b_net_profits').innerHTML = item.net_profit;
+                                wk_row.querySelector('.trade_b_total_profits').innerHTML = item.total_profit;
+                                wk_row.querySelector('.trade_b_total_loss').innerHTML = item.total_loss;
+                                wk_row.querySelector('.trade_b_trades').innerHTML = item.trades;
+                                wk_row.querySelector('.trade_b_winning > span span:nth-child(1)').style.width = item.winning_percent+'%';
+                                wk_row.querySelector('.trade_b_winning > span span:nth-child(2)').style.width = (100-item.winning_percent)+'%';
+                            });
+                        }
+                    }
                 }).catch((err) => {
                     console.log(err);
                 });

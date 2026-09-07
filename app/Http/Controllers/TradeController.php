@@ -807,6 +807,15 @@ class TradeController extends Controller
             ->when($period != 'all', function ($query) use ($startDate, $endDate) {
                 return $query->whereBetween('trades.trd_date', [$startDate, $endDate]);
             })
+            ->when($analytic_type != "", function ($query) use ($analytic_type) {
+                // return $query->where('trd_type', $analytic_type);
+                $query->where(function ($q) use ($analytic_type) {
+                    $q->where('trd_type', $analytic_type)
+                        ->orWhereHas('instrument', function ($instrumentQuery) use ($analytic_type) {
+                            $instrumentQuery->where('underlying_type', $analytic_type);
+                        });
+                });
+            })
             ->selectRaw("
                 DATE(trades.trd_date) AS date,
 
@@ -875,13 +884,36 @@ class TradeController extends Controller
         $all_summery = $this::getPNLSummery($trades);
         $all_matrics = $this->getTradeMetrics($trades);
 
+        $weeklySummery = $this->weekdaySummary($trades);
+        $currency = $user->default_country;
+        $currency = $currency != null ? $currency : 'INR';
+
+        $refined_weeklySmry = array_map(function ($item) use ($currency) {
+            $item['net_profit'] = Number::currency(
+                floatval($item['net_profit']),
+                in: $currency
+            );
+            $item['total_profit'] = Number::currency(
+                floatval($item['total_profit']),
+                in: $currency
+            );
+            $item['total_loss'] = Number::currency(
+                floatval($item['total_loss']),
+                in: $currency
+            );
+
+            return $item;
+
+        }, $weeklySummery);
+
         $resp = [
             'status' => 200,
             'message' => $period,
             'summery' => $all_summery,
             'pnl_cal_data' => $dailyPnl,
             'matrics' => $all_matrics,
-            'monthlyPerformance' => $this->getMonthlyPerformance($trades, true)
+            'monthlyPerformance' => $this->getMonthlyPerformance($trades, true),
+            'weeklySummery' => $refined_weeklySmry,
         ];
 
         return response()->json($resp);
@@ -1564,7 +1596,11 @@ class TradeController extends Controller
     {
 
         if ($trades == null) {
+            $trade_type = 'F&O';
             $trades = Trade::where('user_id', Auth::id())
+                ->when($trade_type != "", function ($query) use ($trade_type) {
+                    return $query->where('trd_type', $trade_type);
+                })
                 ->with('instrument')->get();
         }
 
