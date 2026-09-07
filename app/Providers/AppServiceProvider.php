@@ -43,8 +43,12 @@ class AppServiceProvider extends ServiceProvider
             $upstox_data = UpstoxController::fetchData('TATA');
 
 
+            $trade_type = 'F&O';
             $dailyPnl = Trade::where('user_id', Auth::id())
                 ->join('instruments', 'instruments.instrument_key', '=', 'trades.trd_symbol_key')
+                ->when($trade_type != "", function ($query) use ($trade_type) {
+                    return $query->where('trd_type', $trade_type);
+                })
                 ->whereNotNull('trades.trd_exit_price')
                 ->selectRaw("
                     DATE(trades.trd_date) AS date,
