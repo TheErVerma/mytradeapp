@@ -387,7 +387,7 @@ class UpstoxController extends Controller
                         'trd_date' => date('Y-m-d'),
                         'trd_exit_date' => null,
                         'trd_shares' => isset($position["quantity"]) ? $position["quantity"] : 0,
-                        'trd_price' => isset($position["buy_price"]) ? $position["buy_price"] : 0,
+                        'trd_price' => isset($position["average_price"]) ? $position["average_price"] : 0,
                         'trd_exit_price' => isset($position["sell_price"]) ? $position["sell_price"] : 0,
                         'trd_charges_amount' => 0,
                         'trd_lot' => isset($position["quantity"]) ? $position["quantity"] : 0,
@@ -465,7 +465,7 @@ class UpstoxController extends Controller
                         'trd_date' => date('Y-m-d'),
                         'trd_exit_date' => null,
                         'trd_shares' => isset($position["quantity"]) ? $position["quantity"] : 0,
-                        'trd_price' => isset($position["buy_price"]) ? $position["buy_price"] : 0,
+                        'trd_price' => isset($position["average_price"]) ? $position["average_price"] : 0,
                         'trd_exit_price' => isset($position["sell_price"]) ? $position["sell_price"] : 0,
                         'trd_charges_amount' => 0,
                         'trd_lot' => isset($position["quantity"]) ? $position["quantity"] : 0,
@@ -484,6 +484,15 @@ class UpstoxController extends Controller
         ]);
     }
 
+    private function isUpstoxTokenExpired(string $accessToken): bool
+    {
+        $response = Http::withToken($accessToken)
+            ->acceptJson()
+            ->get('https://api.upstox.com/v2/user/profile/');
+
+        return $response->status() === 401;
+    }
+
     public function integratePage()
     {
         $upstox_connected = false;
@@ -492,6 +501,8 @@ class UpstoxController extends Controller
             foreach ($broker_init as $brokerinit) {
                 if ($brokerinit['broker'] == 'upstox' && $brokerinit['access_token'] != "") {
                     $upstox_connected = true;
+                }else{
+                    $upstox_connected = $this->isUpstoxTokenExpired($brokerinit['access_token']);
                 }
             }
         }
