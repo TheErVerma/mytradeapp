@@ -281,14 +281,16 @@ class TradeController extends Controller
     }
 
 
-    public static function summary($trades)
+    public static function summary($trades = [])
     {
         $userId = Auth::id();
 
-        // $trades = Trade::where('user_id', $userId)
-        //     ->with('instrument')
-        //     ->orderBy('id', 'ASC')
-        //     ->get();
+        if(empty($trades)){
+            $trades = Trade::where('user_id', $userId)
+                ->with('instrument')
+                ->orderBy('id', 'ASC')
+                ->get();
+        }
 
         $totalPnL = 0;
         $winningTrades = 0;

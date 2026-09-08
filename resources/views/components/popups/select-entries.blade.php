@@ -31,6 +31,17 @@
                             <p class="text-sm text-tertiary">Selected trades will be added to your journal.</p>
                         </div>
 
+                        <label
+                            class="cursor-pointer hb-checkbox hover:bg-primary_hover w-fit"
+                            for="slctTrdEntry_all">
+                            <div class="flex flex-row items-center gap-2">
+                                <span style="margin-top: 0px;">
+                                    <input type="checkbox" id="slctTrdEntry_all" value="">
+                                </span>
+                                <div class="text-md text-primary"> Select All</div>
+                            </div>
+                        </label>
+
                         <div class="flex flex-col gap-2 select-entries-rows_wrap">
                             <label
                                 class="border border-secondary cursor-pointer flex flex-col gap-0.5 hover:bg-primary_hover p-4 rounded-xl z-10 hb-checkbox"

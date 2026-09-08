@@ -52,6 +52,7 @@
                     </div>
 
                     <div class="flex items-center gap-3 hide_for_capture">
+                        @php /*
                         <button type="button" class="btn btn-icon-only btn-secondary btn-sm"
                             data-popup-target="config-journal-column-pop">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +66,9 @@
                                 </path>
                             </svg>
 
-                        </button>
+                        </button> */ 
+                        @endphp
+
                         <button type="button" class="btn btn-sm btn-primary w-full" data-popup-target="add-trade-pop">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"

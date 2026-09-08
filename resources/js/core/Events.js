@@ -569,5 +569,21 @@ export default class EventManager {
                 });
             })
         }
+
+
+        const slctTrdEntry_all = document.getElementById('slctTrdEntry_all');
+        if(slctTrdEntry_all){
+            slctTrdEntry_all.addEventListener('change', function(){
+                const this_inp = this;
+                const isChecked = this_inp.checked;
+                const allINps = document.querySelectorAll('.select-entries-rows_wrap input');
+                if(allINps.length >= 1){
+                    allINps.forEach((item, indx) => {
+                        item.checked = isChecked;
+                        item.dispatchEvent(new Event('change'));
+                    });
+                }
+            });
+        }
     }
 }

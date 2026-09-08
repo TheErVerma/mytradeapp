@@ -359,6 +359,7 @@ class UpstoxController extends Controller
             if (isset($getPortfolio['holdings'])) {
                 $positions = array_merge($positions, $getPortfolio['holdings']);
             }
+
             if (is_array($positions) && !empty($positions)) {
                 foreach ($positions as $position) {
                     $instrument_arr = collect(Instruments::where('instrument_key', (isset($position["instrument_token"]) ? $position["instrument_token"] : ''))->first())->toArray();
@@ -368,7 +369,7 @@ class UpstoxController extends Controller
                     $new_data = [
                         'trd_symbol' => $instrument_arr['trading_symbol'] . (isset($instrument_arr['short_name']) && $instrument_arr['short_name'] != "" ? ' (' . $instrument_arr['short_name'] . ')' : ''),
                         'trd_symbol_key' => $instrument_arr['instrument_key'],
-                        'trd_action' => 'Short',
+                        'trd_action' => $position['quantity'] > 0 ? 'Long' : 'Short',
                         'trd_date' => date('Y-m-d'),
                         'trd_exit_date' => null,
                         'trd_shares' => isset($position["quantity"]) ? $position["quantity"] : 0,
@@ -424,12 +425,29 @@ class UpstoxController extends Controller
                     }
 
                     $instrument_arr = collect(Instruments::where('instrument_key', (isset($position["instrument_token"]) ? $position["instrument_token"] : ''))->first())->toArray();
-                    $trd_type_ = isset($instrument_arr['instrument_type']) ? $instrument_arr['instrument_type'] : $instrument_arr['segment'];
-                    $trd_type = (strpos($trd_type_, '_FO') || strpos($trd_type_, 'FUT')) ? 'F&O' : 'Cash';
+                    // $fut_not_priority = ['CE'];
+                    // $trd_type_ = isset($instrument_arr['instrument_type']) && !in_array($instrument_arr['instrument_type'], $fut_not_priority) ? $instrument_arr['instrument_type'] : $instrument_arr['segment'];
+                    // $trd_type = (strpos($trd_type_, '_FO') || strpos($trd_type_, 'FUT')) ? 'F&O' : 'Cash';
+
+                    $trd_type = match ($instrument_arr['instrument_type']) {
+                        'EQ' => 'Cash',
+                        'FUT', 'CE', 'PE' => 'F&O',
+                        default => 'Other',
+                    };
+                    
+                    if($trd_type == 'Other'){
+                        $trd_type = match ($instrument_arr['segment']) {
+                            'EQ' => 'Cash',
+                            'FUT', 'CE', 'PE' => 'F&O',
+                            default => 'Other',
+                        };
+                    }
+
+                    Log::debug(print_r($trd_type, true));
                     $new_data = [
                         'trd_symbol' => $instrument_arr['trading_symbol'] . (isset($instrument_arr['short_name']) && $instrument_arr['short_name'] != "" ? ' (' . $instrument_arr['short_name'] . ')' : ''),
                         'trd_symbol_key' => $instrument_arr['instrument_key'],
-                        'trd_action' => 'Short',
+                        'trd_action' => $position['quantity'] > 0 ? 'Long' : 'Short',
                         'trd_date' => date('Y-m-d'),
                         'trd_exit_date' => null,
                         'trd_shares' => isset($position["quantity"]) ? $position["quantity"] : 0,
