@@ -364,8 +364,22 @@ class UpstoxController extends Controller
                 foreach ($positions as $position) {
                     $instrument_arr = collect(Instruments::where('instrument_key', (isset($position["instrument_token"]) ? $position["instrument_token"] : ''))->first())->toArray();
                     // Log::debug(print_r($instrument_arr, true));
-                    $trd_type_ = isset($instrument_arr['instrument_type']) ? $instrument_arr['instrument_type'] : $instrument_arr['segment'];
-                    $trd_type = (strpos($trd_type_, '_FO') || strpos($trd_type_, 'FUT')) ? 'F&O' : 'Cash';
+                    // $trd_type_ = isset($instrument_arr['instrument_type']) ? $instrument_arr['instrument_type'] : $instrument_arr['segment'];
+                    // $trd_type = (strpos($trd_type_, '_FO') || strpos($trd_type_, 'FUT')) ? 'F&O' : 'Cash';
+
+                    $trd_type = match ($instrument_arr['instrument_type']) {
+                        'EQ' => 'Cash',
+                        'FUT', 'CE', 'PE' => 'F&O',
+                        default => 'Other',
+                    };
+                    
+                    if($trd_type == 'Other'){
+                        $trd_type = match ($instrument_arr['segment']) {
+                            'EQ' => 'Cash',
+                            'FUT', 'CE', 'PE' => 'F&O',
+                            default => 'Other',
+                        };
+                    }
                     $new_data = [
                         'trd_symbol' => $instrument_arr['trading_symbol'] . (isset($instrument_arr['short_name']) && $instrument_arr['short_name'] != "" ? ' (' . $instrument_arr['short_name'] . ')' : ''),
                         'trd_symbol_key' => $instrument_arr['instrument_key'],
