@@ -224,18 +224,18 @@ export default class TradeActions {
                         });
                     }
 
-                    if(data.weeklySummery){
+                    if (data.weeklySummery) {
                         const wksumdata = data.weeklySummery;
-                        if(wksumdata){
+                        if (wksumdata) {
                             wksumdata.forEach((item, index) => {
                                 console.log(item);
-                                const wk_row = document.querySelector('table.global-table.week_summery_table tbody tr:nth-child('+(index+1)+')');
+                                const wk_row = document.querySelector('table.global-table.week_summery_table tbody tr:nth-child(' + (index + 1) + ')');
                                 wk_row.querySelector('.trade_b_net_profits').innerHTML = item.net_profit;
                                 wk_row.querySelector('.trade_b_total_profits').innerHTML = item.total_profit;
                                 wk_row.querySelector('.trade_b_total_loss').innerHTML = item.total_loss;
                                 wk_row.querySelector('.trade_b_trades').innerHTML = item.trades;
-                                wk_row.querySelector('.trade_b_winning > span span:nth-child(1)').style.width = item.winning_percent+'%';
-                                wk_row.querySelector('.trade_b_winning > span span:nth-child(2)').style.width = (100-item.winning_percent)+'%';
+                                wk_row.querySelector('.trade_b_winning > span span:nth-child(1)').style.width = item.winning_percent + '%';
+                                wk_row.querySelector('.trade_b_winning > span span:nth-child(2)').style.width = (100 - item.winning_percent) + '%';
                             });
                         }
                     }
@@ -281,12 +281,41 @@ export default class TradeActions {
                     .then((data) => {
                         this_btn.classList.remove('loading');
                         console.log(data);
-                        if(data.status == 200){
+                        if (data.status == 200) {
                             window.location.reload();
                         }
                     });
             });
         }
+
+
+
+
+        const sync_broker_trades_form = document.getElementById('sync_broker_trades_form');
+        if (sync_broker_trades_form) {
+            sync_broker_trades_form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const this_form = this;
+                const this_btn = this_form.querySelector('[type="submit"]');
+                const this_data = new FormData(this_form);
+                this_btn.classList.add('loading');
+                fetch('/sync-upstox-data', {
+                    method: 'POST',
+                    body: this_data,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                }).then((response) => response.json())
+                    .then((data) => {
+                        MainApp.popupManager.close('select-entries');
+                        console.log(data);
+                        this_btn.classList.remove('loading');
+                        document.querySelector('.select-entries-rows_wrap').innerHTML = '';
+                        window.location.reload();
+                    });
+            });
+        }
+
     }
 
     delete(trade_id) {

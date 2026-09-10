@@ -268,32 +268,6 @@ export default class UpstoxActions {
             });
         }
 
-        const sync_broker_trades_form = document.getElementById('sync_broker_trades_form');
-        if (sync_broker_trades_form) {
-            sync_broker_trades_form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const this_form = this;
-                const this_btn = this_form.querySelector('[type="submit"]');
-                const this_data = new FormData(this_form);
-                this_btn.classList.add('loading');
-                fetch('/sync-upstox-data', {
-                    method: 'POST',
-                    body: this_data,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                }).then((response) => response.json())
-                    .then((data) => {
-                        MainApp.popupManager.close('select-entries');
-                        console.log(data);
-                        this_btn.classList.remove('loading');
-                        document.querySelector('.select-entries-rows_wrap').innerHTML = '';
-                        window.location.reload();
-                    });
-            });
-        }
-
-
 
         // const stockWrapper = document.querySelector('.form_fields .form_field ul.field_drop_down');
         // stockWrapper.addEventListener('scroll', function () {

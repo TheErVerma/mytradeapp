@@ -13,6 +13,7 @@ import AudioPlayer from '../modules/AudioControl';
 import Toast from '../modules/Toast';
 import UpstoxActions from '../modules/UpstoxActions';
 import HeadMap from '../modules/HeadMap';
+import KiteActions from '../modules/KiteActions';
 
 
 export default class App {
@@ -35,6 +36,7 @@ export default class App {
         this.Audio = new AudioPlayer();
         this.Toast = new Toast();
         this.UpstoxActions = new UpstoxActions();
+        this.KiteActions = new KiteActions();
         this.HeadMap = new HeadMap();
     }
 }

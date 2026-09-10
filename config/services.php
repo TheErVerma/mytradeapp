@@ -41,4 +41,8 @@ return [
         'client_secret' => env('UPSTOX_CLIENT_SECRET'),
         'redirect_uri' => env('UPSTOX_REDIRECT_URI'),
     ],
+    'zerodha' => [
+        'api_key' => env('ZERODHA_API_TOKEN'),
+        'secret_key' => env('ZERODHA_SECRET_KEY'),
+    ],
 ];

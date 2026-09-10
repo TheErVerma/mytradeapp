@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BrokerIntegration;
 use App\Models\Options;
 use App\Models\User;
 use App\Services\OptionService;
 use App\Services\TradeService;
+use App\Services\UpstoxService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -285,7 +287,7 @@ class TradeController extends Controller
     {
         $userId = Auth::id();
 
-        if(empty($trades)){
+        if (empty($trades)) {
             $trades = Trade::where('user_id', $userId)
                 ->with('instrument')
                 ->orderBy('id', 'ASC')
@@ -1110,7 +1112,7 @@ class TradeController extends Controller
         $longPerformance = $calculatedTrades
             ->filter(
                 fn($item) =>
-                $item['trade']->trd_action === 'Long'
+                    $item['trade']->trd_action === 'Long'
             )
             ->sum('pnl');
 
@@ -1121,7 +1123,7 @@ class TradeController extends Controller
         $shortPerformance = $calculatedTrades
             ->filter(
                 fn($item) =>
-                $item['trade']->trd_action === 'Short'
+                    $item['trade']->trd_action === 'Short'
             )
             ->sum('pnl');
 
@@ -2110,7 +2112,7 @@ class TradeController extends Controller
 
 
         $cols = $request->input('journal-columns');
-        if($cols == null){
+        if ($cols == null) {
             $cols = [];
         }
 
@@ -2124,6 +2126,47 @@ class TradeController extends Controller
             "org" => $org_cols,
             "disabled" => $disabled
         ]);
+    }
+
+
+    private function isUpstoxTokenExpired(string $accessToken): bool
+    {
+        $response = Http::withToken($accessToken)
+            ->acceptJson()
+            ->get('https://api.upstox.com/v2/user/profile/');
+
+        $resp_arr = $response->json();
+
+        if (isset($resp_arr['errors']) && sizeof($resp_arr['errors']) >= 1) {
+            return false;
+        }
+
+        return $response->status() === 401;
+    }
+
+    private function isKiteTokenExpired(string $accessToken): bool
+    {
+        return true;
+    }
+
+    public function integratePage()
+    {
+        $upstox_connected = false;
+        $kite_connected = false;
+        $broker_init = collect(BrokerIntegration::where('user_id', Auth::id())->get())->toArray();
+        if ($broker_init && !empty($broker_init)) {
+            foreach ($broker_init as $brokerinit) {
+                if ($brokerinit['broker'] == 'upstox' && $brokerinit['access_token'] != "") {
+                    $upstox_connected = $this->isUpstoxTokenExpired($brokerinit['access_token']);
+                }
+                if ($brokerinit['broker'] == 'kite' && $brokerinit['access_token'] != "") {
+                    $kite_connected = $this->isKiteTokenExpired($brokerinit['access_token']);
+                }
+            }
+        }
+        $upser = new UpstoxService();
+        $portfolio = $upser->getPortfolio();
+        return view('pages/settings/integrate', ['portfolio' => $portfolio, 'upstox_connected' => $upstox_connected, 'kite_connected' => $kite_connected]);
     }
 
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\UpstoxController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\TwoFactorController;
+use App\Http\Controllers\ZerodhaController;
 use App\Models\BrokerIntegration;
 use App\Services\UpstoxService;
 use Illuminate\Support\Facades\Route;
@@ -59,12 +60,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/settings', function () {
         return view('pages/settings/settings');
     })->name('settings');
-    Route::get('/integrate', [UpstoxController::class, 'integratePage'])->name('integrate');
+    Route::get('/integrate', [TradeController::class, 'integratePage'])->name('integrate');
     Route::get('/disconnect-upstox', [UpstoxController::class, 'disconnectUpstox']);
     /**
      * Pages End
-     ***********************/
-
+    ***********************/
+    
+    Route::get('/connect-zerodha', [ZerodhaController::class, 'redirectToZerodha']);
+    Route::get('/zerodha-callback', [ZerodhaController::class, 'callback']);
+    Route::get('/disconnect-zerodha', [ZerodhaController::class, 'disconnect']);
+    Route::post('/fetch-kite-portfolio', [ZerodhaController::class, 'syncOrFetch']);
 
 
 

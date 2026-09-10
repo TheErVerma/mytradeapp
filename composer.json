@@ -13,7 +13,8 @@
         "laravel/fortify": "^1.37",
         "laravel/framework": "^13.7",
         "laravel/tinker": "^3.0",
-        "upstox/upstox-php-sdk": "^1.28"
+        "upstox/upstox-php-sdk": "^1.28",
+        "zerodha/phpkiteconnect": "^5.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

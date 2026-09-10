@@ -14,6 +14,7 @@
 
                 <form action="" id="sync_broker_trades_form" >
                     @csrf
+                    <input type="hidden" name="broker" value="">
                     <div class="flex flex-col gap-4 px-4 pt-5 sm:px-6 sm:pt-6">
                         <div
                             class="relative flex shrink-0 items-center justify-center *:data-icon:size-5 bg-primary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset size-10 rounded-lg text-fg-secondary">

@@ -457,7 +457,7 @@ class UpstoxController extends Controller
                         };
                     }
 
-                    Log::debug(print_r($trd_type, true));
+                    // Log::debug(print_r($trd_type, true));
                     $new_data = [
                         'trd_symbol' => $instrument_arr['trading_symbol'] . (isset($instrument_arr['short_name']) && $instrument_arr['short_name'] != "" ? ' (' . $instrument_arr['short_name'] . ')' : ''),
                         'trd_symbol_key' => $instrument_arr['instrument_key'],
@@ -482,33 +482,6 @@ class UpstoxController extends Controller
             "status" => 200,
             "data" => $req_log,
         ]);
-    }
-
-    private function isUpstoxTokenExpired(string $accessToken): bool
-    {
-        $response = Http::withToken($accessToken)
-            ->acceptJson()
-            ->get('https://api.upstox.com/v2/user/profile/');
-
-        return $response->status() === 401;
-    }
-
-    public function integratePage()
-    {
-        $upstox_connected = false;
-        $broker_init = collect(BrokerIntegration::where('user_id', Auth::id())->get())->toArray();
-        if ($broker_init && !empty($broker_init)) {
-            foreach ($broker_init as $brokerinit) {
-                if ($brokerinit['broker'] == 'upstox' && $brokerinit['access_token'] != "") {
-                    $upstox_connected = true;
-                }else{
-                    $upstox_connected = $this->isUpstoxTokenExpired($brokerinit['access_token']);
-                }
-            }
-        }
-        $upser = new UpstoxService();
-        $portfolio = $upser->getPortfolio();
-        return view('pages/settings/integrate', ['portfolio' => $portfolio, 'upstox_connected' => $upstox_connected]);
     }
 
     public function disconnectUpstox()
