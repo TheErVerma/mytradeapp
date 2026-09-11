@@ -38,9 +38,11 @@ export default class KiteActions {
                     .then((data) => {
                         console.log(data);
                         this.classList.remove('loading');
-                        if(data.html && selectTradeFut == 'yes'){
+                        if (data.html && selectTradeFut == 'yes') {
                             document.querySelector('.select-entries-rows_wrap').innerHTML = data.html;
                             MainApp.popupManager.open('select-entries');
+                        } else {
+                            window.location.href = '/journal';
                         }
                     });
             });

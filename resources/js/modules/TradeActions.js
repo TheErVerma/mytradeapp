@@ -311,7 +311,7 @@ export default class TradeActions {
                         console.log(data);
                         this_btn.classList.remove('loading');
                         document.querySelector('.select-entries-rows_wrap').innerHTML = '';
-                        window.location.reload();
+                        window.location.href = '/journal';
                     });
             });
         }
@@ -386,7 +386,6 @@ export default class TradeActions {
                         } else {
                             if (inp) {
                                 inp.value = data[clm];
-
 
                                 if (clm == 'trd_type') {
                                     const type_val = data[clm];

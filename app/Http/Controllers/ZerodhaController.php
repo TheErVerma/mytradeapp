@@ -162,7 +162,6 @@ class ZerodhaController extends Controller
             $all_trades = array_merge($all_trades, $holdings);
         }
 
-        $selectTrades = 'yes';
         $req_resp = [];
         $new_data = [];
         if (is_array($all_trades) && !empty($all_trades)) {
@@ -198,18 +197,23 @@ class ZerodhaController extends Controller
                     'trd_type' => $trd_type,
                     'user_id' => Auth::id(),
                 ];
+                // Log::debug(print_r($new_data, true));
                 if ($selectTrades != "no" && $slctTrdEntry == "") {
                     $new_data['instrument'] = $instrument_arr;
                 } else {
-                    // $new_row = Trade::updateOrCreate($new_data, ['trd_symbol_key' => $instrument_arr['instrument_key']]);
-                    if(in_array($instrument_arr['instrument_key'], $slctTrdEntry)){
-                        $new_row = Trade::updateOrCreate($new_data, ['trd_symbol_key' => $instrument_arr['instrument_key']]);
+                    // Log::debug(trim($instrument_arr['instrument_key']));
+                    if ($slctTrdEntry) {
+                        if (in_array($instrument_arr['instrument_key'], $slctTrdEntry)) {
+                            $new_row = Trade::updateOrCreate(['user_id' => Auth::id(), 'trd_symbol_key' => trim($instrument_arr['instrument_key'])], $new_data);
+                        }
+                    } else {
+                        $new_row = Trade::updateOrCreate(['user_id' => Auth::id(), 'trd_symbol_key' => trim($instrument_arr['instrument_key'])], $new_data);
                     }
                 }
                 $req_resp[] = $new_data;
             }
         }
-        if ($slctTrdEntry) {
+        if ($slctTrdEntry || $selectTrades == "no") {
             return response()->json([
                 "status" => 200,
                 "entry" => $slctTrdEntry,

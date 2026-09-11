@@ -346,7 +346,7 @@ class UpstoxController extends Controller
     public function getUpstoxData(Request $request)
     {
         $selectTrades = $request->input('selectTrades');
-        
+
         $UpstoxService = new UpstoxService();
         $getPortfolio = $UpstoxService->getPortfolio();
         $req_resp = [];
@@ -365,8 +365,8 @@ class UpstoxController extends Controller
                         'FUT', 'CE', 'PE' => 'F&O',
                         default => 'Other',
                     };
-                    
-                    if($trd_type == 'Other'){
+
+                    if ($trd_type == 'Other') {
                         $trd_type = match ($instrument_arr['segment']) {
                             'EQ' => 'Cash',
                             'FUT', 'CE', 'PE' => 'F&O',
@@ -387,10 +387,10 @@ class UpstoxController extends Controller
                         'trd_type' => $trd_type,
                         'user_id' => Auth::id(),
                     ];
-                    if($selectTrades != "no"){
+                    if ($selectTrades != "no") {
                         $new_data['instrument'] = $instrument_arr;
-                    }else{
-                        $new_row = Trade::updateOrCreate($new_data, ['trd_symbol_key' => $instrument_arr['instrument_key']]);
+                    } else {
+                        $new_row = Trade::updateOrCreate(['user_id' => Auth::id(), 'trd_symbol_key' => $instrument_arr['instrument_key']], $new_data);
                     }
                     $req_resp[] = $new_data;
 
@@ -441,8 +441,8 @@ class UpstoxController extends Controller
                         'FUT', 'CE', 'PE' => 'F&O',
                         default => 'Other',
                     };
-                    
-                    if($trd_type == 'Other'){
+
+                    if ($trd_type == 'Other') {
                         $trd_type = match ($instrument_arr['segment']) {
                             'EQ' => 'Cash',
                             'FUT', 'CE', 'PE' => 'F&O',
@@ -464,8 +464,9 @@ class UpstoxController extends Controller
                         'trd_type' => $trd_type,
                         'user_id' => Auth::id(),
                     ];
-                    $new_row = Trade::updateOrCreate($new_data, ['trd_symbol_key' => $instrument_arr['instrument_key']]);
+                    $new_row = Trade::updateOrCreate(['user_id' => Auth::id(), 'trd_symbol_key' => $instrument_arr['instrument_key']], $new_data);
 
+                    Log::debug(print_r($new_row, true));
                     $req_log[] = $new_data;
                 }
             }

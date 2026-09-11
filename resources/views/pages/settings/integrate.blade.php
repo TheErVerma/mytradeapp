@@ -59,7 +59,7 @@
                                 <polygon fill="#f6461a" class="cls-1" points="30 0 0 30 30 60 60 30 90 0 30 0" />
                                 <polygon fill="#db342c" points="30 60 60 30 90 60 30 60" />
                             </svg>
-                            <h2 class="text-xl">Zerodha</h2>
+                            <h2 class="text-xl text-fg-secondary">Zerodha</h2>
                         </div>
                         <div class="text-quaternary text-sm">Connect your Zerodha account and effortlessly sync your trades
                             directly to your trading journal.
@@ -171,7 +171,7 @@
                                 <path class="st1" fill="#00f6b6"
                                     d="M147.98,57.77c-1.36-5.77-3.35-11.21-5.88-16.3l-.02.02-47.22,43.65c-2.95,2.73-7.34,3.2-10.81,1.17l-20.07-11.75c-3.25-1.89-7.32-1.61-10.26.72-12.43,9.84-44.26,35.01-44.71,35.38,15.7,29.11,49.48,45.29,83.22,37.31,40.31-9.52,65.27-49.9,55.75-90.2Z" />
                             </svg>
-                            <h2 class="text-xl">Groww</h2>
+                            <h2 class="text-xl text-fg-secondary">Groww</h2>
                         </div>
                         <div class="text-quaternary text-sm">Connect your Groww account to seamlessly import your trades and
                             keep your trading records organized.

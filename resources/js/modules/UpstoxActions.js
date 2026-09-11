@@ -263,6 +263,8 @@ export default class UpstoxActions {
                         if(data.html && selectTradeFut == 'yes'){
                             document.querySelector('.select-entries-rows_wrap').innerHTML = data.html;
                             MainApp.popupManager.open('select-entries');
+                        }else{
+                            window.location.href = '/journal';
                         }
                     });
             });
