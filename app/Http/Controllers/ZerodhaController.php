@@ -177,7 +177,8 @@ class ZerodhaController extends Controller
                 };
 
                 if ($trd_type == 'Other') {
-                    $trd_type = match ($instrument_arr['segment']) {
+                    $segment = last(explode('_', $instrument_arr['segment']));
+                    $trd_type = match ($segment) {
                         'EQ' => 'Cash',
                         'FUT', 'CE', 'PE' => 'F&O',
                         default => 'Other',
