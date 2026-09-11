@@ -22,21 +22,6 @@ class SyncInstruments extends Command
      */
     public function handle()
     {
-        // Log::debug("Cron Triggered: ".date('F d, Y H:i:s'));
-
-        // $page = Cache::get('upstox_api_page', 1);
-        // Log::debug("Page: ".$page);
-
-        // $page++;
-
-        // Cache::set('upstox_api_page', $page);
-
-        // $upstox_data = UpstoxController::fetchData('a', null, $page);
-        // Log::debug(print_r($upstox_data, true));
-
-
-
-
         $url = 'https://assets.upstox.com/market-quote/instruments/exchange/complete.json.gz';
 
         $response = Http::withHeaders([

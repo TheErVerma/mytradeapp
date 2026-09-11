@@ -32,6 +32,11 @@
                         <div class="text-quaternary text-sm">Connect your Upstox account to automatically import and keep
                             your trades synced with your journal.
                         </div>
+                        <div class="mt-4">
+                            <p class="text-primary text-sm">Callback URL</p>
+                            <code class="border border-secondary mt-1 p-3 rounded-lg text-xs"
+                                style="display: block;">https://mytradeapp.test/upstox-callback</code>
+                        </div>
                     </div>
 
                     <div class="flex gap-4 items-center">

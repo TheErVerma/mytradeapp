@@ -299,7 +299,7 @@ export default class TradeActions {
                 const this_btn = this_form.querySelector('[type="submit"]');
                 const this_data = new FormData(this_form);
                 this_btn.classList.add('loading');
-                fetch('/sync-upstox-data', {
+                fetch('/sync-broker-data', {
                     method: 'POST',
                     body: this_data,
                     headers: {

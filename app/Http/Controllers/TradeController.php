@@ -702,7 +702,7 @@ class TradeController extends Controller
                 $qty = (float) ($trade->trd_shares);
             }
 
-            $qty *= $trade->instrument['qty_multiplier'];
+            $qty = $trade->instrument['qty_multiplier'];
             $entry = (float) $trade->trd_price;
             $exit = (float) $trade->trd_exit_price;
 
@@ -1865,7 +1865,7 @@ class TradeController extends Controller
                 $qty = (float) ($trade['trd_shares']);
             }
 
-            $qty *= $trade['instrument']['qty_multiplier'];
+            $qty = $trade['instrument']['qty_multiplier'] ?? 1;
             $entry = (float) $trade['trd_price'];
             $exit = (float) $trade['trd_exit_price'];
 
@@ -2141,7 +2141,7 @@ class TradeController extends Controller
             return false;
         }
 
-        return $response->status() === 401;
+        return true;
     }
 
     private function isKiteTokenExpired(string $accessToken): bool

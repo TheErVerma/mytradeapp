@@ -71,7 +71,6 @@ class UpstoxController extends Controller
             session()->forget('upstox_oauth_state');
 
             if (!$request->code) {
-                Log::debug("No Code");
                 return redirect()
                     ->route('login')
                     ->withErrors([
@@ -98,7 +97,6 @@ class UpstoxController extends Controller
                 );
 
             if ($response->failed()) {
-                Log::debug(print_r($response->json(), true));
                 return redirect()
                     ->route('login')
                     ->withErrors([
@@ -265,7 +263,6 @@ class UpstoxController extends Controller
             ")
             ->orderBy('id', 'asc');
 
-        // Log::debug($instruments_qry->toSql());
         $instruments = $instruments_qry->paginate(100);
 
         return $instruments;
@@ -352,7 +349,6 @@ class UpstoxController extends Controller
         
         $UpstoxService = new UpstoxService();
         $getPortfolio = $UpstoxService->getPortfolio();
-        // Log::debug(print_r($getPortfolio, true));
         $req_resp = [];
         if (isset($getPortfolio['positions'])) {
             $positions = $getPortfolio['positions'];
@@ -363,9 +359,6 @@ class UpstoxController extends Controller
             if (is_array($positions) && !empty($positions)) {
                 foreach ($positions as $position) {
                     $instrument_arr = collect(Instruments::where('instrument_key', (isset($position["instrument_token"]) ? $position["instrument_token"] : ''))->first())->toArray();
-                    // Log::debug(print_r($instrument_arr, true));
-                    // $trd_type_ = isset($instrument_arr['instrument_type']) ? $instrument_arr['instrument_type'] : $instrument_arr['segment'];
-                    // $trd_type = (strpos($trd_type_, '_FO') || strpos($trd_type_, 'FUT')) ? 'F&O' : 'Cash';
 
                     $trd_type = match ($instrument_arr['instrument_type']) {
                         'EQ' => 'Cash',
@@ -457,7 +450,6 @@ class UpstoxController extends Controller
                         };
                     }
 
-                    // Log::debug(print_r($trd_type, true));
                     $new_data = [
                         'trd_symbol' => $instrument_arr['trading_symbol'] . (isset($instrument_arr['short_name']) && $instrument_arr['short_name'] != "" ? ' (' . $instrument_arr['short_name'] . ')' : ''),
                         'trd_symbol_key' => $instrument_arr['instrument_key'],
@@ -486,7 +478,7 @@ class UpstoxController extends Controller
 
     public function disconnectUpstox()
     {
-        BrokerIntegration::where('user_id', Auth::id())->delete();
+        BrokerIntegration::where('user_id', Auth::id())->where('broker', 'upstox')->delete();
         return redirect()->intended('/integrate');
     }
 

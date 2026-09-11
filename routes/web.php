@@ -14,6 +14,7 @@ use App\Services\UpstoxService;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use function Pest\Laravel\post;
+use Illuminate\Http\Request;
 
 
 
@@ -64,10 +65,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/disconnect-upstox', [UpstoxController::class, 'disconnectUpstox']);
     /**
      * Pages End
-    ***********************/
-    
-    Route::get('/connect-zerodha', [ZerodhaController::class, 'redirectToZerodha']);
-    Route::get('/zerodha-callback', [ZerodhaController::class, 'callback']);
+     ***********************/
+
+
     Route::get('/disconnect-zerodha', [ZerodhaController::class, 'disconnect']);
     Route::post('/fetch-kite-portfolio', [ZerodhaController::class, 'syncOrFetch']);
 
@@ -120,8 +120,25 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/save-customized-analytics', [TradeController::class, 'saveCstmAnalytics']);
     Route::post('/save-journal-columns', [TradeController::class, 'saveJournalColumns']);
     Route::post('/loadmorestocks', [UpstoxController::class, 'loadMoreData']);
-    Route::post('/sync-upstox-data', [UpstoxController::class, 'syncUpstoxData']);
     Route::post('/get-upstox-data', [UpstoxController::class, 'getUpstoxData']);
+    // Route::post('/sync-broker-data', [UpstoxController::class, 'syncUpstoxData']);
+    Route::post('/sync-broker-data', function (Request $request) {
+        switch ($request->input('broker')) {
+            case 'upstox':
+                return app(UpstoxController::class)
+                    ->syncUpstoxData($request);
+
+            case 'kite':
+                return app(ZerodhaController::class)
+                    ->syncOrFetch($request);
+
+            default:
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid broker.',
+                ], 400);
+        }
+    });
     /**
      * APIs End
      **********************/
@@ -161,15 +178,18 @@ Route::post('/reset-password', [UserController::class, 'resetPassword']);
 Route::post('/reset-all-data', [UserController::class, 'resetAllData']);
 
 
-Route::get('/connect-upstox', [
-    UpstoxController::class,
-    'connect'
-]);
 
-Route::get('/integrate-callback', [
-    UpstoxController::class,
-    'callback'
-])->name('upstox.callback');
+/** Upsotx Login */
+Route::get('/connect-upstox', [UpstoxController::class, 'connect']);
+Route::get('/upstox-callback', [UpstoxController::class, 'callback'])->name('upstox.callback');
+
+/** Kite (Zerodha) Login */
+Route::get('/connect-zerodha', [ZerodhaController::class, 'redirectToZerodha']);
+Route::get('/zerodha-callback', [ZerodhaController::class, 'callback']);
+
+
+
+
 
 /***********************
  * Two-Factor Challenge — for users who are mid-login (not yet fully authenticated)

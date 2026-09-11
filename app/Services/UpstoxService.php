@@ -60,11 +60,10 @@ class UpstoxService
     {
         $user_id = Auth::id();
         if ($user_id) {
-            $broker_init = BrokerIntegration::where('user_id', $user_id)->where('broker', 'kite')->first();
+            $broker_init = BrokerIntegration::where('user_id', $user_id)->where('broker', 'upstox')->first();
             $broker_init = collect($broker_init)->toArray();
 
             if (isset($broker_init['access_token'])) {
-                // Log::debug(print_r($broker_init, true));
                 $accessToken =
                     $headers = [
                         'Accept' => 'application/json',

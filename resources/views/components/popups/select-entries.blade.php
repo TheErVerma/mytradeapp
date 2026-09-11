@@ -1,8 +1,8 @@
 <div class="global-popup" data_identity="select-entries">
     <div class="global-popup__overlay"></div>
-    <div class="global-popup__inner">
+    <div class="global-popup__inner w-full">
         <div class="global-popup__main">
-            <div class="global-popup__body max-w-140 ">
+            <div class="global-popup__body max-w-170 ">
 
                 <button class="global-popup__close">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"

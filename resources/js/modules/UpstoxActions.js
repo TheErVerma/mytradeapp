@@ -244,7 +244,7 @@ export default class UpstoxActions {
             syncWithUpstox.addEventListener('click', function () {
                 const this_btn = this;
                 const selectTradeFut = this_btn.getAttribute('data_select_trades');
-                
+                document.querySelector('#sync_broker_trades_form [name="broker"]').value = 'upstox';
                 this.classList.add('loading');
                 fetch('/get-upstox-data', {
                     method: 'POST',

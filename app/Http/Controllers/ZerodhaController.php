@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OTPEmail;
 use App\Models\BrokerIntegration;
 use App\Models\Instruments;
 use App\Models\Trade;
+use App\Models\User;
 use App\Services\ZerodhaService;
 use Auth;
+use Crypt;
+use Hash;
 use Http;
 use Illuminate\Http\Request;
 use Log;
+use Mail;
 
 
 
@@ -26,13 +31,16 @@ class ZerodhaController extends Controller
 
     public function callback(Request $request)
     {
+        $api_key = config('services.zerodha.api_key');
+        $secret_key = config('services.zerodha.secret_key');
+
         $requestToken = $request->input('request_token');
 
         $checksum = hash(
             'sha256',
-            config('services.zerodha.api_key')
+            $api_key
             . $requestToken
-            . config('services.zerodha.secret_key')
+            . $secret_key
         );
 
         $response = Http::asForm()->post(
@@ -55,7 +63,7 @@ class ZerodhaController extends Controller
         }
 
         $user_id = Auth::id();
-        if ($user_id) {
+        if ($user_id && Auth::check()) {
 
             BrokerIntegration::updateOrCreate(
                 [
@@ -71,6 +79,46 @@ class ZerodhaController extends Controller
             return redirect()
                 ->route('integrate')
                 ->with('success', 'Zerodha connected successfully.');
+        } else {
+
+            $profileResponse = Http::withHeaders([
+                'X-Kite-Version' => '3',
+                'Authorization' => 'token ' . $api_key . ':' . $accessToken,
+            ])->get('https://api.kite.trade/user/profile');
+
+            if ($profileResponse->failed()) {
+                return redirect('/login')
+                    ->with('error', 'Unable to fetch Zerodha profile.');
+            }
+
+            $profile = data_get($profileResponse->json(), 'data');
+
+            if (isset($profile['email'])) {
+                $user = User::where('email', $profile['email'])->first();
+
+                if (!$user) {
+                    $user = User::create([
+                        'name' => $profile['user_name'],
+                        'email' => $profile['email'],
+                        'password' => bcrypt(str()->random(32)),
+                    ]);
+                }
+
+                BrokerIntegration::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'broker' => 'kite',
+                    ],
+                    [
+                        'access_token' => $accessToken,
+                        'is_active' => true,
+                    ]
+                );
+
+                Auth::login($user, true);
+
+                return redirect('/')->with('success', 'Login Successful.');
+            }
         }
 
     }
@@ -97,6 +145,8 @@ class ZerodhaController extends Controller
     public function syncOrFetch(Request $request)
     {
 
+        $slctTrdEntry = $request->input('slctTrdEntry');
+
         $selectTrades = $request->input('selectTrades');
         $user_id = Auth::id();
         $broker_init = BrokerIntegration::where('user_id', $user_id)->where('broker', 'kite')->first();
@@ -114,9 +164,8 @@ class ZerodhaController extends Controller
 
         $selectTrades = 'yes';
         $req_resp = [];
-
+        $new_data = [];
         if (is_array($all_trades) && !empty($all_trades)) {
-            Log::debug(print_r($all_trades, true));
             foreach ($all_trades as $position) {
                 $instrument_arr = collect(Instruments::where('instrument_key', 'LIKE', '%' . $position["isin"] . '%')
                     ->where('instrument_key', 'LIKE', '%' . $position["exchange"] . '%')->first())->toArray();
@@ -148,19 +197,30 @@ class ZerodhaController extends Controller
                     'trd_type' => $trd_type,
                     'user_id' => Auth::id(),
                 ];
-                if ($selectTrades != "no") {
+                if ($selectTrades != "no" && $slctTrdEntry == "") {
                     $new_data['instrument'] = $instrument_arr;
                 } else {
                     // $new_row = Trade::updateOrCreate($new_data, ['trd_symbol_key' => $instrument_arr['instrument_key']]);
+                    if(in_array($instrument_arr['instrument_key'], $slctTrdEntry)){
+                        $new_row = Trade::updateOrCreate($new_data, ['trd_symbol_key' => $instrument_arr['instrument_key']]);
+                    }
                 }
                 $req_resp[] = $new_data;
             }
         }
-        return response()->json([
-            "status" => 200,
-            "data" => $req_resp,
-            "html" => $selectTrades == "yes" ? view('components.broker-trades', ['broker_data' => $req_resp])->render() : '',
-        ]);
+        if ($slctTrdEntry) {
+            return response()->json([
+                "status" => 200,
+                "entry" => $slctTrdEntry,
+                "new_row" => $req_resp
+            ]);
+        } else {
+            return response()->json([
+                "status" => 200,
+                "data" => $req_resp,
+                "html" => $selectTrades == "yes" ? view('components.broker-trades', ['broker_data' => $req_resp])->render() : '',
+            ]);
+        }
     }
 
 }

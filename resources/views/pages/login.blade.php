@@ -382,6 +382,18 @@
               </svg>
               Upstox
             </a>
+
+            <a href="/connect-zerodha"
+              class="group disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="22" height="22" role="img"
+                aria-label="Zerodha logo" class="sc-dmlrTW iPnMQW">
+                <g fill-rule="nonzero" fill="none">
+                  <path fill="#F6461A" d="M8 0L0 8l8 8 8-8 8-8z"></path>
+                  <path fill="#DB342C" d="M8 16l8-8 8 8z"></path>
+                </g>
+              </svg>
+              Zerodha
+            </a>
             <a disabled href=""
               class="group disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
               <svg width="22" height="22" viewBox="0 0 220.5 204.5" role="img" aria-label="Angel One logo"
@@ -396,17 +408,6 @@
                 </g>
               </svg>
               AngelOne
-            </a>
-            <a disabled href=""
-              class="group disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="22" height="22" role="img"
-                aria-label="Zerodha logo" class="sc-dmlrTW iPnMQW">
-                <g fill-rule="nonzero" fill="none">
-                  <path fill="#F6461A" d="M8 0L0 8l8 8 8-8 8-8z"></path>
-                  <path fill="#DB342C" d="M8 16l8-8 8 8z"></path>
-                </g>
-              </svg>
-              Zerodha
             </a>
             <a href="" disabled
               class="group opacity-25 disabled:stroke-fg-disabled disabled:text-fg-disabled disabled:*:text-fg-disabled relative inline-flex h-max cursor-pointer items-center justify-center font-semibold whitespace-nowrap outline-focus-ring transition duration-100 ease-linear before:absolute focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed gap-2.5 rounded-lg px-4 py-2.5 text-md before:rounded-[7px] data-icon-only:p-3 bg-primary text-secondary shadow-xs-skeuomorphic ring-1 ring-primary ring-inset hover:bg-primary_hover hover:text-secondary_hover">
